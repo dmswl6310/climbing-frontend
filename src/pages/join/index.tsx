@@ -9,7 +9,7 @@ const Join = () => {
       <InputWithTitle title="비밀번호 재확인" />
       <InputWithTitle title="닉네임" />
       <InputWithTitle title="휴대전화" />
-      <button>*가입하기</button>
+      <button>*가입하기*</button>
     </S.Wrapper>
   );
 };
