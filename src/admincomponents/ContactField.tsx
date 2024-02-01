@@ -1,31 +1,28 @@
+import { useState } from 'react';
 import styled from 'styled-components';
 
+const REGEX_NUMBER = /^[0-9-]*$/;
+
 const ContactField = () => {
+  const [input, setInput] = useState('');
+
+  const handleInput = (input: string) => {
+    if (!REGEX_NUMBER.test(input)) return;
+    setInput(input);
+  };
+
   return (
-    <Styled.Wrapper>
-      <select name="platform">
-        {PLATFORM_LIST.map(({ value, text }) => (
-          <option key={value} value={value}>
-            {text}
-          </option>
-        ))}
-      </select>
-      <input name="address" />
-      <button>추가</button>
-    </Styled.Wrapper>
+    <div>
+      <input
+        name='contact'
+        className='field__contact'
+        value={input}
+        onChange={(e) => handleInput(e.target.value)}
+        placeholder='전화번호 입력'
+        required={true}
+      />
+    </div>
   );
 };
-
-const Styled = {
-  Wrapper: styled.div``,
-};
-
-export const PLATFORM_LIST = [
-  { value: 'phone', text: '전화번호' },
-  { value: 'twitter', text: '트위터' },
-  { value: 'facebook', text: '페이스북' },
-  { value: 'instagram', text: '인스타그램' },
-  { value: 'blog', text: '블로그' },
-];
 
 export default ContactField;

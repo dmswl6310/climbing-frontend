@@ -2,6 +2,7 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import TextField from './TextField';
 import AddressField from './AddressField';
+import ContactField from './ContactField';
 
 interface NewGymFormProps {
   handleSubmit: Function;
@@ -23,7 +24,15 @@ const NewGymForm = ({ handleSubmit }: NewGymFormProps) => {
           const nameField = document.querySelector(
             '.field__name',
           ) as HTMLInputElement;
-          handleSubmit({ name: nameField.value, address, coordinates });
+          const contactField = document.querySelector(
+            '.field__contact',
+          ) as HTMLInputElement;
+          handleSubmit({
+            name: nameField.value,
+            address,
+            coordinates,
+            contact: [{ platform: 'phone', info: contactField.value }],
+          });
         }}
       >
         <div>
@@ -38,13 +47,8 @@ const NewGymForm = ({ handleSubmit }: NewGymFormProps) => {
           />
         </div>
         <div>
-          <h4>이용금액</h4>
-        </div>
-        <div>
-          <h4>영업시간</h4>
-        </div>
-        <div>
           <h4>연락처</h4>
+          <ContactField />
         </div>
         <input type='submit' />
       </Styled.Form>

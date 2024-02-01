@@ -14,6 +14,10 @@ interface GymFormData {
     latitude: number;
     longitude: number;
   };
+  contact: Array<{
+    platform: string;
+    info: string;
+  }>;
 }
 
 const AdminPage = () => {
@@ -114,12 +118,14 @@ const AdminPage = () => {
     deleteDiv.innerHTML = `
     <div><strong>암장명:</strong>&nbsp;${gymData.name}</div>
     <div><strong>암장 주소:</strong>&nbsp;${fullAddress}</div>
+    <div><strong>연락처:</strong>&nbsp;${gymData.contact[0].info}</div>
     <button id='${gymData.id}-detlbtn'>삭제</button>
     `;
 
     updateDiv.innerHTML = `
     <div><strong>암장명:</strong>&nbsp;${gymData.name}</div>
     <div><strong>암장 주소:</strong>&nbsp;${fullAddress}</div>
+    <div><strong>연락처:</strong>&nbsp;${gymData.contact[0].info}</div>
     <button id='${gymData.id}-updbtn'>수정</button>
     `;
 
@@ -151,6 +157,7 @@ const AdminPage = () => {
     parent.innerHTML = `
       <div><strong>암장명:</strong>&nbsp;<input id='edit-name' value='${gymData.name}'/></div>
       <div><strong>암장 주소:</strong>&nbsp;<input id='edit-address' value='${roadAddress}'/><input id='edit-building' value='${unitAddress}'/></div>
+      <div><strong>연락처:</strong>&nbsp;<input id='edit-contact' value='${gymData.contact[0].info}'/></div>
       <input type='hidden' id='edit-hidden' value='${jibunAddress}' />
       <button id='${gymData.id}-applybtn'>적용</button>
     `;
@@ -183,6 +190,13 @@ const AdminPage = () => {
         roadAddress,
         unitAddress,
       },
+      contact: [
+        {
+          platform: 'phone',
+          info: (document.getElementById('edit-contact') as HTMLInputElement)
+            .value,
+        },
+      ],
     };
     return data;
   };
@@ -198,12 +212,14 @@ const AdminPage = () => {
     deleteElem.innerHTML = `
     <div><strong>암장명:</strong>&nbsp;${newData.name}</div>
     <div><strong>암장 주소:</strong>&nbsp;${newData.address.roadAddress} ${newData.address.unitAddress}</div>
+    <div><strong>연락처:</strong>&nbsp;${newData.contact[0].info}</div>
     <button id='${newData.id}-detlbtn'>삭제</button>
     `;
 
     updateElem.innerHTML = `
     <div><strong>암장명:</strong>&nbsp;${newData.name}</div>
     <div><strong>암장 주소:</strong>&nbsp;${newData.address.roadAddress} ${newData.address.unitAddress}</div>
+    <div><strong>연락처:</strong>&nbsp;${newData.contact[0].info}</div>
     <button id='${newData.id}-updbtn'>수정</button>
     `;
 
