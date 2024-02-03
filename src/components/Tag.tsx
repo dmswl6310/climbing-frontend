@@ -1,11 +1,12 @@
 import styled from 'styled-components';
 
 interface TagProps {
+  prefix?: string;
   text: string;
 }
 
-const Tag = ({ text }: TagProps) => {
-  return <Styled.Wrapper>{text}</Styled.Wrapper>;
+const Tag = ({ prefix, text }: TagProps) => {
+  return <Styled.Wrapper>{prefix}{text}</Styled.Wrapper>;
 };
 
 const Styled = {
