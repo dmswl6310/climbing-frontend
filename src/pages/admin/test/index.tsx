@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import NewGymForm from '@/admincomponents/NewGymForm';
+import { useEffect, useState } from "react";
+import styled from "styled-components";
+import NewGymForm from "@/components/admin/NewGymForm";
 
 interface GymFormData {
   id?: string;
@@ -26,9 +26,9 @@ const AdminPage = () => {
 
   useEffect(() => {
     const mapApi =
-      'https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=lm660e08li&submodules=geocoder';
+      "https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=lm660e08li&submodules=geocoder";
     const script = document.querySelector(
-      `script[src='${mapApi}']`,
+      `script[src='${mapApi}']`
     ) as HTMLScriptElement;
 
     if (script) {
@@ -36,8 +36,8 @@ const AdminPage = () => {
       return;
     }
 
-    const newScript = document.createElement('script');
-    newScript.type = 'text/javascript';
+    const newScript = document.createElement("script");
+    newScript.type = "text/javascript";
     newScript.src = mapApi;
     document.head.appendChild(newScript);
     newScript.onload = handleLoader;
@@ -49,11 +49,11 @@ const AdminPage = () => {
 
   // CRUD: Create
   const createData = async (input: GymFormData) => {
-    const data = await fetch('http://localhost:3000/gyms', {
-      method: 'POST',
+    const data = await fetch("http://localhost:3000/gyms", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
+        "Content-Type": "application/json",
+        Accept: "application/json",
       },
       body: JSON.stringify(input),
     });
@@ -64,26 +64,26 @@ const AdminPage = () => {
 
   // CRUD: Retrieve
   const getData = async () => {
-    const data = await (await fetch('http://localhost:3000/gyms')).json();
+    const data = await (await fetch("http://localhost:3000/gyms")).json();
 
     setDbData(data);
     const delContainer = document.getElementById(
-      'delete-container',
+      "delete-container"
     ) as HTMLDivElement;
     const updContainer = document.getElementById(
-      'update-container',
+      "update-container"
     ) as HTMLDivElement;
-    delContainer.innerHTML = '';
-    updContainer.innerHTML = '';
+    delContainer.innerHTML = "";
+    updContainer.innerHTML = "";
     data.forEach((dat: GymFormData) => paintDom(dat));
   };
 
   // CRUD: Update
   const updateData = async (newData: GymFormData) => {
     const data = await fetch(`http://localhost:3000/gyms/${newData.id}`, {
-      method: 'PATCH',
+      method: "PATCH",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(newData),
     });
@@ -94,7 +94,7 @@ const AdminPage = () => {
   // CRUD: Delete
   const deleteData = async (id: string) => {
     const data = await fetch(`http://localhost:3000/gyms/${id}`, {
-      method: 'DELETE',
+      method: "DELETE",
     });
 
     const deleteElem = document.getElementById(`${id}-delete`) as HTMLElement;
@@ -105,13 +105,13 @@ const AdminPage = () => {
   };
 
   const paintDom = (gymData: GymFormData) => {
-    const deleteDiv = document.createElement('div');
+    const deleteDiv = document.createElement("div");
     deleteDiv.id = `${gymData.id as string}-delete`;
-    deleteDiv.setAttribute('style', 'display:flex; flex-direction:column');
+    deleteDiv.setAttribute("style", "display:flex; flex-direction:column");
 
-    const updateDiv = document.createElement('div');
+    const updateDiv = document.createElement("div");
     updateDiv.id = `${gymData.id as string}-update`;
-    updateDiv.setAttribute('style', 'display:flex; flex-direction:column');
+    updateDiv.setAttribute("style", "display:flex; flex-direction:column");
 
     const fullAddress = `${gymData.address.roadAddress} ${gymData.address.unitAddress}`;
 
@@ -130,29 +130,29 @@ const AdminPage = () => {
     `;
 
     const updateContainer = document.getElementById(
-      'update-container',
+      "update-container"
     ) as HTMLElement;
     const deleteContainer = document.getElementById(
-      'delete-container',
+      "delete-container"
     ) as HTMLElement;
     updateContainer.append(updateDiv);
     deleteContainer.append(deleteDiv);
 
     const updateBtn = document.getElementById(
-      `${gymData.id}-updbtn`,
+      `${gymData.id}-updbtn`
     ) as HTMLButtonElement;
     const deleteBtn = document.getElementById(
-      `${gymData.id}-detlbtn`,
+      `${gymData.id}-detlbtn`
     ) as HTMLButtonElement;
 
-    deleteBtn.addEventListener('click', () => deleteData(gymData.id as string));
-    updateBtn.addEventListener('click', () => getEditFields(gymData));
+    deleteBtn.addEventListener("click", () => deleteData(gymData.id as string));
+    updateBtn.addEventListener("click", () => getEditFields(gymData));
   };
 
   const getEditFields = (gymData: GymFormData) => {
     const { jibunAddress, roadAddress, unitAddress } = gymData.address;
     const parent = document.getElementById(
-      `${gymData.id}-update`,
+      `${gymData.id}-update`
     ) as HTMLDivElement;
     parent.innerHTML = `
       <div><strong>암장명:</strong>&nbsp;<input id='edit-name' value='${gymData.name}'/></div>
@@ -163,7 +163,7 @@ const AdminPage = () => {
     `;
 
     const btn = document.getElementById(
-      `${gymData.id}-applybtn`,
+      `${gymData.id}-applybtn`
     ) as HTMLButtonElement;
     btn.onclick = () => {
       const newData = getChangedFields(gymData.id as string);
@@ -173,18 +173,18 @@ const AdminPage = () => {
 
   const getChangedFields = (id: string): GymFormData => {
     const roadAddress = (
-      document.getElementById('edit-address') as HTMLInputElement
+      document.getElementById("edit-address") as HTMLInputElement
     ).value;
     const unitAddress = (
-      document.getElementById('edit-building') as HTMLInputElement
+      document.getElementById("edit-building") as HTMLInputElement
     ).value;
     const jibunAddress = (
-      document.getElementById('edit-hidden') as HTMLInputElement
+      document.getElementById("edit-hidden") as HTMLInputElement
     ).value;
 
     const data: GymFormData = {
       id,
-      name: (document.getElementById('edit-name') as HTMLInputElement).value,
+      name: (document.getElementById("edit-name") as HTMLInputElement).value,
       address: {
         jibunAddress,
         roadAddress,
@@ -203,10 +203,10 @@ const AdminPage = () => {
 
   const updateDom = (newData: GymFormData) => {
     const deleteElem = document.getElementById(
-      `${newData.id}-delete`,
+      `${newData.id}-delete`
     ) as HTMLElement;
     const updateElem = document.getElementById(
-      `${newData.id}-update`,
+      `${newData.id}-update`
     ) as HTMLElement;
 
     deleteElem.innerHTML = `
@@ -224,13 +224,13 @@ const AdminPage = () => {
     `;
 
     const updateBtn = document.getElementById(
-      `${newData.id}-updbtn`,
+      `${newData.id}-updbtn`
     ) as HTMLButtonElement;
     const deleteBtn = document.getElementById(
-      `${newData.id}-detlbtn`,
+      `${newData.id}-detlbtn`
     ) as HTMLButtonElement;
-    deleteBtn.addEventListener('click', () => deleteData(newData.id as string));
-    updateBtn.addEventListener('click', () => getEditFields(newData));
+    deleteBtn.addEventListener("click", () => deleteData(newData.id as string));
+    updateBtn.addEventListener("click", () => getEditFields(newData));
   };
 
   const handleSubmit = (formData: GymFormData) => {

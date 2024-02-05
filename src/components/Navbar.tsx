@@ -1,7 +1,12 @@
 import { styled } from "styled-components";
 import Link from "next/link";
+import { MouseEvent, useState } from "react";
+import AuthButton from "./auth/AuthBar";
+import AuthBar from "./auth/AuthBar";
 
 const Navbar = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   return (
     <>
       <S.Space></S.Space>
@@ -11,12 +16,11 @@ const Navbar = () => {
             오르리
           </Link>
           <S.MenuContainer>
-            <S.ButtonWrapper>
-              <Link href={"/login"}>로그인</Link>
-            </S.ButtonWrapper>
-            <S.ButtonWrapper>
-              <Link href={"/join"}>회원가입</Link>
-            </S.ButtonWrapper>
+            <AuthBar
+              isLoggedIn={isLoggedIn}
+              username={"000님"}
+              onLogout={() => console.log("logout")}
+            />
             <S.ButtonWrapper>=</S.ButtonWrapper>
           </S.MenuContainer>
         </S.BarContainer>
@@ -42,7 +46,10 @@ const S = {
     justify-content: space-between;
     margin: 20px;
   `,
-  MenuContainer: styled.div``,
+  MenuContainer: styled.div`
+    display: flex;
+    flex-direction: row;
+  `,
   ButtonWrapper: styled.button`
     margin-left: 10px;
   `,
