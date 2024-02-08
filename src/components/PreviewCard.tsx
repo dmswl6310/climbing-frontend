@@ -5,7 +5,7 @@ import { IoBookmarkOutline } from "react-icons/io5";
 import { FcLikePlaceholder } from "react-icons/fc";
 import Link from "next/link";
 
-interface GymInfo {
+export interface GymInfo {
   id: number;
   thumbnailSrc: string;
   address: string;

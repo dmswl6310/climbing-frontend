@@ -78,7 +78,8 @@ const GymListBanner = ({
   return (
     <Styled.Wrapper>
       <Styled.ButtonWrapper>{SortingButtons}</Styled.ButtonWrapper>
-      <LazyLoadingItems cardList={CardList} />
+      <LazyLoadingItems />
+      {/* <LazyLoadingItems cardList={CardList} /> */}
     </Styled.Wrapper>
   );
 };
