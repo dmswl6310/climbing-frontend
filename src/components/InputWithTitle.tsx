@@ -1,34 +1,27 @@
 import { styled } from "styled-components";
 
 interface InputProps {
+  name: string;
   title: string;
 }
 
-export const InputWithTitle = ({ title }: InputProps) => {
+export const InputWithTitle = ({ name, title }: InputProps) => {
   return (
     <Styled.Wrapper>
       <Styled.Title>{title}</Styled.Title>
-      <Styled.Form autoComplete="off">
-        <Styled.Input name={title} type="text" />
-      </Styled.Form>
+      <Styled.Input name={name} type="text" />
     </Styled.Wrapper>
   );
 };
 
 const Styled = {
-  Wrapper: styled.div``,
+  Wrapper: styled.div`
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+  `,
   Title: styled.div``,
-  Form: styled.form`
-    border: 1px solid black;
-    border-radius: 5px;
-    padding: 5px;
-    margin-bottom: 5px;
-  `,
-  Input: styled.input`
-    border: none;
-    outline: none; // input 포커스시의 볼더 없애기
-    width: 80%;
-  `,
+  Input: styled.input``,
 };
 
 export default InputWithTitle;

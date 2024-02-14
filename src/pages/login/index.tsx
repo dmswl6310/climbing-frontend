@@ -14,6 +14,11 @@ const Login = () => {
 const S = {
   Wrapper: styled.div`
     height: 500px;
+    width: 600px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 0 auto;
   `,
 };
 
