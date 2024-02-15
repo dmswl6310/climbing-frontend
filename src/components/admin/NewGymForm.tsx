@@ -16,6 +16,15 @@ const NewGymForm = ({ handleSubmit }: NewGymFormProps) => {
   });
   const [coordinates, setCoordinates] = useState({ latitude: 0, longitude: 0 });
 
+  const getSettingDate = (): string => {
+    const currentDate = new Date();
+    const year = currentDate.getFullYear().toString();
+    const month = (currentDate.getMonth() + 1).toString();
+    const day = currentDate.getDate().toString();
+    const settingDate = `${year.slice(-2)}.${month.padStart(2, '0')}.${day.padStart(2, '0')}`;
+    return settingDate;
+  };
+
   return (
     <Styled.Wrapper>
       <Styled.Form
@@ -31,7 +40,8 @@ const NewGymForm = ({ handleSubmit }: NewGymFormProps) => {
             name: nameField.value,
             address,
             coordinates,
-            contact: [{ platform: 'phone', info: contactField.value }],
+            contact: contactField.value,
+            latestSettingDay: getSettingDate(),
           });
         }}
       >
@@ -50,7 +60,7 @@ const NewGymForm = ({ handleSubmit }: NewGymFormProps) => {
           <h4>연락처</h4>
           <ContactField />
         </div>
-        <input type='submit' />
+        <input type="submit" value="등록" />
       </Styled.Form>
     </Styled.Wrapper>
   );

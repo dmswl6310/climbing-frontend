@@ -21,7 +21,7 @@ interface ContactInfoProps {
 }
 
 // 상수
-const CONTACT_ICONS: IconsType = {
+export const CONTACT_ICONS: IconsType = {
   phone: <BsTelephoneFill />,
   twitter: <BsTwitterX />,
   facebook: <BsFacebook />,
