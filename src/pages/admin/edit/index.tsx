@@ -1,43 +1,21 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import { useBeforeunload } from 'react-beforeunload';
 import styled from 'styled-components';
 import ImageEditor from '@/components/admin/ImageEditor';
 import BasicInfoEditor from '@/components/admin/BasicInfoEditor';
 import DescriptionEditor from '@/components/admin/DescriptionEditor';
 import OpenHoursEditor from '@/components/admin/OpenHoursEditor';
 import AccommodationsEditor from '@/components/admin/AccommodationsEditor';
-import DifficultyEditor from '@/components/admin/DifficultyEditor';
+import GradeEditor from '@/components/admin/GradeEditor';
+import PricingEditor from '@/components/admin/PricingEditor';
 
-export interface GymData {
-  id: string;
-  name: string;
-  address: {
-    jibunAddress: string;
-    roadAddress: string;
-    unitAddress: string;
-  };
-  coordinates: {
-    latitude: number;
-    longitude: number;
-  };
-  contact: string;
-  latestSettingDay: string;
-  sns?: Array<{
-    platform: string;
-    account: string;
-  }>;
-  images?: Array<string>;
-  imageThumbnails?: Array<string>;
-  openHours?: Array<{ days: string; hours: string }>;
-  pricing?: Array<{ item: string; price: string }>;
-  tags?: Array<string>;
-  description?: string;
-  grades?: Array<string>;
-  accommodations?: Array<string>;
-}
-
+// 테스트용 상수값
+const testId = '75334254-93a8-4cfb-afec-29e368ac0803';
+const testEndpoint = 'http://localhost:3000/gyms/';
+const testUrl = `${testEndpoint}${testId}`;
 const sampleData = {
-  id: '6e5b9475-8916-4785-ba85-b262fbf06efb',
+  id: 'sampleid',
   name: '샘플암장1',
   address: {
     jibunAddress: '대전광역시 동구 판암동 498-14',
@@ -51,26 +29,59 @@ const sampleData = {
     longitude: 127.4521708,
   },
   contact: '1588-1588',
-  sns: [
-    {
-      platform: 'twitter',
-      account: 'qwerty',
-    },
-    {
-      platform: 'facebook',
-      account: 'qwerty',
-    },
-  ],
+  accommodations: ['moonboard', 'showers'],
+  sns: { twitter: 'qwerty', facebook: 'asdfg' },
   latestSettingDay: '24.02.01',
 };
 
+export interface GymData {
+  id?: string;
+  name: string;
+  address: {
+    jibunAddress: string;
+    roadAddress: string;
+    unitAddress: string;
+  };
+  coordinates: {
+    latitude: number;
+    longitude: number;
+  };
+  contact: string;
+  latestSettingDay: string;
+  sns?: { twitter?: string; facebook?: string; instagram?: string };
+  homepage?: string;
+  images?: Array<string>;
+  imageThumbnails?: Array<string>;
+  defaultImage?: string;
+  openHours?: Array<{ days: string; openTime: string; closeTime: string }>;
+  pricing?: Array<{ item: string; price: string }>;
+  tags?: Array<string>;
+  description?: string;
+  grades?: Array<string>;
+  accommodations?: Array<string>;
+}
+
+const INITIAL_DATA = {
+  name: '',
+  address: {
+    jibunAddress: '',
+    roadAddress: '',
+    unitAddress: '',
+  },
+  coordinates: {
+    latitude: 0,
+    longitude: 0,
+  },
+  contact: '',
+  latestSettingDay: '',
+};
+
 const EditPage = () => {
-  const [currentData, setCurrentData] = useState<null | GymData>(null);
-  const [loadedData, setLoadedData] = useState<null | GymData>(null);
+  const [currentData, setCurrentData] = useState<GymData>(INITIAL_DATA);
+  const [loadedData, setLoadedData] = useState<GymData>(INITIAL_DATA);
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const router = useRouter();
-  console.log(currentData);
 
   // 서버로부터 암장정보 fetch
   useEffect(() => {
@@ -88,28 +99,21 @@ const EditPage = () => {
     setIsLoading(false);
   }, [router.query]);
 
-  const compareData = () => {
-    let dataChanged = false;
-    const dataKeys = Object.keys(currentData as GymData);
-
-    dataKeys.forEach((key) => {
-      if (
-        currentData![key as keyof typeof currentData] !==
-        loadedData![key as keyof typeof loadedData]
-      )
-        dataChanged = true;
-    });
-
-    return dataChanged;
+  const isEdited = (oldData: any, newData: any) => {
+    return JSON.stringify(oldData) !== JSON.stringify(newData);
   };
+
+  useBeforeunload(
+    isEdited(loadedData, currentData) ? (e) => e.preventDefault() : undefined,
+  );
 
   const handlePageChange = (page: number) => {
     if (currentPage === page) return;
-    const dataChanged = compareData();
+    const dataChanged = isEdited(loadedData, currentData);
     if (!dataChanged) return setCurrentPage(page);
     const response = confirm('수정 중인 데이터가 있습니다. 이동할까요?');
     if (response) {
-      setCurrentData(loadedData);
+      setCurrentData(JSON.parse(JSON.stringify(loadedData)));
       setCurrentPage(page);
     }
   };
@@ -121,35 +125,38 @@ const EditPage = () => {
     fetch(`API주소_${id}`)
       .then((response) => response.json())
       .then((data) => {
-        setLoadedData(data);
-        setCurrentData(data);
+        setLoadedData(JSON.parse(JSON.stringify(data)));
+        setCurrentData(JSON.parse(JSON.stringify(data)));
+      })
+      .catch((error) => {
+        //에러 핸들링
       });
     */
 
     // 관리자계정 정보/API가 준비되기 전에 사용할 임의값
-    fetch('http://localhost:3000/gyms/6e5b9475-8916-4785-ba85-b262fbf06efb')
+    fetch(`${testUrl}`)
       .then((response) => response.json())
       .then((data) => {
-        setLoadedData(data);
-        setCurrentData(data);
+        setLoadedData(JSON.parse(JSON.stringify(data)));
+        setCurrentData(JSON.parse(JSON.stringify(data)));
       })
       .catch((error) => {
-        console.log(error.message);
+        // 테스트를 위한 임시방편 (추후 에러 핸들링 코드로 교체 필요)
         console.log(
           'json-server 서버가 오프라인입니다. 암장 정보를 샘플값으로 대체합니다.',
         );
-        setLoadedData(sampleData);
-        setCurrentData(sampleData);
+        setLoadedData(JSON.parse(JSON.stringify(sampleData)));
+        setCurrentData(JSON.parse(JSON.stringify(sampleData)));
       });
   };
 
-  const updateData = async () => {
-    await fetch(`http://localhost:3000/gyms/${currentData!.id}`, {
+  const updateData = async (data: string) => {
+    await fetch(`${testEndpoint}${currentData!.id}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(currentData!),
+      body: data,
     });
   };
 
@@ -168,42 +175,56 @@ const EditPage = () => {
           {currentPage === 1 ? (
             <>
               <ImageEditor
-                images={currentData?.images}
-                thumbnails={currentData?.imageThumbnails}
+                loadedImages={loadedData.images}
+                thumbnails={currentData.imageThumbnails}
+                defaultImage={currentData.defaultImage}
                 setCurrentData={setCurrentData}
+                setLoadedData={setLoadedData}
+                updateData={updateData}
               />
               <BasicInfoEditor
-                name={currentData?.name || ''}
-                address={
-                  currentData?.address || {
-                    jibunAddress: '',
-                    roadAddress: '',
-                    unitAddress: '',
-                  }
-                }
-                contact={currentData?.contact || ''}
-                snsList={currentData?.sns}
+                name={currentData.name}
+                address={currentData.address}
+                contact={currentData.contact}
+                snsList={currentData.sns}
+                homepage={currentData.homepage}
                 setCurrentData={setCurrentData}
               />
               <DescriptionEditor
-                description={currentData?.description || ''}
+                description={currentData.description}
                 setCurrentData={setCurrentData}
               />
             </>
           ) : (
             <>
-              <OpenHoursEditor setCurrentData={setCurrentData} />
-              <AccommodationsEditor setCurrentData={setCurrentData} />
-              <DifficultyEditor setCurrentData={setCurrentData} />
+              <PricingEditor
+                pricingList={currentData.pricing}
+                setCurrentData={setCurrentData}
+              />
+              <OpenHoursEditor
+                openHoursList={currentData.openHours}
+                setCurrentData={setCurrentData}
+              />
+              <AccommodationsEditor
+                accommodationsList={currentData.accommodations}
+                setCurrentData={setCurrentData}
+              />
+              <GradeEditor
+                gradesList={currentData.grades}
+                setCurrentData={setCurrentData}
+              />
             </>
           )}
           <button
             onClick={() => {
-              const dataChanged = compareData();
-              if (dataChanged) updateData();
+              const dataChanged = isEdited(loadedData, currentData);
+              if (dataChanged) {
+                updateData(JSON.stringify(currentData));
+                setLoadedData(JSON.parse(JSON.stringify(currentData)));
+              }
             }}
           >
-            저장
+            저장하기
           </button>
         </Styled.Main>
       )}
@@ -225,6 +246,7 @@ const Styled = {
   Main: styled.div`
     display: flex;
     flex-direction: column;
+    flex: 1 0 0;
     gap: 36px;
     background: #fafaf8;
     padding: 36px;

@@ -1,55 +1,15 @@
-import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import NewGymForm from '@/components/admin/NewGymForm';
+import { GymData } from '../edit';
 
-interface NewGymData {
-  id?: string;
-  name: string;
-  address: {
-    jibunAddress: string;
-    roadAddress: string;
-    unitAddress: string;
-  };
-  coordinates: {
-    latitude: number;
-    longitude: number;
-  };
-  contact: Array<{
-    platform: string;
-    info: string;
-  }>;
-  latestSettingDay: string;
-}
+// 테스트용 상수값
+const testEndpoint = 'http://localhost:3000/gyms/'
 
 const GymRegistration = () => {
-  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
-  useEffect(() => {
-    const mapApi =
-      'https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=lm660e08li&submodules=geocoder';
-    const script = document.querySelector(
-      `script[src='${mapApi}']`,
-    ) as HTMLScriptElement;
-
-    if (script) {
-      handleLoader();
-      return;
-    }
-
-    const newScript = document.createElement('script');
-    newScript.type = 'text/javascript';
-    newScript.src = mapApi;
-    document.head.appendChild(newScript);
-    newScript.onload = handleLoader;
-  }, []);
-
-  const handleLoader = () => {
-    setIsLoading(false);
-  };
-
-  const handleSubmit = (formData: NewGymData) => {
+  const handleSubmit = (formData: GymData) => {
     // 서버로부터 내려받는 데이터의 형식에 따라 처리 (현재는 id만 응답받는다는 가정 하에 then에 id만 명시함)
     createData(formData).then((id) => {
       formData.id = id;
@@ -64,13 +24,13 @@ const GymRegistration = () => {
   };
 
   // CRUD: Create
-  const createData = async (input: NewGymData) => {
-    // Test용 값 세팅
+  const createData = async (input: GymData) => {
+    // ↓ Test용 값 세팅
     const testId = crypto.randomUUID();
     input.id = testId;
-    // 백엔드 API로 교체 시 삭제
+    // ↑ 백엔드 API로 교체 시 삭제
 
-    const data = await fetch('http://localhost:3000/gyms', {
+    const data = await fetch(testEndpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -78,7 +38,7 @@ const GymRegistration = () => {
       },
       body: JSON.stringify(input),
     });
-    const result = await data.json(); // 서버로부터 id를 내려받을 예정
+    const result = await data.json(); // 서버로부터 id를 내려받으면 result에 저장
     // return result;
     return testId; // 시뮬레이팅을 위한 임의값 (서버 API가 생성되면 삭제!)
   };

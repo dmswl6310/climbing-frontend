@@ -1,20 +1,28 @@
 import { useState } from 'react';
 import styled from 'styled-components';
-import TextField from './TextField';
 import AddressField from './AddressField';
-import ContactField from './ContactField';
+import { GymData } from '@/pages/admin/edit';
 
 interface NewGymFormProps {
-  handleSubmit: Function;
+  handleSubmit: (formData: GymData) => void;
 }
 
+const REGEX_NUMBER = /^[0-9-]*$/;
+
 const NewGymForm = ({ handleSubmit }: NewGymFormProps) => {
-  const [address, setAddress] = useState({
-    jibunAddress: '',
-    roadAddress: '',
-    unitAddress: '',
+  const [formData, setFormData] = useState<GymData>({
+    name: '',
+    address: { jibunAddress: '', roadAddress: '', unitAddress: '' },
+    coordinates: { latitude: 0, longitude: 0 },
+    contact: '',
+    latestSettingDay: '',
   });
-  const [coordinates, setCoordinates] = useState({ latitude: 0, longitude: 0 });
+
+  const handleInput = (input: string, type: string, key: string) => {
+    if (input.length > 20) return;
+    if (type === 'number' && !REGEX_NUMBER.test(input)) return;
+    setFormData((prev) => ({ ...prev, [key]: input }));
+  };
 
   const getSettingDate = (): string => {
     const currentDate = new Date();
@@ -30,35 +38,41 @@ const NewGymForm = ({ handleSubmit }: NewGymFormProps) => {
       <Styled.Form
         onSubmit={(e) => {
           e.preventDefault();
-          const nameField = document.querySelector(
-            '.field__name',
-          ) as HTMLInputElement;
-          const contactField = document.querySelector(
-            '.field__contact',
-          ) as HTMLInputElement;
           handleSubmit({
-            name: nameField.value,
-            address,
-            coordinates,
-            contact: contactField.value,
+            ...formData,
             latestSettingDay: getSettingDate(),
           });
         }}
       >
         <div>
           <h4>암장명</h4>
-          <TextField formName={'name'} characterLimit={20} />
+          <Styled.TextField>
+            <input
+              value={formData.name}
+              onChange={(e) => handleInput(e.target.value, 'string', 'name')}
+              required
+            />
+          </Styled.TextField>
         </div>
         <div>
           <h4>암장 주소</h4>
-          <AddressField
-            setAddress={setAddress}
-            setCoordinates={setCoordinates}
-          />
+          <Styled.TextField $width="450px">
+            <AddressField
+              address={formData.address}
+              handleAddressChange={setFormData}
+            />
+          </Styled.TextField>
         </div>
         <div>
           <h4>연락처</h4>
-          <ContactField />
+          <Styled.TextField>
+            <input
+              value={formData.contact}
+              onChange={(e) => handleInput(e.target.value, 'number', 'contact')}
+              placeholder="전화번호 입력"
+              required
+            />
+          </Styled.TextField>
         </div>
         <input type="submit" value="등록" />
       </Styled.Form>
@@ -77,6 +91,33 @@ const Styled = {
     display: flex;
     flex-direction: column;
     gap: 12px;
+  `,
+  TextField: styled.div<{ $width?: string }>`
+    box-sizing: border-box;
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    background: #fafafa;
+    border-radius: 8px;
+    border: 1px solid #d0d0d0;
+    padding: 12px 18px;
+    width: ${({ $width }) => $width || '200px'};
+
+    input {
+      border: none;
+      background: transparent;
+      width: 100%;
+      padding: 0;
+    }
+
+    input:nth-child(3) {
+      width: 50%;
+    }
+
+    .field-icon {
+      flex-shrink: 0;
+      cursor: pointer;
+    }
   `,
 };
 

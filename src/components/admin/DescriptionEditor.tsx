@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import { GymData } from '@/pages/admin/edit';
 
 interface DescriptionEditorProps {
-  description: string;
-  setCurrentData: Dispatch<SetStateAction<GymData | null>>;
+  description?: string;
+  setCurrentData: Dispatch<SetStateAction<GymData>>;
 }
 
 const DescriptionEditor = ({
@@ -25,7 +25,7 @@ const DescriptionEditor = ({
             onChange={(e) => handleChange(e.target.value)}
           />
         </Styled.TextField>
-        {description.length}/300
+        {description?.length || 0}/300
       </Styled.Content>
     </Styled.Wrapper>
   );
