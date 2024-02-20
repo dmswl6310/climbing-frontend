@@ -7,11 +7,11 @@ const GeneralLogin = () => {
   const handleSubmit = async (event: any) => {
     event.preventDefault();
 
-    const username = event.target.username.value;
+    const email = event.target.email.value;
     const password = event.target.password.value;
 
     const result = await signIn("credentials", {
-      username,
+      email,
       password,
     });
 
@@ -25,7 +25,12 @@ const GeneralLogin = () => {
   return (
     <S.Wrapper className="container">
       <S.LoginForm onSubmit={handleSubmit}>
-        <S.InputBox type="id" name="username" placeholder="아이디" required />
+        <S.InputBox
+          type="email"
+          name="email"
+          placeholder="아이디(이메일)"
+          required
+        />
         <S.InputBox
           type="password"
           name="password"
