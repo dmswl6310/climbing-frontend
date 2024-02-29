@@ -1,4 +1,4 @@
-"use cliebt";
+"use client";
 import { styled } from "styled-components";
 import Link from "next/link";
 import { useEffect, useState } from "react";

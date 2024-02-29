@@ -1,21 +1,18 @@
 import styled from 'styled-components';
-import { DetailedListProps } from '@/constants/types';
+import { Pricing, PricingTableProps } from '@/constants/types';
 
-const DetailedList = ({ items }: DetailedListProps) => {
+const PricingTable = ({ pricing }: PricingTableProps) => {
   return (
     <Styled.Wrapper>
-      {items.map((item, i) => {
-        const keys = Object.keys(item);
-        return (
-          <li key={i}>
-            <div>{item[keys[0]]}</div>
-            <Styled.Divider>
-              <hr />
-            </Styled.Divider>
-            <div>{item[keys[1]]}</div>
-          </li>
-        );
-      })}
+      {pricing.map(({ item, price }: Pricing, i) => (
+        <li key={i}>
+          <div>{item}</div>
+          <Styled.Divider>
+            <hr />
+          </Styled.Divider>
+          <div>{`${price} 원`}</div>
+        </li>
+      ))}
     </Styled.Wrapper>
   );
 };
@@ -44,4 +41,4 @@ const Styled = {
   `,
 };
 
-export default DetailedList;
+export default PricingTable;

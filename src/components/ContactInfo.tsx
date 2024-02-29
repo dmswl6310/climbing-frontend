@@ -5,59 +5,46 @@ import {
   BsInstagram,
   BsTelephoneFill,
 } from 'react-icons/bs';
-
-interface IconsType {
-  [key: string]: JSX.Element;
-}
-
-interface ContactListItem {
-  platform: string;
-  address: string;
-}
-
-// Property 명칭 확정 시 수정
-interface ContactInfoProps {
-  [key: string]: Array<ContactListItem>;
-}
+import { ContactInfoProps } from '@/constants/types';
 
 // 상수
-export const CONTACT_ICONS: IconsType = {
+export const CONTACT_ICONS = {
   phone: <BsTelephoneFill />,
   twitter: <BsTwitterX />,
   facebook: <BsFacebook />,
   instagram: <BsInstagram />,
 };
 
-const ContactInfo = ({ contactList }: ContactInfoProps) => {
-  // 임시 - 백엔드와 데이터 구조 협의 후 수정 필요
-  const sampleList = [
-    { platform: 'twitter', address: 'sdlfkj' },
-    { platform: 'facebook', address: 'sdlfkj' },
-    { platform: 'instagram', address: 'sdlfkj' },
-    { platform: 'phone', address: '010-1234-5678' },
-  ];
-
+const ContactInfo = ({ contact, snsList }: ContactInfoProps) => {
+  const platforms = Object.keys(snsList);
   return (
-    <Styled.Wrapper>
-      {contactList.map((contact) => (
-        <div key={contact.platform}>
-          {CONTACT_ICONS[contact.platform]} {contact.address}
+    <S.Wrapper>
+      <div>
+        {CONTACT_ICONS.phone} {contact}
+      </div>
+      {platforms.map((platform, i) => (
+        <div key={i}>
+          {CONTACT_ICONS[platform as keyof typeof CONTACT_ICONS]}{' '}
+          {snsList[platform as keyof typeof snsList]}
         </div>
       ))}
-    </Styled.Wrapper>
+    </S.Wrapper>
   );
 };
 
-const Styled = {
+const S = {
   Wrapper: styled.div`
     display: flex;
-    gap: 30px;
+    gap: 20px;
     width: 100%;
+    flex-wrap: wrap;
+    justify-content: space-between;
 
     div {
       display: flex;
-      gap: 8px;
+      gap: 6px;
       align-items: center;
+      width: 160px;
     }
   `,
 };
