@@ -19,39 +19,41 @@ const PricingField = ({
     if (input.length > 20) return;
     handleChange(input, index, 'item');
   };
+
   const handleNumberChange = (input: string) => {
     if (!REGEX.test(input)) return;
     if (input.length > 8) return;
     handleChange(input, index, 'price');
   };
+
   return (
-    <Styled.Wrapper>
+    <S.Wrapper>
       <div>
         <h4>옵션명</h4>
-        <Styled.TextField>
+        <S.TextField>
           <input
             value={item}
             onChange={(e) => handleTextChange(e.target.value)}
           />
           {item.length}/20
-        </Styled.TextField>
+        </S.TextField>
       </div>
       <div>
         <h4>가격</h4>
-        <Styled.TextField>
+        <S.TextField>
           <input
             value={price}
             placeholder="0"
             onChange={(e) => handleNumberChange(e.target.value)}
           />
           원
-        </Styled.TextField>
+        </S.TextField>
       </div>
-    </Styled.Wrapper>
+    </S.Wrapper>
   );
 };
 
-const Styled = {
+const S = {
   Wrapper: styled.div`
     display: flex;
     gap: 6px;

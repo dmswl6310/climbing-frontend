@@ -75,7 +75,7 @@ const GymInfo = ({
           <div>댓글</div>
         </S.Main>
         <S.Side>
-          {gymData.tags && (
+          {gymData.tags && gymData.tags.length > 0 && (
             <div className="container">
               <h4>관련 태그</h4>
               {gymData.tags.map((tag: string, i: number) => (
@@ -83,25 +83,25 @@ const GymInfo = ({
               ))}
             </div>
           )}
-          {gymData.pricing && (
+          {gymData.pricing && gymData.pricing.length > 0 && (
             <div className="container">
               <h4>이용금액</h4>
               <PricingTable pricing={gymData.pricing} />
             </div>
           )}
-          {gymData.openHours && (
+          {gymData.openHours && gymData.openHours.length > 0 && (
             <div className="container">
               <h4>영업시간</h4>
               <OpenHoursTable openHours={gymData.openHours} />
             </div>
           )}
-          {gymData.accommodations && (
+          {gymData.accommodations && gymData.accommodations.length > 0 && (
             <div className="container">
               <h4>시설 정보</h4>
               {gymData.accommodations.join(', ')}
             </div>
           )}
-          {gymData.grades && (
+          {gymData.grades && gymData.grades.length > 0 && (
             <div className="container">
               <h4>난이도</h4>
               <GradeBar grades={gymData.grades} />
@@ -137,7 +137,7 @@ const S = {
     display: flex;
     flex-direction: column;
     gap: 16px;
-    width: 400px;
+    width: 430px;
 
     & > div {
       box-sizing: border-box;
@@ -169,59 +169,73 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     return { props: { gymData } };
   } catch (e) {
     const gymData = {
-      address: {
-        jibunAddress: '서울시 강남구 테헤란로 1004',
-        roadAddress: '서울시 강남구 테헤란로 1004',
-        unitAddress: '4층',
+      "id": "75334254-93a8-4cfb-afec-29e368ac0803",
+      "name": "암장 테스트점",
+      "address": {
+        "jibunAddress": "경기도 성남시 분당구 대장동 627-5",
+        "roadAddress": "경기도 성남시 분당구 판교대장로 92",
+        "unitAddress": "4층"
       },
-      coordinates: {
-        latitude: 37.3595704,
-        longitude: 127.1054221,
+      "coordinates": {
+        "latitude": 37.3670275,
+        "longitude": 127.068454
       },
-      name: '클라이밍성지',
-      description: `1940년대 프랑스 전문 산악인들의 교육 훈련용으로 시작된 이후, 인공으로 만들어진 암벽 구조물을 손과 발을 사용하여 등반하는 레저스포츠로 발전하였다. '인공암벽등반'이라고도 한다. 유럽과 러시아, 미국으로 전파되어 다양한 국제 대회가 개최되었고, 1987년 국제산악연맹(UIAA)에서 스포츠클라이밍에 관한 규정을 제정하면서 스포츠 경기로서의 규칙을 갖추었다. 한국에는 1988년에 도입되었고, 전국적으로 빠르게 보급되어 사계절 내내 즐길 수 있는 레저 스포츠로서 각광받고 있다. 제32회 올림픽경기대회(도쿄 올림픽)부터 올림픽 정식 종목으로 채택되었다.`,
-      grades: ['#FF6355', '#FBA949', '#FAE442', '#8BD448', '#2AA8F2'],
-      defaultImage:
-        'https://oruritest.s3.ap-northeast-2.amazonaws.com/bubu/59197312-a099-4c23-8a23-177e03272901.JPEG',
-      images: [
-        'https://oruritest.s3.ap-northeast-2.amazonaws.com/bubu/661f97a9-d19a-4445-9ee1-efaf8ebda07b.JPEG',
-        'https://oruritest.s3.ap-northeast-2.amazonaws.com/bubu/fb7feda3-4540-487e-a0e6-5b1b4fa62bd4.JPEG',
-        'https://oruritest.s3.ap-northeast-2.amazonaws.com/bubu/c41f93dd-f257-4718-b2f4-ce2ca8acc98c.JPEG',
-        'https://oruritest.s3.ap-northeast-2.amazonaws.com/bubu/2c0e71b6-15e5-4f12-ac7b-9aa9ce744851.JPEG',
-        'https://oruritest.s3.ap-northeast-2.amazonaws.com/bubu/85ae553e-7630-4ad4-b394-1952e0176104.JPEG',
+      "contact": "02-123-4567",
+      "latestSettingDay": "24.02.18",
+      "imageThumbnails": [
+        "https://oruritest.s3.ap-northeast-2.amazonaws.com/bubu/thumb_fb7feda3-4540-487e-a0e6-5b1b4fa62bd4.JPEG",
+        "https://oruritest.s3.ap-northeast-2.amazonaws.com/bubu/thumb_c41f93dd-f257-4718-b2f4-ce2ca8acc98c.JPEG",
+        "https://oruritest.s3.ap-northeast-2.amazonaws.com/bubu/thumb_2c0e71b6-15e5-4f12-ac7b-9aa9ce744851.JPEG",
+        "https://oruritest.s3.ap-northeast-2.amazonaws.com/bubu/thumb_85ae553e-7630-4ad4-b394-1952e0176104.JPEG"
       ],
-      openHours: [
+      "images": [
+        "https://oruritest.s3.ap-northeast-2.amazonaws.com/bubu/fb7feda3-4540-487e-a0e6-5b1b4fa62bd4.JPEG",
+        "https://oruritest.s3.ap-northeast-2.amazonaws.com/bubu/c41f93dd-f257-4718-b2f4-ce2ca8acc98c.JPEG",
+        "https://oruritest.s3.ap-northeast-2.amazonaws.com/bubu/2c0e71b6-15e5-4f12-ac7b-9aa9ce744851.JPEG",
+        "https://oruritest.s3.ap-northeast-2.amazonaws.com/bubu/85ae553e-7630-4ad4-b394-1952e0176104.JPEG"
+      ],
+      "accommodations": ["샤워실", "요가매트", "짐볼"],
+      "grades": ["#FF6355", "#FBA949", "#FAE442", "#8BD448", "#2AA8F2"],
+      "sns": {
+        "twitter": "asd321sd32fsdfsdfsdf",
+        "instagram": "dfasdfdd____________",
+        "facebook": "dfklajsdlkfjsdfsdfsd"
+      },
+      "description": "1940년대 프랑스 전문 산악인들의 교육 훈련용으로 시작된 이후, 인공으로 만들어진 암벽 구조물을 손과 발을 사용하여 등반하는 레저스포츠로 발전하였다. '인공암벽등반'이라고도 한다. 유럽과 러시아, 미국으로 전파되어 다양한 국제 대회가 개최되었고, 1987년 국제산악연맹(UIAA)에서 스포츠클라이밍에 관한 규정을 제정하면서 스포츠 경기로서의 규칙을 갖추었다. 한국에는 1988년에 도입되었고, 전국적으로 빠르게 보급되어 사계절 내내 즐길 수 있는 레저 스포츠로서 각광받고 있다.",
+      "defaultImage": "https://oruritest.s3.ap-northeast-2.amazonaws.com/bubu/a62a1d97-c81c-4d3a-8594-63f40795548f.JPEG",
+      "pricing": [
         {
-          days: 'weekdays',
-          openTime: 'AM,12,00',
-          closeTime: 'AM,05,10',
+          "item": "1일 체험권 (이용+암벽화)",
+          "price": "50000"
         },
         {
-          days: 'weekends',
-          openTime: 'AM,12,00',
-          closeTime: 'PM,05,30',
+          "item": "1일 체험권 (이용+암벽화+강습)",
+          "price": "100000"
         },
+        {
+          "item": "연간 이용권 (+ 초호화뷔페 식사권)",
+          "price": "9900000"
+        }
       ],
-      pricing: [
-        { item: '일일 이용권', price: '10,000' },
-        { item: '주간 멤버십(이용+암벽화+강습)', price: '89,000' },
-        { item: '월간 멤버십(사우나 포함)', price: '100,000' },
+      "openHours": [
+        {
+          "days": "weekdays",
+          "openTime": "AM,09,00",
+          "closeTime": "PM,11,00"
+        },
+        {
+          "days": "weekends",
+          "openTime": "PM,12,00",
+          "closeTime": "PM,09,00"
+        },
+        {
+          "days": "holidays",
+          "openTime": "PM,01,00",
+          "closeTime": "PM,05,00"
+        }
       ],
-      accommodations: [
-        '샤워실',
-        '무료 wifi',
-        '락커',
-        '요가매트',
-        '짐볼',
-        '어린이 놀이터',
-      ],
-      tags: ['암벽', '짱', '운동', '하세요'],
-      contact: '02-112-4568',
-      sns: {
-        twitter: 'sdlfkj',
-        facebook: 'goje_sdflj',
-        instagram: 'oie4rkf2',
-      },
+      "homepage": "https://www.naver.com/",
+      "tags": ["판타스틱", "암벽경험", "인생운동", "암장"]
     };
     return { props: { gymData } };
   }

@@ -8,7 +8,9 @@ const BASE_WIDTH = 1200;
 
 const ImageCarousel = ({ defaultImage, imageList }: ImageCarouselProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [currentImages, _] = useState([defaultImage, ...imageList]);
+  const [currentImages, _] = useState(
+    defaultImage !== '' ? [defaultImage, ...imageList] : [...imageList],
+  );
 
   return (
     <S.Wrapper>

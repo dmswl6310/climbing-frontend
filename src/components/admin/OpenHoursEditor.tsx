@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction } from 'react';
 import styled from 'styled-components';
+import { IoTrash } from 'react-icons/io5';
 import OpenHoursField from './OpenHoursField';
 import { GymData } from '@/pages/admin/edit';
 
@@ -29,6 +30,7 @@ const OpenHoursEditor = ({
         }) as GymData,
     );
   };
+
   const handleChange = (newValue: string, index: number, key: string) => {
     setCurrentData((prev) => {
       const newList = [...openHoursList!];
@@ -37,27 +39,39 @@ const OpenHoursEditor = ({
       return { ...prev, openHours: [...newList] } as GymData;
     });
   };
+
+  const handleDelete = (index: number) => {
+    setCurrentData((prev) => {
+      const openHours = openHoursList!.filter((_, i) => i !== index);
+      return { ...prev, openHours };
+    });
+  };
+
   return (
-    <Styled.Wrapper>
-      <Styled.Header>영업 시간</Styled.Header>
-      <Styled.Content $direction="column">
+    <S.Wrapper>
+      <S.Header>영업 시간</S.Header>
+      <S.Content $direction="column">
         {openHoursList?.map(({ days, openTime, closeTime }, i) => (
-          <OpenHoursField
-            index={i}
-            days={days}
-            openTime={openTime}
-            closeTime={closeTime}
-            key={i}
-            handleChange={handleChange}
-          />
+          <S.Row key={i}>
+            <OpenHoursField
+              index={i}
+              days={days}
+              openTime={openTime}
+              closeTime={closeTime}
+              handleChange={handleChange}
+            />
+            <S.Icon onClick={() => handleDelete(i)}>
+              <IoTrash size="1.3rem" />
+            </S.Icon>
+          </S.Row>
         ))}
         <button onClick={handleAddField}>옵션 추가</button>
-      </Styled.Content>
-    </Styled.Wrapper>
+      </S.Content>
+    </S.Wrapper>
   );
 };
 
-const Styled = {
+const S = {
   Wrapper: styled.div`
     background: white;
     border: 1px solid #d0d0d0;
@@ -79,6 +93,16 @@ const Styled = {
       display: flex;
       gap: 8px;
     }
+  `,
+  Row: styled.div`
+    display: flex;
+    justify-content: space-between;
+  `,
+  Icon: styled.div`
+    display: flex;
+    align-items: flex-end;
+    padding-bottom: 12px;
+    cursor: pointer;
   `,
 };
 

@@ -87,25 +87,25 @@ const ImageEditor = ({
   const { handleS3Upload, handleS3Delete } = useS3(uploadImage, deleteImage);
 
   return (
-    <Styled.Wrapper>
-      <Styled.Header>암장 이미지</Styled.Header>
-      <Styled.Content $direction="column">
+    <S.Wrapper>
+      <S.Header>암장 이미지</S.Header>
+      <S.Content $direction="column">
         <div>
           <h3>대표 이미지</h3>
           {defaultImage ? (
-            <Styled.Image>
-              <Styled.DeleteButton
+            <S.Image>
+              <S.DeleteButton
                 onClick={() => handleS3Delete(defaultImage, 'default')}
               >
                 <RiDeleteBin6Fill color="#ffffff" />
-              </Styled.DeleteButton>
+              </S.DeleteButton>
               <Image
                 src={defaultImage}
                 width={462}
                 height={215}
                 alt={defaultImage}
               />
-            </Styled.Image>
+            </S.Image>
           ) : (
             <ImageUploader dataKey="default" handleS3Upload={handleS3Upload} />
           )}
@@ -129,12 +129,12 @@ const ImageEditor = ({
             <ImageUploader dataKey="display" handleS3Upload={handleS3Upload} />
           )}
         </div>
-      </Styled.Content>
-    </Styled.Wrapper>
+      </S.Content>
+    </S.Wrapper>
   );
 };
 
-const Styled = {
+const S = {
   Wrapper: styled.div`
     background: white;
     border: 1px solid #d0d0d0;
@@ -155,6 +155,8 @@ const Styled = {
   Image: styled.div`
     position: relative;
     border: 1px solid #d0d0d0;
+    width: 462px;
+    height: 215px;
 
     img {
       object-fit: cover;

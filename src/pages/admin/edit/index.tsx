@@ -10,30 +10,6 @@ import AccommodationsEditor from '@/components/admin/AccommodationsEditor';
 import GradeEditor from '@/components/admin/GradeEditor';
 import PricingEditor from '@/components/admin/PricingEditor';
 
-// 테스트용 상수값
-const testId = '75334254-93a8-4cfb-afec-29e368ac0803';
-const testEndpoint = 'http://localhost:3000/gyms/';
-const testUrl = `${testEndpoint}${testId}`;
-const sampleData = {
-  id: 'sampleid',
-  name: '샘플암장1',
-  address: {
-    jibunAddress: '대전광역시 동구 판암동 498-14',
-    roadAddress: '대전광역시 동구 판교3길 3',
-    unitAddress: '4층',
-  },
-  description:
-    '왜 은행회관 헬스클럽에 다녀야할까요? Why Health Club 은행회관 헬스클럽은 고품격입니다. 기구 및 각종 인테리어 최고급으로 품격을 느낄 수 있습니다. 최고급 헬스클럽과 사우나가 준비된 은행회관 헬스클럽에서 지금 바로 다짐해 보세요! ',
-  coordinates: {
-    latitude: 36.318415,
-    longitude: 127.4521708,
-  },
-  contact: '1588-1588',
-  accommodations: ['moonboard', 'showers'],
-  sns: { twitter: 'qwerty', facebook: 'asdfg' },
-  latestSettingDay: '24.02.01',
-};
-
 export interface GymData {
   id?: string;
   name: string;
@@ -60,21 +36,6 @@ export interface GymData {
   grades?: Array<string>;
   accommodations?: Array<string>;
 }
-
-const INITIAL_DATA = {
-  name: '',
-  address: {
-    jibunAddress: '',
-    roadAddress: '',
-    unitAddress: '',
-  },
-  coordinates: {
-    latitude: 0,
-    longitude: 0,
-  },
-  contact: '',
-  latestSettingDay: '',
-};
 
 const EditPage = () => {
   const [currentData, setCurrentData] = useState<GymData>(INITIAL_DATA);
@@ -161,17 +122,17 @@ const EditPage = () => {
   };
 
   return (
-    <Styled.Wrapper>
-      <Styled.Sidebar>
+    <S.Wrapper>
+      <S.Sidebar>
         <h3>암장 정보 관리</h3>
-        <Styled.Link onClick={() => handlePageChange(1)}>기본 정보</Styled.Link>
-        <Styled.Link onClick={() => handlePageChange(2)}>상세 정보</Styled.Link>
+        <S.Link onClick={() => handlePageChange(1)}>기본 정보</S.Link>
+        <S.Link onClick={() => handlePageChange(2)}>상세 정보</S.Link>
         <h4>댓글 관리</h4>
-      </Styled.Sidebar>
+      </S.Sidebar>
       {isLoading ? (
         <div>데이터 로딩 중</div>
       ) : (
-        <Styled.Main>
+        <S.Main>
           {currentPage === 1 ? (
             <>
               <ImageEditor
@@ -226,13 +187,13 @@ const EditPage = () => {
           >
             저장하기
           </button>
-        </Styled.Main>
+        </S.Main>
       )}
-    </Styled.Wrapper>
+    </S.Wrapper>
   );
 };
 
-const Styled = {
+const S = {
   Wrapper: styled.div`
     display: flex;
     justify-content: space-between;
@@ -258,6 +219,97 @@ const Styled = {
       color: #1aabff;
     }
   `,
+};
+
+const INITIAL_DATA = {
+  name: '',
+  address: {
+    jibunAddress: '',
+    roadAddress: '',
+    unitAddress: '',
+  },
+  coordinates: {
+    latitude: 0,
+    longitude: 0,
+  },
+  contact: '',
+  latestSettingDay: '',
+};
+
+// 테스트용 상수값
+const testId = '75334254-93a8-4cfb-afec-29e368ac0803';
+const testEndpoint = 'http://localhost:3000/gyms/';
+const testUrl = `${testEndpoint}${testId}`;
+const sampleData = {
+  id: '75334254-93a8-4cfb-afec-29e368ac0803',
+  name: '암장 테스트점',
+  address: {
+    jibunAddress: '경기도 성남시 분당구 대장동 627-5',
+    roadAddress: '경기도 성남시 분당구 판교대장로 92',
+    unitAddress: '4층',
+  },
+  coordinates: {
+    latitude: 37.3670275,
+    longitude: 127.068454,
+  },
+  contact: '02-123-4567',
+  latestSettingDay: '24.02.18',
+  imageThumbnails: [
+    'https://oruritest.s3.ap-northeast-2.amazonaws.com/bubu/thumb_fb7feda3-4540-487e-a0e6-5b1b4fa62bd4.JPEG',
+    'https://oruritest.s3.ap-northeast-2.amazonaws.com/bubu/thumb_c41f93dd-f257-4718-b2f4-ce2ca8acc98c.JPEG',
+    'https://oruritest.s3.ap-northeast-2.amazonaws.com/bubu/thumb_2c0e71b6-15e5-4f12-ac7b-9aa9ce744851.JPEG',
+    'https://oruritest.s3.ap-northeast-2.amazonaws.com/bubu/thumb_85ae553e-7630-4ad4-b394-1952e0176104.JPEG',
+  ],
+  images: [
+    'https://oruritest.s3.ap-northeast-2.amazonaws.com/bubu/fb7feda3-4540-487e-a0e6-5b1b4fa62bd4.JPEG',
+    'https://oruritest.s3.ap-northeast-2.amazonaws.com/bubu/c41f93dd-f257-4718-b2f4-ce2ca8acc98c.JPEG',
+    'https://oruritest.s3.ap-northeast-2.amazonaws.com/bubu/2c0e71b6-15e5-4f12-ac7b-9aa9ce744851.JPEG',
+    'https://oruritest.s3.ap-northeast-2.amazonaws.com/bubu/85ae553e-7630-4ad4-b394-1952e0176104.JPEG',
+  ],
+  accommodations: ['샤워실', '요가매트', '짐볼'],
+  grades: ['#FF6355', '#FBA949', '#FAE442', '#8BD448', '#2AA8F2'],
+  sns: {
+    twitter: 'asd321sd32fsdfsdfsdf',
+    instagram: 'dfasdfdd____________',
+    facebook: 'dfklajsdlkfjsdfsdfsd',
+  },
+  description:
+    "1940년대 프랑스 전문 산악인들의 교육 훈련용으로 시작된 이후, 인공으로 만들어진 암벽 구조물을 손과 발을 사용하여 등반하는 레저스포츠로 발전하였다. '인공암벽등반'이라고도 한다. 유럽과 러시아, 미국으로 전파되어 다양한 국제 대회가 개최되었고, 1987년 국제산악연맹(UIAA)에서 스포츠클라이밍에 관한 규정을 제정하면서 스포츠 경기로서의 규칙을 갖추었다. 한국에는 1988년에 도입되었고, 전국적으로 빠르게 보급되어 사계절 내내 즐길 수 있는 레저 스포츠로서 각광받고 있다.",
+  defaultImage:
+    'https://oruritest.s3.ap-northeast-2.amazonaws.com/bubu/a62a1d97-c81c-4d3a-8594-63f40795548f.JPEG',
+  pricing: [
+    {
+      item: '1일 체험권 (이용+암벽화)',
+      price: '50000',
+    },
+    {
+      item: '1일 체험권 (이용+암벽화+강습)',
+      price: '100000',
+    },
+    {
+      item: '연간 이용권 (+ 초호화뷔페 식사권)',
+      price: '9900000',
+    },
+  ],
+  openHours: [
+    {
+      days: 'weekdays',
+      openTime: 'AM,09,00',
+      closeTime: 'PM,11,00',
+    },
+    {
+      days: 'weekends',
+      openTime: 'PM,12,00',
+      closeTime: 'PM,09,00',
+    },
+    {
+      days: 'holidays',
+      openTime: 'PM,01,00',
+      closeTime: 'PM,05,00',
+    },
+  ],
+  homepage: 'https://www.naver.com/',
+  tags: ['판타스틱', '암벽경험', '인생운동', '암장'],
 };
 
 export default EditPage;

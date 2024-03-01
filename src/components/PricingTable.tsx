@@ -3,21 +3,21 @@ import { Pricing, PricingTableProps } from '@/constants/types';
 
 const PricingTable = ({ pricing }: PricingTableProps) => {
   return (
-    <Styled.Wrapper>
+    <S.Wrapper>
       {pricing.map(({ item, price }: Pricing, i) => (
         <li key={i}>
           <div>{item}</div>
-          <Styled.Divider>
+          <S.Divider>
             <hr />
-          </Styled.Divider>
-          <div>{`${price} 원`}</div>
+          </S.Divider>
+          <div>{`${insertThousandsComma(price)} 원`}</div>
         </li>
       ))}
-    </Styled.Wrapper>
+    </S.Wrapper>
   );
 };
 
-const Styled = {
+const S = {
   Wrapper: styled.ul`
     margin-block: 0;
     padding: 0;
@@ -39,6 +39,18 @@ const Styled = {
   Divider: styled.div`
     flex-grow: 2;
   `,
+};
+
+export const insertThousandsComma = (string: string) => {
+  const characters = string.split('');
+
+  if (characters.length < 4) return string;
+
+  for (let i = -3; Math.abs(i) < characters.length; i -= 4) {
+    characters.splice(i, 0, ',');
+  }
+
+  return characters.join('');
 };
 
 export default PricingTable;

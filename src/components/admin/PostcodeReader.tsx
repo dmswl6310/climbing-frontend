@@ -30,6 +30,7 @@ const PostcodeReader = ({
 const Styled = {
   Wrapper: styled.div`
     position: fixed;
+    z-index: 5;
     top: 0;
     left: 0;
     height: 100%;
@@ -39,7 +40,7 @@ const Styled = {
     position: absolute;
     width: 100%;
     height: 100%;
-    z-index: 1;
+    z-index: 10;
     display: flex;
     justify-content: center;
     align-items: center;

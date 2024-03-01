@@ -50,7 +50,7 @@ const BasicInfoEditor = ({
   };
 
   const handleSnsChange = (input: string, key: string) => {
-    if (input.length > 30) return;
+    if (input.length > 20) return;
     setCurrentData((prev) => {
       const newObject = prev ? { ...prev.sns } : {};
       newObject[key as keyof typeof newObject] = input;
@@ -59,51 +59,51 @@ const BasicInfoEditor = ({
   };
 
   return (
-    <Styled.Wrapper>
-      <Styled.Header>기본 정보</Styled.Header>
-      <Styled.Content $direction="column">
+    <S.Wrapper>
+      <S.Header>기본 정보</S.Header>
+      <S.Content $direction="column">
         <div>
           <div>
             <h4>암장 이름</h4>
-            <Styled.TextField $width="380px">
+            <S.TextField $width="380px">
               <input
                 value={name}
                 onChange={(e) => handleTextChange(e.target.value, 'name')}
               />
               {name.length}/20
-            </Styled.TextField>
+            </S.TextField>
           </div>
           <div>
             <h4>주소</h4>
-            <Styled.TextField $width="450px">
+            <S.TextField $width="450px">
               <AddressField
                 address={address}
                 handleAddressChange={setCurrentData}
               />
-            </Styled.TextField>
+            </S.TextField>
           </div>
         </div>
         <div>
           <div>
             <h4>연락처</h4>
-            <Styled.TextField $width="240px">
+            <S.TextField $width="240px">
               <BsTelephoneFill />
               <input
                 value={contact}
                 onChange={(e) => handleTextChange(e.target.value, 'contact')}
               />
               {contact.length}/15
-            </Styled.TextField>
+            </S.TextField>
           </div>
           <div>
             <h4>도메인</h4>
-            <Styled.TextField $width="350px">
+            <S.TextField $width="350px">
               <BsGlobe2 />
               <input
                 value={homepage || ''}
                 onChange={(e) => handleTextChange(e.target.value, 'homepage')}
               />
-            </Styled.TextField>
+            </S.TextField>
           </div>
         </div>
         <div>
@@ -111,7 +111,7 @@ const BasicInfoEditor = ({
             <h4>SNS</h4>
             <div className="field__list">
               {SNS_VALUES.map(({ platform, icon }, i) => (
-                <Styled.TextField key={i} $width="300px">
+                <S.TextField key={i} $width="300px">
                   {icon}
                   <input
                     name={platform}
@@ -120,17 +120,17 @@ const BasicInfoEditor = ({
                       handleSnsChange(e.target.value, e.target.name);
                     }}
                   />
-                </Styled.TextField>
+                </S.TextField>
               ))}
             </div>
           </div>
         </div>
-      </Styled.Content>
-    </Styled.Wrapper>
+      </S.Content>
+    </S.Wrapper>
   );
 };
 
-const Styled = {
+const S = {
   Wrapper: styled.div`
     background: white;
     border: 1px solid #d0d0d0;

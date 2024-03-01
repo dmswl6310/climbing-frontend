@@ -18,13 +18,13 @@ const OpenHoursField = ({
   const [openPeriod, openHours, openMinutes] = openTime.split(',');
   const [closePeriod, closeHours, closeMinutes] = closeTime.split(',');
   return (
-    <Styled.Wrapper>
+    <S.Wrapper>
       <div>
         <h4>옵션명</h4>
-        <Styled.TextField>
+        <S.TextField>
           <select
             name="days"
-            defaultValue={days}
+            value={days}
             onChange={(e) => handleChange(e.target.value, index, 'days')}
           >
             {DAYS_TEXT.map(({ value, text }) => (
@@ -33,13 +33,13 @@ const OpenHoursField = ({
               </option>
             ))}
           </select>
-        </Styled.TextField>
+        </S.TextField>
       </div>
       <div>
         <h4>시작 시간</h4>
-        <Styled.TextField>
+        <S.TextField>
           <select
-            defaultValue={openPeriod}
+            value={openPeriod}
             onChange={(e) => {
               const newValue = `${e.target.value},${openHours},${openMinutes}`;
               handleChange(newValue, index, 'openTime');
@@ -49,7 +49,7 @@ const OpenHoursField = ({
             <option>PM</option>
           </select>
           <select
-            defaultValue={openHours}
+            value={openHours}
             onChange={(e) => {
               const newValue = `${openPeriod},${e.target.value},${openMinutes}`;
               handleChange(newValue, index, 'openTime');
@@ -63,7 +63,7 @@ const OpenHoursField = ({
           </select>
           :
           <select
-            defaultValue={openMinutes}
+            value={openMinutes}
             onChange={(e) => {
               const newValue = `${openPeriod},${openHours},${e.target.value}`;
               handleChange(newValue, index, 'openTime');
@@ -75,13 +75,13 @@ const OpenHoursField = ({
               </option>
             ))}
           </select>
-        </Styled.TextField>
+        </S.TextField>
       </div>
       <div>
         <h4>종료 시간</h4>
-        <Styled.TextField>
+        <S.TextField>
           <select
-            defaultValue={closePeriod}
+            value={closePeriod}
             onChange={(e) => {
               const newValue = `${e.target.value},${closeHours},${closeMinutes}`;
               handleChange(newValue, index, 'closeTime');
@@ -91,7 +91,7 @@ const OpenHoursField = ({
             <option>PM</option>
           </select>
           <select
-            defaultValue={closeHours}
+            value={closeHours}
             onChange={(e) => {
               const newValue = `${closePeriod},${e.target.value},${closeMinutes}`;
               handleChange(newValue, index, 'closeTime');
@@ -105,7 +105,7 @@ const OpenHoursField = ({
           </select>
           :
           <select
-            defaultValue={closeMinutes}
+            value={closeMinutes}
             onChange={(e) => {
               const newValue = `${closePeriod},${closeHours},${e.target.value}`;
               handleChange(newValue, index, 'closeTime');
@@ -117,9 +117,9 @@ const OpenHoursField = ({
               </option>
             ))}
           </select>
-        </Styled.TextField>
+        </S.TextField>
       </div>
-    </Styled.Wrapper>
+    </S.Wrapper>
   );
 };
 
@@ -145,7 +145,7 @@ const HOURS = [
 ];
 const MINUTES = ['00', '10', '20', '30', '40', '50'];
 
-const Styled = {
+const S = {
   Wrapper: styled.div`
     display: flex;
     gap: 6px;

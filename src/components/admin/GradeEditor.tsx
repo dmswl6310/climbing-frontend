@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction } from 'react';
 import styled from 'styled-components';
 import { FaMinus, FaPlus } from 'react-icons/fa6';
+import { IoTrash } from 'react-icons/io5';
 import GradeBlock from './GradeBlock';
 import { GymData } from '@/pages/admin/edit';
 
@@ -14,15 +15,17 @@ const DEFAULT_COLOR = '#d9d9d9';
 
 const GradeEditor = ({ gradesList, setCurrentData }: GradeEditorProps) => {
   const handleCreate = () => {
-    setCurrentData((prev) => ({ ...prev, grades: [...NEW_GRADES] }) as GymData);
+    setCurrentData((prev) => ({ ...prev, grades: [...NEW_GRADES] }));
+  };
+
+  const handleDelete = () => {
+    setCurrentData((prev) => ({ ...prev, grades: [] }));
   };
 
   const handleColorChange = (index: number, color: string) => {
     const currentList = gradesList ? [...gradesList] : [...NEW_GRADES];
     currentList[index] = color;
-    setCurrentData(
-      (prev) => ({ ...prev, grades: [...currentList] }) as GymData,
-    );
+    setCurrentData((prev) => ({ ...prev, grades: [...currentList] }));
   };
 
   const handleCountChange = (operation: string) => {
@@ -30,7 +33,7 @@ const GradeEditor = ({ gradesList, setCurrentData }: GradeEditorProps) => {
       if (gradesList!.length === 10) return;
       setCurrentData((prev) => {
         const currentList = [...prev.grades!];
-        return { ...prev, grades: [...currentList, DEFAULT_COLOR] } as GymData;
+        return { ...prev, grades: [...currentList, DEFAULT_COLOR] };
       });
     } else {
       if (gradesList!.length === 2) return;
@@ -38,18 +41,23 @@ const GradeEditor = ({ gradesList, setCurrentData }: GradeEditorProps) => {
         const newList = prev.grades!.filter(
           (_, i) => i !== prev.grades!.length - 1,
         );
-        return { ...prev, grades: [...newList] } as GymData;
+        return { ...prev, grades: [...newList] };
       });
     }
   };
 
   return (
-    <Styled.Wrapper>
-      <Styled.Header>난이도</Styled.Header>
-      <Styled.Content $direction="column">
-        {gradesList ? (
+    <S.Wrapper>
+      <S.Header>
+        <span>난이도</span>
+        <S.Icon onClick={handleDelete}>
+          <IoTrash />
+        </S.Icon>
+      </S.Header>
+      <S.Content $direction="column">
+        {gradesList && gradesList.length > 0 ? (
           <>
-            <Styled.Bar>
+            <S.Bar>
               <FaMinus onClick={() => handleCountChange('minus')} />
               {gradesList.map((grade, i) => (
                 <GradeBlock
@@ -60,21 +68,21 @@ const GradeEditor = ({ gradesList, setCurrentData }: GradeEditorProps) => {
                 />
               ))}
               <FaPlus onClick={() => handleCountChange('plus')} />
-            </Styled.Bar>
-            <Styled.Label>
+            </S.Bar>
+            <S.Label>
               <span>easy</span>
               <span>hard</span>
-            </Styled.Label>
+            </S.Label>
           </>
         ) : (
           <button onClick={handleCreate}>난이도 생성</button>
         )}
-      </Styled.Content>
-    </Styled.Wrapper>
+      </S.Content>
+    </S.Wrapper>
   );
 };
 
-const Styled = {
+const S = {
   Wrapper: styled.div`
     background: white;
     border: 1px solid #d0d0d0;
@@ -84,6 +92,11 @@ const Styled = {
     font-weight: 700;
     font-size: 24px;
     padding: 32px 40px;
+    display: flex;
+    justify-content: space-between;
+  `,
+  Icon: styled.div`
+    cursor: pointer;
   `,
   Content: styled.div<{ $direction?: string }>`
     padding: 32px 40px;

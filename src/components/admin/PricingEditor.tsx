@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction } from 'react';
 import styled from 'styled-components';
+import { IoTrash } from 'react-icons/io5';
 import PricingField from './PricingField';
 import { GymData } from '@/pages/admin/edit';
 
@@ -23,6 +24,7 @@ const PricingEditor = ({ pricingList, setCurrentData }: PricingEditorProps) => {
         }) as GymData,
     );
   };
+
   const handleChange = (newValue: string, index: number, key: string) => {
     setCurrentData((prev) => {
       const newList = [...pricingList!];
@@ -31,26 +33,38 @@ const PricingEditor = ({ pricingList, setCurrentData }: PricingEditorProps) => {
       return { ...prev, pricing: [...newList] } as GymData;
     });
   };
+
+  const handleDelete = (index: number) => {
+    setCurrentData((prev) => {
+      const pricing = pricingList!.filter((_, i) => i !== index);
+      return { ...prev, pricing };
+    });
+  };
+
   return (
-    <Styled.Wrapper>
-      <Styled.Header>이용 금액</Styled.Header>
-      <Styled.Content $direction="column">
+    <S.Wrapper>
+      <S.Header>이용 금액</S.Header>
+      <S.Content $direction="column">
         {pricingList?.map(({ item, price }, i) => (
-          <PricingField
-            key={i}
-            index={i}
-            item={item}
-            price={price}
-            handleChange={handleChange}
-          />
+          <S.Row key={i}>
+            <PricingField
+              index={i}
+              item={item}
+              price={price}
+              handleChange={handleChange}
+            />
+            <S.Icon onClick={() => handleDelete(i)}>
+              <IoTrash size="1.3rem" />
+            </S.Icon>
+          </S.Row>
         ))}
         <button onClick={handleAddField}>옵션 추가</button>
-      </Styled.Content>
-    </Styled.Wrapper>
+      </S.Content>
+    </S.Wrapper>
   );
 };
 
-const Styled = {
+const S = {
   Wrapper: styled.div`
     background: white;
     border: 1px solid #d0d0d0;
@@ -72,6 +86,16 @@ const Styled = {
       display: flex;
       gap: 8px;
     }
+  `,
+  Row: styled.div`
+    display: flex;
+    justify-content: space-between;
+  `,
+  Icon: styled.div`
+    display: flex;
+    align-items: flex-end;
+    padding-bottom: 12px;
+    cursor: pointer;
   `,
 };
 
