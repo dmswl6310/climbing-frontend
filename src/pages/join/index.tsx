@@ -90,7 +90,7 @@ const Join = () => {
     };
   }) => {
     const currentNickname = event.target.value;
-    const nicknameRegrex = /^[A-Za-z0-9_]{3,}$/;
+    const nicknameRegrex = /^[가-힣A-Za-z0-9_]{3,}$/;
 
     if (!nicknameRegrex.test(currentNickname)) {
       setNicknameMessage("닉네임은 3자이상이어야 합니다.");

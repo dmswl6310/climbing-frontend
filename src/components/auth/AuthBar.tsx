@@ -1,45 +1,36 @@
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import React, { MouseEventHandler } from "react";
 import { styled } from "styled-components";
+import Sidebar from "./Sidebar";
 
 interface AuthButtonProps {
-  isLoggedIn: boolean;
-  username: string;
   // onLogin: MouseEventHandler<HTMLButtonElement>; // TODO: 함수 작성 후, type 재정의 필요
-  onLogout: MouseEventHandler<HTMLButtonElement>;
+  // onLogout: MouseEventHandler<HTMLButtonElement>;
   // onSignup: MouseEventHandler<HTMLButtonElement>;
 }
 
-const AuthBar = ({
-  isLoggedIn,
-  username,
-  // onLogin,
-  onLogout,
-}: // onSignup,
+const AuthBar = ({}: // onLogin,
+// onSignup,
 AuthButtonProps) => {
-  if (isLoggedIn) {
-    return (
-      <div>
-        <S.ButtonWrapper>
-          <p>Hello, {username}!</p>
-        </S.ButtonWrapper>
-        <S.ButtonWrapper>
-          <button onClick={onLogout}>로그아웃</button>
-        </S.ButtonWrapper>
-      </div>
-    );
-  } else {
-    return (
-      <div>
-        <S.ButtonWrapper>
-          <Link href={"/login"}>로그인</Link>
-        </S.ButtonWrapper>
-        <S.ButtonWrapper>
-          <Link href={"/join"}>회원가입</Link>
-        </S.ButtonWrapper>
-      </div>
-    );
+  const { data: session, status } = useSession();
+
+  // 로그인된 상태
+  if (status === "authenticated") {
+    return <Sidebar account={session.user!.email!} />;
   }
+
+  // 로그인되지 않은 상태
+  return (
+    <div>
+      <S.ButtonWrapper>
+        <Link href={"/login"}>로그인</Link>
+      </S.ButtonWrapper>
+      <S.ButtonWrapper>
+        <Link href={"/join"}>회원가입</Link>
+      </S.ButtonWrapper>
+    </div>
+  );
 };
 
 const S = {

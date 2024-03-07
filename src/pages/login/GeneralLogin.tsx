@@ -13,6 +13,7 @@ const GeneralLogin = () => {
     const result = await signIn("credentials", {
       email,
       password,
+      callbackUrl: "/",
     });
 
     if (result?.error) {

@@ -8,11 +8,11 @@ const MyApp: NextComponentType<AppContext, AppInitialProps, AppProps> = ({
   pageProps: { session, ...pageProps },
 }) => {
   return (
-    <Layout>
-      <SessionProvider session={session}>
+    <SessionProvider session={session}>
+      <Layout>
         <Component {...pageProps} />
-      </SessionProvider>
-    </Layout>
+      </Layout>
+    </SessionProvider>
   );
 };
 

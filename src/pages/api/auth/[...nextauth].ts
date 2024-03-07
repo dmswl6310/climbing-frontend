@@ -1,3 +1,4 @@
+import { NextApiRequest } from "next";
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
@@ -11,31 +12,34 @@ export default NextAuth({
       name: "Credentials",
 
       credentials: {
-        username: { label: "Username", type: "text" },
+        email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials) {
-        const response = await fetch(
-          "https://http://localhost:3000/api/login",
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(credentials),
-          }
-        );
+      async authorize(credentials: any, req: any){
+        return credentials;
+    },
+      // async authorize(credentials) {
+      //   const response = await fetch(
+      //     "https://http://localhost:3000/api/login",
+      //     {
+      //       method: "POST",
+      //       headers: { "Content-Type": "application/json" },
+      //       body: JSON.stringify(credentials),
+      //     }
+      //   );
 
-        const data = await response.json();
+      //   const data = await response.json();
 
-        if (data.ok) {
-          return {
-            name: data.name,
-            email: data.email,
-            token: data.token,
-          };
-        } else {
-          return null as any;
-        }
-      },
+      //   if (data.ok) {
+      //     return {
+      //       name: data.name,
+      //       email: data.email,
+      //       token: data.token,
+      //     };
+      //   } else {
+      //     return null as any;
+      //   }
+      // },
     }),
     // 다른 경로로 로그인 => 콜백으로 토큰받아서 서버에 넘겨줘야..
     GoogleProvider({
@@ -80,7 +84,7 @@ export default NextAuth({
   },
 
   pages: {
-    signIn: "login",
+    signIn: "/login",
     error: "error",
   },
 });
