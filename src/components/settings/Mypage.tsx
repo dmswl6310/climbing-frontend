@@ -2,6 +2,7 @@ import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { styled } from "styled-components";
 import { useRouter } from "next/router";
+import React from "react";
 
 const Mypage = () => {
   // 현재는 세션이 있을때 메이페이지가 보이지만 추후 백엔드 요청시 정보가 있을때만 표시
