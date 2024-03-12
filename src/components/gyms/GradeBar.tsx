@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { GradeBarProps } from '@/constants/types';
+import { GradeBarProps } from '@/constants/gyms/types';
 
 const GradeBar = ({ grades }: GradeBarProps) => {
   return (

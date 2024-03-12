@@ -1,13 +1,7 @@
-import { Dispatch, SetStateAction } from 'react';
 import styled from 'styled-components';
 import { IoTrash } from 'react-icons/io5';
 import PricingField from './PricingField';
-import { GymData } from '@/pages/admin/edit';
-
-interface PricingEditorProps {
-  pricingList: Array<{ item: string; price: string }> | undefined;
-  setCurrentData: Dispatch<SetStateAction<GymData>>;
-}
+import { PricingEditorProps } from '@/constants/admin/types';
 
 const PricingEditor = ({ pricingList, setCurrentData }: PricingEditorProps) => {
   const handleAddField = () => {
@@ -16,13 +10,10 @@ const PricingEditor = ({ pricingList, setCurrentData }: PricingEditorProps) => {
       item: '',
       price: '',
     };
-    setCurrentData(
-      (prev) =>
-        ({
-          ...prev,
-          pricing: [...currentList, newItem],
-        }) as GymData,
-    );
+    setCurrentData((prev) => ({
+      ...prev,
+      pricing: [...currentList, newItem],
+    }));
   };
 
   const handleChange = (newValue: string, index: number, key: string) => {
@@ -30,7 +21,7 @@ const PricingEditor = ({ pricingList, setCurrentData }: PricingEditorProps) => {
       const newList = [...pricingList!];
       const targetItem = newList[index];
       targetItem[key as keyof typeof targetItem] = newValue;
-      return { ...prev, pricing: [...newList] } as GymData;
+      return { ...prev, pricing: [...newList] };
     });
   };
 

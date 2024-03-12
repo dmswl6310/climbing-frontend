@@ -1,25 +1,8 @@
 import FileResizer from 'react-image-file-resizer';
 import styled from 'styled-components';
 import { MdOutlineUploadFile } from 'react-icons/md';
-
-interface ImageUploadProps {
-  dataKey: string;
-  imageCount?: number;
-  handleS3Upload: (
-    file: File,
-    fileName: string,
-    fileCount: number,
-    dataKey: string,
-  ) => Promise<void>;
-}
-
-const ALLOWED_IMG_TYPES = ['image/jpeg', 'image/png'];
-const MAX_WIDTH = 1200;
-const MAX_HEIGHT = 760;
-const MAX_PHOTO_COUNT = 10;
-const IMG_FORMAT = 'JPEG';
-const THUMBNAIL_WIDTH = 140;
-const THUMBNAIL_HEIGHT = 140;
+import { ImageUploadProps } from '@/constants/admin/types';
+import { ALLOWED_IMG_TYPES, IMG_FORMAT, MAX_HEIGHT, MAX_PHOTO_COUNT, MAX_WIDTH, THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH } from '@/constants/admin/constants';
 
 const ImageUploader = ({
   dataKey,
@@ -88,7 +71,7 @@ const ImageUploader = ({
   };
 
   return (
-    <Styled.Wrapper
+    <S.Wrapper
       $width={dataKey === 'default' ? '462px' : ''}
       $height={dataKey === 'default' ? '215px' : ''}
     >
@@ -105,11 +88,11 @@ const ImageUploader = ({
         <MdOutlineUploadFile size="1.4em" />
         사진 업로드
       </div>
-    </Styled.Wrapper>
+    </S.Wrapper>
   );
 };
 
-const Styled = {
+const S = {
   Wrapper: styled.div<{ $width?: string; $height?: string }>`
     position: relative;
     z-index: 2;

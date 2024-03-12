@@ -1,26 +1,26 @@
 import styled from 'styled-components';
-import { DetailedListProps } from '@/constants/types';
+import { DetailedListProps } from '@/constants/gyms/types';
 
 const DetailedList = ({ items }: DetailedListProps) => {
   return (
-    <Styled.Wrapper>
+    <S.Wrapper>
       {items.map((item, i) => {
         const keys = Object.keys(item);
         return (
           <li key={i}>
             <div>{item[keys[0]]}</div>
-            <Styled.Divider>
+            <S.Divider>
               <hr />
-            </Styled.Divider>
+            </S.Divider>
             <div>{item[keys[1]]}</div>
           </li>
         );
       })}
-    </Styled.Wrapper>
+    </S.Wrapper>
   );
 };
 
-const Styled = {
+const S = {
   Wrapper: styled.ul`
     margin-block: 0;
     padding: 0;

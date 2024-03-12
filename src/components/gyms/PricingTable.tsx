@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Pricing, PricingTableProps } from '@/constants/types';
+import { Pricing, PricingTableProps } from '@/constants/gyms/types';
 
 const PricingTable = ({ pricing }: PricingTableProps) => {
   return (

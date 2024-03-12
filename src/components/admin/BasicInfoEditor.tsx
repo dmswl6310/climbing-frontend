@@ -1,4 +1,3 @@
-import { Dispatch, SetStateAction } from 'react';
 import styled from 'styled-components';
 import {
   BsTwitterX,
@@ -8,18 +7,8 @@ import {
   BsGlobe2,
 } from 'react-icons/bs';
 import AddressField from './AddressField';
-import { GymData } from '@/pages/admin/edit';
-
-interface BasicInfoProps {
-  name: string;
-  address: { jibunAddress: string; roadAddress: string; unitAddress: string };
-  contact: string;
-  snsList?: { twitter?: string; facebook?: string; instagram?: string };
-  homepage?: string;
-  setCurrentData: Dispatch<SetStateAction<GymData>>;
-}
-
-const REGEX_NUMBER = /^[0-9-]*$/;
+import { BasicInfoProps } from '@/constants/admin/types';
+import { PHONE_REGEX } from '@/constants/admin/constants';
 
 const BasicInfoEditor = ({
   name,
@@ -40,13 +29,13 @@ const BasicInfoEditor = ({
         break;
       }
       case 'contact': {
-        if (!REGEX_NUMBER.test(input)) return;
+        if (!PHONE_REGEX.test(input)) return;
         if (input.length > 15) return;
         break;
       }
     }
 
-    setCurrentData((prev) => ({ ...prev, [key]: input }) as GymData);
+    setCurrentData((prev) => ({ ...prev, [key]: input }));
   };
 
   const handleSnsChange = (input: string, key: string) => {
@@ -54,7 +43,7 @@ const BasicInfoEditor = ({
     setCurrentData((prev) => {
       const newObject = prev ? { ...prev.sns } : {};
       newObject[key as keyof typeof newObject] = input;
-      return { ...prev, sns: newObject } as GymData;
+      return { ...prev, sns: newObject };
     });
   };
 

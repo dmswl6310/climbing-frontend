@@ -9,33 +9,9 @@ import OpenHoursEditor from '@/components/admin/OpenHoursEditor';
 import AccommodationsEditor from '@/components/admin/AccommodationsEditor';
 import GradeEditor from '@/components/admin/GradeEditor';
 import PricingEditor from '@/components/admin/PricingEditor';
-
-export interface GymData {
-  id?: string;
-  name: string;
-  address: {
-    jibunAddress: string;
-    roadAddress: string;
-    unitAddress: string;
-  };
-  coordinates: {
-    latitude: number;
-    longitude: number;
-  };
-  contact: string;
-  latestSettingDay: string;
-  sns?: { twitter?: string; facebook?: string; instagram?: string };
-  homepage?: string;
-  images?: Array<string>;
-  imageThumbnails?: Array<string>;
-  defaultImage?: string;
-  openHours?: Array<{ days: string; openTime: string; closeTime: string }>;
-  pricing?: Array<{ item: string; price: string }>;
-  tags?: Array<string>;
-  description?: string;
-  grades?: Array<string>;
-  accommodations?: Array<string>;
-}
+import SettingDayEditor from '@/components/admin/SettingDayEditor';
+import { GymData } from '@/constants/gyms/types';
+import { GYM_API } from '@/constants/constants';
 
 const EditPage = () => {
   const [currentData, setCurrentData] = useState<GymData>(INITIAL_DATA);
@@ -112,8 +88,8 @@ const EditPage = () => {
   };
 
   const updateData = async (data: string) => {
-    await fetch(`${testEndpoint}${currentData!.id}`, {
-      method: 'PATCH',
+    await fetch(`${GYM_API}${currentData!.id}`, {
+      method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
@@ -172,6 +148,10 @@ const EditPage = () => {
               />
               <GradeEditor
                 gradesList={currentData.grades}
+                setCurrentData={setCurrentData}
+              />
+              <SettingDayEditor
+                date={currentData.latestSettingDay}
                 setCurrentData={setCurrentData}
               />
             </>
@@ -238,8 +218,7 @@ const INITIAL_DATA = {
 
 // 테스트용 상수값
 const testId = '75334254-93a8-4cfb-afec-29e368ac0803';
-const testEndpoint = 'http://localhost:3000/gyms/';
-const testUrl = `${testEndpoint}${testId}`;
+const testUrl = `${GYM_API}${testId}`;
 const sampleData = {
   id: '75334254-93a8-4cfb-afec-29e368ac0803',
   name: '암장 테스트점',

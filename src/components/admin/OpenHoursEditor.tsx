@@ -1,15 +1,7 @@
-import { Dispatch, SetStateAction } from 'react';
 import styled from 'styled-components';
 import { IoTrash } from 'react-icons/io5';
 import OpenHoursField from './OpenHoursField';
-import { GymData } from '@/pages/admin/edit';
-
-interface OpenHoursEditorProps {
-  openHoursList:
-    | Array<{ days: string; openTime: string; closeTime: string }>
-    | undefined;
-  setCurrentData: Dispatch<SetStateAction<GymData>>;
-}
+import { OpenHoursEditorProps } from '@/constants/admin/types';
 
 const OpenHoursEditor = ({
   openHoursList,
@@ -22,13 +14,10 @@ const OpenHoursEditor = ({
       openTime: 'AM,12,00',
       closeTime: 'AM,12,00',
     };
-    setCurrentData(
-      (prev) =>
-        ({
-          ...prev,
-          openHours: [...currentList, newItem],
-        }) as GymData,
-    );
+    setCurrentData((prev) => ({
+      ...prev,
+      openHours: [...currentList, newItem],
+    }));
   };
 
   const handleChange = (newValue: string, index: number, key: string) => {
@@ -36,7 +25,7 @@ const OpenHoursEditor = ({
       const newList = [...openHoursList!];
       const targetItem = newList[index];
       targetItem[key as keyof typeof targetItem] = newValue;
-      return { ...prev, openHours: [...newList] } as GymData;
+      return { ...prev, openHours: [...newList] };
     });
   };
 

@@ -1,41 +1,15 @@
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Address } from 'react-daum-postcode';
 import { IoSearch } from 'react-icons/io5';
 import PostcodeReader from './PostcodeReader';
-import { GymData } from '@/pages/admin/edit';
-
-interface AddressFieldProps {
-  address: { jibunAddress: string; roadAddress: string; unitAddress: string };
-  handleAddressChange: Dispatch<SetStateAction<GymData>>;
-}
+import useApi from '@/hooks/useApi';
+import { NAVERMAP_GEOCODE_API } from '@/constants/constants';
+import { AddressFieldProps } from '@/constants/admin/types';
 
 const AddressField = ({ address, handleAddressChange }: AddressFieldProps) => {
-  const [isLoading, setIsLoading] = useState(true);
   const [isShowing, setIsShowing] = useState(false);
   const [userDisplay, setUserDisplay] = useState('R');
-
-  useEffect(() => {
-    const mapApi =
-      'https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=lm660e08li&submodules=geocoder';
-    const script = document.querySelector(
-      `script[src='${mapApi}']`,
-    ) as HTMLScriptElement;
-
-    if (script) {
-      handleLoader();
-      return;
-    }
-
-    const newScript = document.createElement('script');
-    newScript.type = 'text/javascript';
-    newScript.src = mapApi;
-    document.head.appendChild(newScript);
-    newScript.onload = handleLoader;
-  }, []);
-
-  const handleLoader = () => {
-    setIsLoading(false);
-  };
+  useApi(NAVERMAP_GEOCODE_API);
 
   const handleOverlay = () => {
     if (isShowing) setIsShowing(false);

@@ -1,12 +1,7 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import ColorPicker from './ColorPicker';
-
-interface GradeBlockProps {
-  index: number;
-  color: string;
-  handleColorChange: (index: number, color: string) => void;
-}
+import { GradeBlockProps } from '@/constants/admin/types';
 
 const GradeBlock = ({ index, color, handleColorChange }: GradeBlockProps) => {
   const [blockColor, setBlockColor] = useState(color);
@@ -21,8 +16,8 @@ const GradeBlock = ({ index, color, handleColorChange }: GradeBlockProps) => {
   const handleMouseLeave = () => setIsExpanded(false);
 
   return (
-    <Styled.Wrapper>
-      <Styled.Block
+    <S.Wrapper>
+      <S.Block
         $color={blockColor}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
@@ -32,11 +27,11 @@ const GradeBlock = ({ index, color, handleColorChange }: GradeBlockProps) => {
           <ColorPicker handleColorSelect={handleColorSelect} />
         </div>
       ) : null}
-    </Styled.Wrapper>
+    </S.Wrapper>
   );
 };
 
-const Styled = {
+const S = {
   Wrapper: styled.div`
     position: relative;
     flex: 1 0 0;

@@ -1,12 +1,6 @@
 import styled from 'styled-components';
-
-interface OpenHoursFieldProps {
-  index: number;
-  days: string;
-  openTime: string;
-  closeTime: string;
-  handleChange: (newValue: string, index: number, key: string) => void;
-}
+import { OpenHoursFieldProps } from '@/constants/admin/types';
+import { DAYS_TEXT, HOURS, MINUTES } from '@/constants/admin/constants';
 
 const OpenHoursField = ({
   index,
@@ -122,28 +116,6 @@ const OpenHoursField = ({
     </S.Wrapper>
   );
 };
-
-export const DAYS_TEXT = [
-  { value: 'weekdays', text: '평일' },
-  { value: 'weekends', text: '주말' },
-  { value: 'holidays', text: '공휴일' },
-];
-
-const HOURS = [
-  '01',
-  '02',
-  '03',
-  '04',
-  '05',
-  '06',
-  '07',
-  '08',
-  '09',
-  '10',
-  '11',
-  '12',
-];
-const MINUTES = ['00', '10', '20', '30', '40', '50'];
 
 const S = {
   Wrapper: styled.div`

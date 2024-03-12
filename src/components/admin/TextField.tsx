@@ -1,21 +1,26 @@
-import { BaseSyntheticEvent, useState } from 'react';
+import { useState } from 'react';
+import { TextFieldProps } from '@/constants/admin/types';
 
-interface TextFieldProps {
-  formName?: string|undefined;
-  characterLimit: number;
-}
-
-const TextField = ({ formName = undefined, characterLimit }: TextFieldProps) => {
+const TextField = ({
+  formName = undefined,
+  characterLimit,
+}: TextFieldProps) => {
   const [input, setInput] = useState('');
 
-  const handleInput = (e: BaseSyntheticEvent) => {
+  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const text = e.target.value;
     if (text.length > characterLimit) return;
     setInput(text);
   };
 
   return (
-    <input name={formName} className='field__name' value={input} onChange={(e) => handleInput(e)} required={true} />
+    <input
+      name={formName}
+      className="field__name"
+      value={input}
+      onChange={(e) => handleInput(e)}
+      required={true}
+    />
   );
 };
 

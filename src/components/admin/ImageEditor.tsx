@@ -1,20 +1,10 @@
-import { Dispatch, SetStateAction } from 'react';
 import Image from 'next/image';
 import styled from 'styled-components';
 import { RiDeleteBin6Fill } from 'react-icons/ri';
 import ImageUploader from './ImageUploader';
 import ImageList from './ImageList';
 import useS3 from '../../hooks/useS3';
-import { GymData } from '@/pages/admin/edit';
-
-interface ImageEditorProps {
-  loadedImages: string[] | undefined;
-  thumbnails: string[] | undefined;
-  defaultImage: string | undefined;
-  setCurrentData: Dispatch<SetStateAction<GymData>>;
-  setLoadedData: Dispatch<SetStateAction<GymData>>;
-  updateData: (data: string) => Promise<void>;
-}
+import { ImageEditorProps } from '@/constants/admin/types';
 
 const ImageEditor = ({
   loadedImages,

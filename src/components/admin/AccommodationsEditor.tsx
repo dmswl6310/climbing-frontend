@@ -1,11 +1,6 @@
-import { Dispatch, SetStateAction } from 'react';
 import styled from 'styled-components';
-import { GymData } from '@/pages/admin/edit';
-
-interface AccommodationsEditorProps {
-  accommodationsList: string[] | undefined;
-  setCurrentData: Dispatch<SetStateAction<GymData>>;
-}
+import { AccommodationsEditorProps } from '@/constants/admin/types';
+import { ACCOMMODATIONS_LIST } from '@/constants/admin/constants';
 
 const AccommodationsEditor = ({
   accommodationsList,
@@ -105,8 +100,5 @@ const S = {
     }
   `,
 };
-
-// 상수
-export const ACCOMMODATIONS_LIST = ['샤워실', '요가매트', '짐볼', '문보드'];
 
 export default AccommodationsEditor;

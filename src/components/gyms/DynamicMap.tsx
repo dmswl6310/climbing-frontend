@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import styled from 'styled-components';
-import { MapProps } from '@/constants/types';
+import { MapProps } from '@/constants/gyms/types';
 
 const getMap = (lat: number, lng: number) => {
   const position = new naver.maps.LatLng(lat, lng);
@@ -22,10 +22,10 @@ const DynamicMap = ({ coordinates }: MapProps) => {
     getMap(latitude, longitude);
   }, [latitude, longitude]);
 
-  return <Styled.Wrapper id="map" />;
+  return <S.Wrapper id="map" />;
 };
 
-const Styled = {
+const S = {
   Wrapper: styled.div`
     width: 100%;
     height: 400px;

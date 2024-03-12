@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import styled from 'styled-components';
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
-import { ImageCarouselProps } from '@/constants/types';
+import { ImageCarouselProps } from '@/constants/gyms/types';
 
 const BASE_WIDTH = 1200;
 

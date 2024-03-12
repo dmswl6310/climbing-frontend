@@ -5,7 +5,7 @@ import {
   BsInstagram,
   BsTelephoneFill,
 } from 'react-icons/bs';
-import { ContactInfoProps } from '@/constants/types';
+import { ContactInfoProps } from '@/constants/gyms/types';
 
 // 상수
 export const CONTACT_ICONS = {

@@ -1,11 +1,6 @@
-import { Dispatch, SetStateAction } from 'react';
 import styled from 'styled-components';
-import { GymData } from '@/pages/admin/edit';
-
-interface DescriptionEditorProps {
-  description?: string;
-  setCurrentData: Dispatch<SetStateAction<GymData>>;
-}
+import { GymData } from '@/constants/gyms/types';
+import { DescriptionEditorProps } from '@/constants/admin/types';
 
 const DescriptionEditor = ({
   description,
@@ -16,22 +11,22 @@ const DescriptionEditor = ({
     setCurrentData((prev) => ({ ...prev, description: input }) as GymData);
   };
   return (
-    <Styled.Wrapper>
-      <Styled.Header>설명글</Styled.Header>
-      <Styled.Content>
-        <Styled.TextField>
+    <S.Wrapper>
+      <S.Header>설명글</S.Header>
+      <S.Content>
+        <S.TextField>
           <textarea
             value={description}
             onChange={(e) => handleChange(e.target.value)}
           />
-        </Styled.TextField>
+        </S.TextField>
         {description?.length || 0}/300
-      </Styled.Content>
-    </Styled.Wrapper>
+      </S.Content>
+    </S.Wrapper>
   );
 };
 
-const Styled = {
+const S = {
   Wrapper: styled.div`
     background: white;
     border: 1px solid #d0d0d0;

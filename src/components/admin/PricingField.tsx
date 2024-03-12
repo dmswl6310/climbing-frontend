@@ -1,13 +1,6 @@
 import styled from 'styled-components';
-
-const REGEX = /^[0-9]*$/;
-
-interface PricingFieldProps {
-  index: number;
-  item: string;
-  price: string;
-  handleChange: (newValue: string, index: number, key: string) => void;
-}
+import { PricingFieldProps } from '@/constants/admin/types';
+import { PRICE_REGEX } from '@/constants/admin/constants';
 
 const PricingField = ({
   index,
@@ -21,7 +14,7 @@ const PricingField = ({
   };
 
   const handleNumberChange = (input: string) => {
-    if (!REGEX.test(input)) return;
+    if (!PRICE_REGEX.test(input)) return;
     if (input.length > 8) return;
     handleChange(input, index, 'price');
   };

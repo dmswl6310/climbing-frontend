@@ -1,17 +1,9 @@
-import { Dispatch, SetStateAction } from 'react';
 import styled from 'styled-components';
 import { FaMinus, FaPlus } from 'react-icons/fa6';
 import { IoTrash } from 'react-icons/io5';
 import GradeBlock from './GradeBlock';
-import { GymData } from '@/pages/admin/edit';
-
-interface GradeEditorProps {
-  gradesList: string[] | undefined;
-  setCurrentData: Dispatch<SetStateAction<GymData>>;
-}
-
-const NEW_GRADES = ['#d9d9d9', '#d9d9d9'];
-const DEFAULT_COLOR = '#d9d9d9';
+import { GradeEditorProps } from '@/constants/admin/types';
+import { DEFAULT_COLOR, NEW_GRADES } from '@/constants/admin/constants';
 
 const GradeEditor = ({ gradesList, setCurrentData }: GradeEditorProps) => {
   const handleCreate = () => {
