@@ -1,3 +1,4 @@
+import MyBookmark from "@/components/settings/MyBookmark";
 import Mypage from "@/components/settings/Mypage";
 import { useState } from "react";
 import { styled } from "styled-components";
@@ -15,9 +16,9 @@ const Settings = () => {
       <S.Sidebar>
         <h3>설정</h3>
         <S.Link onClick={() => handlePageChange(1)}>내 정보</S.Link>
-        <S.Link onClick={() => handlePageChange(2)}>1:1 문의</S.Link>
+        <S.Link onClick={() => handlePageChange(2)}>내 북마크</S.Link>
       </S.Sidebar>
-      <S.Main>{currentPage === 1 ? <Mypage /> : <>1:1문의</>}</S.Main>
+      <S.Main>{currentPage === 1 ? <Mypage /> : <MyBookmark />}</S.Main>
     </S.Wrapper>
   );
 };

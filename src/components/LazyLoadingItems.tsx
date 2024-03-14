@@ -4,7 +4,7 @@ import { styled } from "styled-components";
 import PreviewCard from "./PreviewCard";
 import { GymSampleInfo } from "@/pages/home";
 
-const sampleGyms: GymSampleInfo[] = [
+export const sampleGyms: GymSampleInfo[] = [
   {
     id: 1,
     thumbnailSrc: "/public/thumbnail2.png",

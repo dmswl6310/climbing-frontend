@@ -4,6 +4,7 @@ import img01 from "../../public/thumbnail3.jpg";
 import { IoBookmarkOutline } from "react-icons/io5";
 import { FcLikePlaceholder } from "react-icons/fc";
 import Link from "next/link";
+import Bookmark from "./Bookmark";
 
 export interface GymInfo {
   id: number;
@@ -34,7 +35,7 @@ const PreviewCard = ({ width, height, cardInfo }: CardProps) => {
               <div>{cardInfo.address}</div>
               <div>{cardInfo.name}</div>
             </S.NameContainer>
-            <IoBookmarkOutline />
+            <Bookmark sessionId="임시sessionid" gymId="임시gymId" />
           </S.MainInfoContainer>
           <S.SubInfoContainer>
             <S.Date>최근 세팅일 : {cardInfo.latestSettingDay}</S.Date>
