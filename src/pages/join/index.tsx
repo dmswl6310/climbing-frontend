@@ -1,4 +1,5 @@
 import InputWithTitle from "@/components/InputWithTitle";
+import { requestData } from "@/service/api";
 import { useState } from "react";
 import styled from "styled-components";
 
@@ -96,6 +97,12 @@ const Join = () => {
       setNicknameMessage("닉네임은 3자이상이어야 합니다.");
       setIsNicknameValid(false);
     } else {
+      // requestData({
+      //   option: "GET",
+      //   url: "/members/emailCheck",
+      //   data: email,
+      //   // onSuccess,
+      // });
       // const res = await fetch(`http://localhost:3000/members/emailCheck`);
       // const data = await res.json();
 
@@ -121,24 +128,35 @@ const Join = () => {
       nickname: { label: nickname, type: "nickname" },
     };
 
-    const response = await fetch("http://localhost:3000/members/join", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(credentials),
+    const onSuccess = () => {
+      console.log("onSuccess");
+    };
+
+    requestData({
+      option: "POST",
+      url: "/members/join",
+      data: credentials,
+      onSuccess,
     });
 
-    const data = await response.json();
+    // const response = await fetch("http://localhost:3000/members/join", {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify(credentials),
+    // });
 
-    if (data.ok) {
-      //정상적 회원가입
-      // return {
-      //   name: data.name,
-      //   email: data.email,
-      //   token: data.token,
-      // };
-    } else {
-      return null as any;
-    }
+    // const data = await response.json();
+
+    // if (data.ok) {
+    //정상적 회원가입
+    // return {
+    //   name: data.name,
+    //   email: data.email,
+    //   token: data.token,
+    // };
+    // } else {
+    // return null as any;
+    // }
   };
 
   return (

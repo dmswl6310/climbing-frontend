@@ -4,30 +4,37 @@ import { GymSampleInfo } from "@/pages/home";
 import { useEffect, useState } from "react";
 import { sampleGyms } from "../LazyLoadingItems";
 import { useSession } from "next-auth/react";
+import { requestData } from "@/service/api";
 
 const MyBookmark = () => {
   const { data: session, status } = useSession();
   const [items, setItems] = useState<GymSampleInfo[]>();
 
   useEffect(() => {
-    const fetchBookmarksFromServer = async () => {
-      try {
-        // const response = await fetch(`/api/bookmarks/`, {
-        //   method: "GET",
-        //   headers: {
-        //     "Content-Type": "application/json",
-        //     Authorization: { sessionId },
-        //   },
-        // });
-        // const data = await response.json();
-        const data = sampleGyms;
-        setItems(data);
-      } catch (error) {
-        console.error("내 북마크 GET 에러", error);
-      }
-    };
+    // const fetchBookmarksFromServer = async () => {
+    //   try {
+    // const response = await fetch(`/api/bookmarks/`, {
+    //   method: "GET",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     Authorization: { sessionId },
+    //   },
+    // });
+    // const data = await response.json();
+    //     const data = sampleGyms;
+    //     setItems(data);
+    //   } catch (error) {
+    //     console.error("내 북마크 GET 에러", error);
+    //   }
+    // };
     if (session) {
-      fetchBookmarksFromServer();
+      requestData({
+        option: "GET",
+        url: "/api/bookmarks",
+        // sessionId:{session.user.sessionId}
+        onSuccess: (data) => setItems(data),
+      });
+      // fetchBookmarksFromServer();
     }
   }, [session]);
 

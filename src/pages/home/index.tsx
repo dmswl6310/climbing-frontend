@@ -1,7 +1,8 @@
 import styled from "styled-components";
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import GymListBanner from "../../components/GymListBanner";
 import SearchBanner from "./searchBanner";
+import { requestData } from "@/service/api";
 
 const sampleGyms: GymSampleInfo[] = [
   {
@@ -72,11 +73,16 @@ export interface GymSampleInfo {
 }
 
 const Home = () => {
-  const getData = async () => {
-    const res = await fetch("http://localhost:3000/gyms");
-    const data = await res.json();
-    setGymLists(data);
-  };
+  requestData({
+    option: "GET",
+    url: "/gyms",
+    onSuccess: (input) => setGymLists(input),
+  });
+  // const getData = async () => {
+  //   const res = await fetch("http://localhost:3000/gyms");
+  //   const data = await res.json();
+  //   setGymLists(data);
+  // };
   const [gymLists, setGymLists] = useState<GymSampleInfo[]>(sampleGyms); //sampleGyms
 
   // useEffect(() => {

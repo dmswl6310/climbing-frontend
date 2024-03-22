@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { GymSampleInfo } from "../pages/home";
 import { Dispatch, MouseEventHandler, SetStateAction } from "react";
 import router from "next/router";
+import { requestData } from "@/service/api";
 
 const sampleList = [
   {
@@ -26,11 +27,17 @@ const GymListBanner = ({
   setGymList,
   searchWord,
 }: GymListBannerProps) => {
-  const getData = async (sort: string | null) => {
-    const res = await fetch(`http://localhost:3000/gyms?s=${sort}`);
-    const data = await res.json();
-    setGymList(data);
-  };
+  // const getData = async (sort: string | null) => {
+  //   const res = await fetch(`http://localhost:3000/gyms?s=${sort}`);
+  //   const data = await res.json();
+  //   setGymList(data);
+  // };
+
+  requestData({
+    option: "GET",
+    url: `/gyms?s=인기순`,
+    onSuccess: (data) => setGymList(data),
+  });
   const sortingType = ["인기순", "최신순", "거리순"];
 
   const handleButtonClick: MouseEventHandler<HTMLButtonElement> = (event) => {

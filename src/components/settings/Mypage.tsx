@@ -3,6 +3,7 @@ import { useState } from "react";
 import { styled } from "styled-components";
 import { useRouter } from "next/router";
 import React from "react";
+import { requestData } from "@/service/api";
 
 const Mypage = () => {
   // 현재는 세션이 있을때 메이페이지가 보이지만 추후 백엔드 요청시 정보가 있을때만 표시
@@ -94,15 +95,21 @@ const Mypage = () => {
       nickname: { label: nickname, type: "nickname" },
     };
 
-    const response = await fetch("http://localhost:3000/members/update", {
-      method: "UPDATE",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(credentials),
+    requestData({
+      option: "POST",
+      url: "/members/update",
+      onSuccess: () => router.reload(),
     });
+    // const response = await fetch("http://localhost:3000/members/update", {
+    //   method: "UPDATE",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify(credentials),
+    // });
 
     // const data = await response.json();
 
-    router.reload();
+    // router.reload();
+
     // if (data.ok) {
     //   //정상적 업데이트 => 현재페이지 재표시
     //   router.reload();

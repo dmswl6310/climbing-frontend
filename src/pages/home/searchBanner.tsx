@@ -6,6 +6,7 @@ import { Dispatch, FormEventHandler, SetStateAction } from "react";
 import router from "next/router";
 import Image from "next/image";
 import img from "../../../public/magnifier.png";
+import { requestData } from "@/service/api";
 
 const sampleAddress = [
   { id: 1, info: "잠실" },
@@ -31,11 +32,16 @@ interface SearchBannerProps {
 }
 
 const SearchBanner = ({ setGymList }: SearchBannerProps) => {
-  const getData = async (input: string | null) => {
-    const res = await fetch(`http://localhost:3000/search?q={input}`);
-    const data = await res.json();
-    setGymList(data);
-  };
+  requestData({
+    option: "GET",
+    url: `/search?q={input}`,
+    onSuccess: (data) => setGymList(data),
+  });
+  // const getData = async (input: string | null) => {
+  //   const res = await fetch(`http://localhost:3000/search?q={input}`);
+  //   const data = await res.json();
+  //   setGymList(data);
+  // };
 
   const handleGymList = (event: {
     target: any;
