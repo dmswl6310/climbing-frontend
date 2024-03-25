@@ -33,10 +33,10 @@ const getData = ({ absoluteUrl, sessionId, onSuccess }: GetProps) => {
     .then((response) => {
       if (!response.ok) {
         // 404, 500...등의 에러
-        throw new Error(`${response.status} 에러 발생`);
+        throw new Error(`${response.status} 에러`);
       }
       // 실제 데이터 반환
-      return response.json;
+      return response.json();
     })
     .then((result) => {
       if (onSuccess) {
@@ -44,7 +44,11 @@ const getData = ({ absoluteUrl, sessionId, onSuccess }: GetProps) => {
       }
       return result;
     })
-    .catch((error) => console.log(error.message));
+    .catch((error) => {
+      console.log("\n주소 : " + absoluteUrl);
+      console.log("옵션 : GET");
+      console.log(error.stack + "\n");
+    });
 };
 
 const postData = ({ absoluteUrl, data, sessionId, onSuccess }: PostProps) => {
@@ -59,9 +63,9 @@ const postData = ({ absoluteUrl, data, sessionId, onSuccess }: PostProps) => {
     .then((response) => {
       if (!response.ok) {
         // 404, 500...등의 에러
-        throw new Error(`${response.status} 에러 발생`);
+        throw new Error(`${response.status} 에러`);
       }
-      return response.json;
+      return response.json();
     })
     .then((result) => {
       if (onSuccess) {
@@ -69,5 +73,9 @@ const postData = ({ absoluteUrl, data, sessionId, onSuccess }: PostProps) => {
       }
       return;
     })
-    .catch((error) => console.log(error.message));
+    .catch((error) => {
+      console.log("\n주소 : " + absoluteUrl);
+      console.log("옵션 : POST");
+      console.log(error.stack + "\n");
+    });
 };
