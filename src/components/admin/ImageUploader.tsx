@@ -1,27 +1,27 @@
-import FileResizer from 'react-image-file-resizer';
-import styled from 'styled-components';
-import { MdOutlineUploadFile } from 'react-icons/md';
-import { ImageUploadProps } from '@/constants/admin/types';
-import { ALLOWED_IMG_TYPES, IMG_FORMAT, MAX_HEIGHT, MAX_PHOTO_COUNT, MAX_WIDTH, THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH } from '@/constants/admin/constants';
+import FileResizer from "react-image-file-resizer";
+import styled from "styled-components";
+import { MdOutlineUploadFile } from "react-icons/md";
+import {
+  ALLOWED_IMG_TYPES,
+  IMG_FORMAT,
+  MAX_HEIGHT,
+  MAX_PHOTO_COUNT,
+  MAX_WIDTH,
+  THUMBNAIL_HEIGHT,
+  THUMBNAIL_WIDTH,
+} from "@/constants/admin/constants";
+import type { ImageUploadProps } from "@/constants/admin/types";
 
-const ImageUploader = ({
-  dataKey,
-  imageCount,
-  handleS3Upload,
-}: ImageUploadProps) => {
+const ImageUploader = ({ dataKey, imageCount, handleS3Upload }: ImageUploadProps) => {
   const handleFile = (files: FileList | null) => {
     if (!files) return;
-    if (dataKey === 'default' && files.length > 1)
-      return alert('대표 이미지는 하나만 설정할 수 있습니다.');
+    if (dataKey === "default" && files.length > 1)
+      return alert("대표 이미지는 하나만 설정할 수 있습니다.");
     if (imageCount && imageCount + files.length > MAX_PHOTO_COUNT)
-      return alert(
-        `추가 이미지는 최대 ${MAX_PHOTO_COUNT}장까지 설정할 수 있습니다.`,
-      );
+      return alert(`추가 이미지는 최대 ${MAX_PHOTO_COUNT}장까지 설정할 수 있습니다.`);
 
     const allFiles = Array.from(files);
-    const uploadFiles = allFiles.filter((file) =>
-      ALLOWED_IMG_TYPES.includes(file.type),
-    );
+    const uploadFiles = allFiles.filter((file) => ALLOWED_IMG_TYPES.includes(file.type));
     const uploadFileCount = uploadFiles.length;
     const rejectedFileCount = allFiles.length - uploadFileCount; // 유효한 이미지 형식(jpeg/png)이 아닐 시 이용자에게 알리기 위해 파일 갯수 트랙킹
 
@@ -35,13 +35,8 @@ const ImageUploader = ({
         0,
         (resizedImg) => {
           const randomizedFileName = `${crypto.randomUUID()}.${IMG_FORMAT}`;
-          handleS3Upload(
-            resizedImg as File,
-            randomizedFileName,
-            uploadFileCount,
-            dataKey,
-          );
-          if (dataKey === 'default') return;
+          handleS3Upload(resizedImg as File, randomizedFileName, uploadFileCount, dataKey);
+          if (dataKey === "default") return;
           FileResizer.imageFileResizer(
             resizedImg as File,
             THUMBNAIL_WIDTH,
@@ -51,17 +46,12 @@ const ImageUploader = ({
             0,
             (thumb) => {
               const thumbFileName = `thumb_${randomizedFileName}`;
-              handleS3Upload(
-                thumb as File,
-                thumbFileName,
-                uploadFileCount,
-                dataKey,
-              );
+              handleS3Upload(thumb as File, thumbFileName, uploadFileCount, dataKey);
             },
-            'file',
+            "file",
           );
         },
-        'file',
+        "file",
       );
     });
 
@@ -72,15 +62,15 @@ const ImageUploader = ({
 
   return (
     <S.Wrapper
-      $width={dataKey === 'default' ? '462px' : ''}
-      $height={dataKey === 'default' ? '215px' : ''}
+      $width={dataKey === "default" ? "462px" : "140px"}
+      $height={dataKey === "default" ? "215px" : "80px"}
     >
       <input
         type="file"
         accept=".jpg, .jpeg, .png"
         onChange={(e) => {
           handleFile(e.target.files);
-          e.target.value = '';
+          e.target.value = "";
         }}
         multiple
       />
@@ -94,14 +84,16 @@ const ImageUploader = ({
 
 const S = {
   Wrapper: styled.div<{ $width?: string; $height?: string }>`
+    box-sizing: border-box;
     position: relative;
     z-index: 2;
     width: ${({ $width }) => $width};
     height: ${({ $height }) => $height};
-    border-radius: 8px;
+    border-radius: 6px;
     border: 2px dashed #cacaca;
     background: #f4f4f4;
     overflow: hidden;
+    flex-shrink: 0;
 
     div {
       box-sizing: border-box;

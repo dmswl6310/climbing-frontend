@@ -1,7 +1,7 @@
-import { BaseSyntheticEvent } from 'react';
-import styled from 'styled-components';
-import { ColorPickerProps } from '@/constants/admin/types';
-import { GRADE_COLORS } from '@/constants/admin/constants';
+import { BaseSyntheticEvent } from "react";
+import styled from "styled-components";
+import { GRADE_COLORS } from "@/constants/admin/constants";
+import type { ColorPickerProps } from "@/constants/admin/types";
 
 const ColorPicker = ({ handleColorSelect }: ColorPickerProps) => {
   return (
@@ -11,9 +11,7 @@ const ColorPicker = ({ handleColorSelect }: ColorPickerProps) => {
           key={i}
           data-hex={color}
           $color={color}
-          onClick={(e: BaseSyntheticEvent) =>
-            handleColorSelect(e.target.dataset.hex)
-          }
+          onClick={(e: BaseSyntheticEvent) => handleColorSelect(e.target.dataset.hex)}
         ></S.Palette>
       ))}
     </S.Wrapper>
@@ -24,7 +22,7 @@ const S = {
   Wrapper: styled.div`
     position: absolute;
     bottom: 45px;
-    right: 0px;
+    left: 0px;
     display: flex;
     flex-wrap: wrap;
     width: calc(27px * 6 + 6px * 5);

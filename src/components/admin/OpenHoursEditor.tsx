@@ -1,18 +1,15 @@
-import styled from 'styled-components';
-import { IoTrash } from 'react-icons/io5';
-import OpenHoursField from './OpenHoursField';
-import { OpenHoursEditorProps } from '@/constants/admin/types';
+import styled from "styled-components";
+import { IoTrash } from "react-icons/io5";
+import OpenHoursField from "./OpenHoursField";
+import type { OpenHoursEditorProps } from "@/constants/admin/types";
 
-const OpenHoursEditor = ({
-  openHoursList,
-  setCurrentData,
-}: OpenHoursEditorProps) => {
+const OpenHoursEditor = ({ openHoursList, setCurrentData }: OpenHoursEditorProps) => {
   const handleAddField = () => {
     const currentList = openHoursList ? openHoursList : [];
     const newItem = {
-      days: 'weekdays',
-      openTime: 'AM,12,00',
-      closeTime: 'AM,12,00',
+      days: "weekdays",
+      openTime: "AM,12,00",
+      closeTime: "AM,12,00",
     };
     setCurrentData((prev) => ({
       ...prev,
@@ -54,7 +51,11 @@ const OpenHoursEditor = ({
             </S.Icon>
           </S.Row>
         ))}
-        <button onClick={handleAddField}>옵션 추가</button>
+        <div>
+          <button className="btn-secondary" onClick={handleAddField}>
+            + 옵션 추가
+          </button>
+        </div>
       </S.Content>
     </S.Wrapper>
   );
@@ -76,16 +77,11 @@ const S = {
     display: flex;
     flex-direction: ${(props) => props.$direction};
     flex-wrap: wrap;
-    gap: 20px;
-
-    & > div {
-      display: flex;
-      gap: 8px;
-    }
+    gap: 30px;
   `,
   Row: styled.div`
     display: flex;
-    justify-content: space-between;
+    gap: 20px;
   `,
   Icon: styled.div`
     display: flex;

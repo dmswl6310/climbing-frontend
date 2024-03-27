@@ -1,5 +1,5 @@
-import { Dispatch, SetStateAction } from 'react';
-import { GymData } from '../gyms/types';
+import { Dispatch, SetStateAction } from "react";
+import { GymData } from "../gyms/types";
 
 // 데이터 타입 정의
 type Range<T> = [T, T];
@@ -52,7 +52,7 @@ export interface ImageEditorProps {
   defaultImage: string | undefined;
   setCurrentData: Dispatch<SetStateAction<GymData>>;
   setLoadedData: Dispatch<SetStateAction<GymData>>;
-  updateData: (data: string) => Promise<void>;
+  updateData: (data: string) => Promise<boolean>;
 }
 
 export interface ImageListProps {
@@ -76,9 +76,7 @@ export interface NewGymFormProps {
 }
 
 export interface OpenHoursEditorProps {
-  openHoursList:
-    | Array<{ days: string; openTime: string; closeTime: string }>
-    | undefined;
+  openHoursList: Array<{ days: string; openTime: string; closeTime: string }> | undefined;
   setCurrentData: Dispatch<SetStateAction<GymData>>;
 }
 
@@ -115,4 +113,10 @@ export interface SettingDayEditorProps {
 export interface TextFieldProps {
   formName?: string | undefined;
   characterLimit: number;
+}
+
+export interface UserCommentProps {
+  user: string;
+  date: string;
+  text: string;
 }

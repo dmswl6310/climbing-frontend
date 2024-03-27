@@ -1,14 +1,14 @@
-import styled from 'styled-components';
-import { IoTrash } from 'react-icons/io5';
-import PricingField from './PricingField';
-import { PricingEditorProps } from '@/constants/admin/types';
+import styled from "styled-components";
+import { IoTrash } from "react-icons/io5";
+import PricingField from "./PricingField";
+import type { PricingEditorProps } from "@/constants/admin/types";
 
 const PricingEditor = ({ pricingList, setCurrentData }: PricingEditorProps) => {
   const handleAddField = () => {
     const currentList = pricingList ? pricingList : [];
     const newItem = {
-      item: '',
-      price: '',
+      item: "",
+      price: "",
     };
     setCurrentData((prev) => ({
       ...prev,
@@ -38,18 +38,17 @@ const PricingEditor = ({ pricingList, setCurrentData }: PricingEditorProps) => {
       <S.Content $direction="column">
         {pricingList?.map(({ item, price }, i) => (
           <S.Row key={i}>
-            <PricingField
-              index={i}
-              item={item}
-              price={price}
-              handleChange={handleChange}
-            />
+            <PricingField index={i} item={item} price={price} handleChange={handleChange} />
             <S.Icon onClick={() => handleDelete(i)}>
               <IoTrash size="1.3rem" />
             </S.Icon>
           </S.Row>
         ))}
-        <button onClick={handleAddField}>옵션 추가</button>
+        <div>
+          <button className="btn-secondary" onClick={handleAddField}>
+            + 옵션 추가
+          </button>
+        </div>
       </S.Content>
     </S.Wrapper>
   );
@@ -71,16 +70,11 @@ const S = {
     display: flex;
     flex-direction: ${(props) => props.$direction};
     flex-wrap: wrap;
-    gap: 20px;
-
-    & > div {
-      display: flex;
-      gap: 8px;
-    }
+    gap: 30px;
   `,
   Row: styled.div`
     display: flex;
-    justify-content: space-between;
+    gap: 20px;
   `,
   Icon: styled.div`
     display: flex;

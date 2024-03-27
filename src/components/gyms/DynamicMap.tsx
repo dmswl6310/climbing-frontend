@@ -1,10 +1,10 @@
-import { useEffect } from 'react';
-import styled from 'styled-components';
-import { MapProps } from '@/constants/gyms/types';
+import { useEffect } from "react";
+import styled from "styled-components";
+import { MapProps } from "@/constants/gyms/types";
 
 const getMap = (lat: number, lng: number) => {
   const position = new naver.maps.LatLng(lat, lng);
-  const map = new naver.maps.Map('map', {
+  const map = new naver.maps.Map("map", {
     center: position,
     zoom: 16,
   });

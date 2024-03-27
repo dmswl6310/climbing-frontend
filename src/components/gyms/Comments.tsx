@@ -1,18 +1,19 @@
-import { useState } from 'react';
-import Link from 'next/link';
-import styled from 'styled-components';
-import CommentTextarea from './CommentTextarea';
-import { CommentsProps, UserComment } from '@/constants/gyms/types';
-import { GYM_API } from '@/constants/constants';
+import { useState } from "react";
+import Link from "next/link";
+import styled from "styled-components";
+import CommentTextarea from "./CommentTextarea";
+import { CommentsProps, UserComments } from "@/constants/gyms/types";
+import { GYM_API } from "@/constants/constants";
 
 const Comments = ({ id, comments, session }: CommentsProps) => {
-  const [currentComments, setCurrentComments] = useState<UserComment>(
+  const [currentComments, setCurrentComments] = useState<UserComments>(
     comments || [],
   );
 
   const handleAddComment = (input: string) => {
+    if (!session) return;
     const newComment = {
-      user: session!.user!.name as string,
+      user: session.user!.name as string,
       date: getCurrentDate(),
       text: input,
     };
@@ -20,9 +21,9 @@ const Comments = ({ id, comments, session }: CommentsProps) => {
     setCurrentComments((prev) => [newComment, ...prev]);
 
     fetch(`${GYM_API}${id}`, {
-      method: 'PATCH',
+      method: "PATCH",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({ comments: [newComment, ...currentComments] }),
     });
@@ -31,8 +32,8 @@ const Comments = ({ id, comments, session }: CommentsProps) => {
   const getCurrentDate = () => {
     const currentDate = new Date();
     const year = currentDate.getFullYear().toString().slice(2);
-    const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
-    const date = currentDate.getDate().toString().padStart(2, '0');
+    const month = (currentDate.getMonth() + 1).toString().padStart(2, "0");
+    const date = currentDate.getDate().toString().padStart(2, "0");
     return `${year}.${month}.${date}`;
   };
 
@@ -43,7 +44,7 @@ const Comments = ({ id, comments, session }: CommentsProps) => {
       ) : (
         <div className="login-prompt">
           로그인해서 후기를 남겨주세요!
-          <S.Link href={'/login'}>로그인하기</S.Link>
+          <S.Link href={"/login"}>로그인하기</S.Link>
         </div>
       )}
       {currentComments && currentComments.length > 0

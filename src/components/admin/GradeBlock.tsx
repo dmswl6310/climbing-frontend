@@ -1,7 +1,7 @@
-import { useState } from 'react';
-import styled from 'styled-components';
-import ColorPicker from './ColorPicker';
-import { GradeBlockProps } from '@/constants/admin/types';
+import { useState } from "react";
+import styled from "styled-components";
+import ColorPicker from "./ColorPicker";
+import type { GradeBlockProps } from "@/constants/admin/types";
 
 const GradeBlock = ({ index, color, handleColorChange }: GradeBlockProps) => {
   const [blockColor, setBlockColor] = useState(color);

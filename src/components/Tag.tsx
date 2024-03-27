@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { TagProps } from '@/constants/gyms/types';
+import styled from "styled-components";
+import { TagProps } from "@/constants/gyms/types";
 
 const Tag = ({ prefix, text }: TagProps) => {
   return (

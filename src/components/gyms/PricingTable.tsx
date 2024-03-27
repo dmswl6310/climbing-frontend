@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { Pricing, PricingTableProps } from '@/constants/gyms/types';
+import styled from "styled-components";
+import { Pricing, PricingTableProps } from "@/constants/gyms/types";
 
 const PricingTable = ({ pricing }: PricingTableProps) => {
   return (
@@ -10,7 +10,7 @@ const PricingTable = ({ pricing }: PricingTableProps) => {
           <S.Divider>
             <hr />
           </S.Divider>
-          <div>{`${insertThousandsComma(price)} 원`}</div>
+          <div>{`${Number(price).toLocaleString()} 원`}</div>
         </li>
       ))}
     </S.Wrapper>
@@ -39,18 +39,6 @@ const S = {
   Divider: styled.div`
     flex-grow: 2;
   `,
-};
-
-export const insertThousandsComma = (string: string) => {
-  const characters = string.split('');
-
-  if (characters.length < 4) return string;
-
-  for (let i = -3; Math.abs(i) < characters.length; i -= 4) {
-    characters.splice(i, 0, ',');
-  }
-
-  return characters.join('');
 };
 
 export default PricingTable;

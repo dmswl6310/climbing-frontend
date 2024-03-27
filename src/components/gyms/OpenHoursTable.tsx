@@ -1,22 +1,19 @@
-import styled from 'styled-components';
-import { OpenHours, OpenHoursTableProps } from '@/constants/gyms/types';
+import styled from "styled-components";
+import { OpenHours, OpenHoursTableProps } from "@/constants/gyms/types";
 
 // 상수
 const DAYS_TEXT = {
-  weekdays: '평일',
-  weekends: '주말',
-  holidays: '공휴일',
+  weekdays: "평일",
+  weekends: "주말",
+  holidays: "공휴일",
 };
 
 const OpenHoursTable = ({ openHours }: OpenHoursTableProps) => {
   const get24HrTime = (data: string) => {
-    const [period, hours, minutes] = data.split(',');
-    if (period === 'AM')
-      return hours === '12' ? `00:${minutes}` : `${hours}:${minutes}`;
+    const [period, hours, minutes] = data.split(",");
+    if (period === "AM") return hours === "12" ? `00:${minutes}` : `${hours}:${minutes}`;
 
-    return hours === '12'
-      ? `12:${minutes}`
-      : `${(Number(hours) + 12).toString()}:${minutes}`;
+    return hours === "12" ? `12:${minutes}` : `${(Number(hours) + 12).toString()}:${minutes}`;
   };
   return (
     <S.Wrapper>

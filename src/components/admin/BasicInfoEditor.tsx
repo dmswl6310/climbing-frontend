@@ -1,14 +1,8 @@
-import styled from 'styled-components';
-import {
-  BsTwitterX,
-  BsFacebook,
-  BsInstagram,
-  BsTelephoneFill,
-  BsGlobe2,
-} from 'react-icons/bs';
-import AddressField from './AddressField';
-import { BasicInfoProps } from '@/constants/admin/types';
-import { PHONE_REGEX } from '@/constants/admin/constants';
+import styled from "styled-components";
+import { BsTwitterX, BsFacebook, BsInstagram, BsTelephoneFill, BsGlobe2 } from "react-icons/bs";
+import AddressField from "./AddressField";
+import { PHONE_REGEX } from "@/constants/admin/constants";
+import type { BasicInfoProps } from "@/constants/admin/types";
 
 const BasicInfoEditor = ({
   name,
@@ -20,15 +14,15 @@ const BasicInfoEditor = ({
 }: BasicInfoProps) => {
   const handleTextChange = (input: string, key: string) => {
     switch (key) {
-      case 'name': {
+      case "name": {
         if (input.length > 20) return;
         break;
       }
-      case 'homepage': {
+      case "homepage": {
         if (input.length > 50) return;
         break;
       }
-      case 'contact': {
+      case "contact": {
         if (!PHONE_REGEX.test(input)) return;
         if (input.length > 15) return;
         break;
@@ -52,59 +46,53 @@ const BasicInfoEditor = ({
       <S.Header>기본 정보</S.Header>
       <S.Content $direction="column">
         <div>
-          <div>
-            <h4>암장 이름</h4>
-            <S.TextField $width="380px">
-              <input
-                value={name}
-                onChange={(e) => handleTextChange(e.target.value, 'name')}
-              />
+          <S.Block>
+            <strong>암장 이름</strong>
+            <S.TextField $width="355px">
+              <input value={name} onChange={(e) => handleTextChange(e.target.value, "name")} />
               {name.length}/20
             </S.TextField>
-          </div>
-          <div>
-            <h4>주소</h4>
-            <S.TextField $width="450px">
-              <AddressField
-                address={address}
-                handleAddressChange={setCurrentData}
-              />
+          </S.Block>
+          <S.Block>
+            <strong>주소</strong>
+            <S.TextField $width="520px">
+              <AddressField address={address} handleAddressChange={setCurrentData} />
             </S.TextField>
-          </div>
+          </S.Block>
         </div>
         <div>
-          <div>
-            <h4>연락처</h4>
-            <S.TextField $width="240px">
+          <S.Block>
+            <strong>연락처</strong>
+            <S.TextField $width="355px">
               <BsTelephoneFill />
               <input
                 value={contact}
-                onChange={(e) => handleTextChange(e.target.value, 'contact')}
+                onChange={(e) => handleTextChange(e.target.value, "contact")}
               />
               {contact.length}/15
             </S.TextField>
-          </div>
-          <div>
-            <h4>도메인</h4>
-            <S.TextField $width="350px">
+          </S.Block>
+          <S.Block>
+            <strong>도메인</strong>
+            <S.TextField $width="355px">
               <BsGlobe2 />
               <input
-                value={homepage || ''}
-                onChange={(e) => handleTextChange(e.target.value, 'homepage')}
+                value={homepage || ""}
+                onChange={(e) => handleTextChange(e.target.value, "homepage")}
               />
             </S.TextField>
-          </div>
+          </S.Block>
         </div>
         <div>
-          <div>
-            <h4>SNS</h4>
+          <S.Block>
+            <strong>SNS</strong>
             <div className="field__list">
               {SNS_VALUES.map(({ platform, icon }, i) => (
-                <S.TextField key={i} $width="300px">
+                <S.TextField key={i} $width="355px">
                   {icon}
                   <input
                     name={platform}
-                    value={snsList?.[platform as keyof typeof snsList] || ''}
+                    value={snsList?.[platform as keyof typeof snsList] || ""}
                     onChange={(e) => {
                       handleSnsChange(e.target.value, e.target.name);
                     }}
@@ -112,7 +100,7 @@ const BasicInfoEditor = ({
                 </S.TextField>
               ))}
             </div>
-          </div>
+          </S.Block>
         </div>
       </S.Content>
     </S.Wrapper>
@@ -135,13 +123,19 @@ const S = {
     display: flex;
     flex-direction: ${(props) => props.$direction};
     flex-wrap: wrap;
-    gap: 20px;
+    gap: 30px;
 
     .field__list,
     & > div {
       display: flex;
-      gap: 8px;
+      gap: 20px;
+      flex-wrap: wrap;
     }
+  `,
+  Block: styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
   `,
   TextField: styled.div<{ $width?: string }>`
     box-sizing: border-box;
@@ -152,7 +146,7 @@ const S = {
     border-radius: 8px;
     border: 1px solid #d0d0d0;
     padding: 12px 18px;
-    width: ${({ $width }) => $width || '200px'};
+    width: ${({ $width }) => $width || "200px"};
 
     input {
       border: none;
@@ -174,14 +168,14 @@ const S = {
 
 const SNS_VALUES = [
   {
-    platform: 'twitter',
+    platform: "twitter",
     icon: <BsTwitterX />,
   },
   {
-    platform: 'facebook',
+    platform: "facebook",
     icon: <BsFacebook />,
   },
-  { platform: 'instagram', icon: <BsInstagram /> },
+  { platform: "instagram", icon: <BsInstagram /> },
 ];
 
 export default BasicInfoEditor;

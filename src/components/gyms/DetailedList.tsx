@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { DetailedListProps } from '@/constants/gyms/types';
+import styled from "styled-components";
+import { DetailedListProps } from "@/constants/gyms/types";
 
 const DetailedList = ({ items }: DetailedListProps) => {
   return (

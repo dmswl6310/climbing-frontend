@@ -1,27 +1,19 @@
-import styled from 'styled-components';
-import { AccommodationsEditorProps } from '@/constants/admin/types';
-import { ACCOMMODATIONS_LIST } from '@/constants/admin/constants';
+import styled from "styled-components";
+import { ACCOMMODATIONS_LIST } from "@/constants/admin/constants";
+import type { AccommodationsEditorProps } from "@/constants/admin/types";
 
 const AccommodationsEditor = ({
   accommodationsList,
   setCurrentData,
 }: AccommodationsEditorProps) => {
-  const handleChange = (
-    target: HTMLInputElement,
-    checkedItem: string,
-    isChecked: boolean,
-  ) => {
+  const handleChange = (target: HTMLInputElement, checkedItem: string, isChecked: boolean) => {
     if (!isChecked) {
       const prevList = accommodationsList ? accommodationsList : [];
-      const newList = [...prevList, checkedItem].sort((a, b) =>
-        a.localeCompare(b),
-      );
+      const newList = [...prevList, checkedItem].sort((a, b) => a.localeCompare(b));
       setCurrentData((prev) => ({ ...prev, accommodations: [...newList] }));
       target.checked = !isChecked;
     } else {
-      const filteredList = accommodationsList?.filter(
-        (item) => item !== checkedItem,
-      );
+      const filteredList = accommodationsList?.filter((item) => item !== checkedItem);
       setCurrentData((prev) => ({
         ...prev,
         accommodations: [...filteredList!],
@@ -37,8 +29,7 @@ const AccommodationsEditor = ({
           <S.TextField
             key={i}
             onClick={(e) => {
-              const input = (e.target as HTMLElement)
-                .firstElementChild as HTMLInputElement;
+              const input = (e.target as HTMLElement).firstElementChild as HTMLInputElement;
               handleChange(input, input.name, input.checked);
             }}
           >

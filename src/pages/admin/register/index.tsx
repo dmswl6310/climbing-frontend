@@ -1,8 +1,8 @@
-import { useRouter } from 'next/router';
-import styled from 'styled-components';
-import NewGymForm from '@/components/admin/NewGymForm';
-import { GymData } from '@/constants/gyms/types';
-import { GYM_API } from '@/constants/constants';
+import { useRouter } from "next/router";
+import styled from "styled-components";
+import NewGymForm from "@/components/admin/NewGymForm";
+import { GymData } from "@/constants/gyms/types";
+import { GYM_API } from "@/constants/constants";
 
 const GymRegistration = () => {
   const router = useRouter();
@@ -13,10 +13,10 @@ const GymRegistration = () => {
       formData.id = id;
       router.push(
         {
-          pathname: '/admin/edit',
+          pathname: "/admin/edit",
           query: { newRegister: true, gymData: JSON.stringify(formData) },
         },
-        '/admin/edit',
+        "/admin/edit",
       );
     });
   };
@@ -24,10 +24,10 @@ const GymRegistration = () => {
   // CRUD: Create
   const createData = async (input: GymData) => {
     const res = await fetch(GYM_API, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
+        "Content-Type": "application/json",
+        Accept: "application/json",
       },
       body: JSON.stringify(input),
     });

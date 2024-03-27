@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { GradeBarProps } from '@/constants/gyms/types';
+import styled from "styled-components";
+import { GradeBarProps } from "@/constants/gyms/types";
 
 const GradeBar = ({ grades }: GradeBarProps) => {
   return (
@@ -29,7 +29,7 @@ const S = {
   BarItem: styled.div<{ $color?: string }>`
     height: 33px;
     flex: 1 0 0;
-    background: ${(props) => props.$color || '#d9d9d9'};
+    background: ${(props) => props.$color || "#d9d9d9"};
   `,
   Label: styled.div`
     display: flex;

@@ -1,9 +1,9 @@
-import { ChangeEventHandler, useState } from 'react';
-import styled from 'styled-components';
-import { CommentTextareaProps } from '@/constants/gyms/types';
+import { ChangeEventHandler, useState } from "react";
+import styled from "styled-components";
+import { CommentTextareaProps } from "@/constants/gyms/types";
 
 const CommentTextarea = ({ handleAddComment }: CommentTextareaProps) => {
-  const [comment, setComment] = useState('');
+  const [comment, setComment] = useState("");
 
   const onChange: ChangeEventHandler = (e) => {
     const input = (e.target as HTMLTextAreaElement).value;
@@ -11,11 +11,11 @@ const CommentTextarea = ({ handleAddComment }: CommentTextareaProps) => {
     setComment(input);
   };
 
-  const handleCancel = () => setComment('');
+  const handleCancel = () => setComment("");
 
   const handlePost = () => {
     handleAddComment(comment);
-    setComment('');
+    setComment("");
   };
 
   return (
@@ -23,11 +23,7 @@ const CommentTextarea = ({ handleAddComment }: CommentTextareaProps) => {
       <S.Header>
         한줄평 <span>{comment.length}</span>
       </S.Header>
-      <S.Textarea
-        placeholder="소중한 후기를 남겨주세요 :)"
-        value={comment}
-        onChange={onChange}
-      />
+      <S.Textarea placeholder="소중한 후기를 남겨주세요 :)" value={comment} onChange={onChange} />
       <S.Buttons>
         <button className="btn-unfilled" onClick={handleCancel}>
           취소

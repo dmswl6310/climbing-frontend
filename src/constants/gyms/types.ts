@@ -1,4 +1,4 @@
-import { Session } from 'next-auth';
+import { Session } from "next-auth";
 
 // 데이터 타입 정의
 export interface GymData {
@@ -56,7 +56,7 @@ export interface SnsList {
   instagram?: string;
 }
 
-export type UserComment = Array<{ user: string; date: string; text: string }>;
+export type UserComments = Array<{ user: string; date: string; text: string }>;
 
 // 컴포넌트 props 타입 정의
 export interface ContactInfoProps {
@@ -96,7 +96,7 @@ export interface TagProps {
 
 export interface CommentsProps {
   id: string;
-  comments?: UserComment;
+  comments?: UserComments;
   session: Session | null;
 }
 

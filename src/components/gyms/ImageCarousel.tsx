@@ -1,15 +1,15 @@
-import { useState } from 'react';
-import Image from 'next/image';
-import styled from 'styled-components';
-import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
-import { ImageCarouselProps } from '@/constants/gyms/types';
+import { useState } from "react";
+import Image from "next/image";
+import styled from "styled-components";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { ImageCarouselProps } from "@/constants/gyms/types";
 
 const BASE_WIDTH = 1200;
 
 const ImageCarousel = ({ defaultImage, imageList }: ImageCarouselProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentImages, _] = useState(
-    defaultImage !== '' ? [defaultImage, ...imageList] : [...imageList],
+    defaultImage !== "" ? [defaultImage, ...imageList] : [...imageList],
   );
 
   return (
@@ -22,7 +22,7 @@ const ImageCarousel = ({ defaultImage, imageList }: ImageCarouselProps) => {
             disabled={currentIndex === 0}
           >
             <IoIosArrowBack color="white" size="3rem" />
-          </S.Button>{' '}
+          </S.Button>{" "}
           <S.Button
             $direction="right"
             onClick={() => setCurrentIndex((prev) => prev + 1)}
@@ -75,7 +75,7 @@ const S = {
     background: #7be1ff;
     opacity: 0.7;
     border-radius: ${({ $direction }) =>
-      $direction === 'left' ? '0px 8px 8px 0px' : '8px 0px 0px 8px'};
+      $direction === "left" ? "0px 8px 8px 0px" : "8px 0px 0px 8px"};
     cursor: pointer;
   `,
   Container: styled.div<{ $shift: string }>`
