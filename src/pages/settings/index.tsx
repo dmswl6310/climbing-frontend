@@ -1,55 +1,32 @@
 import MyBookmark from "@/components/settings/MyBookmark";
 import Mypage from "@/components/settings/Mypage";
-import { useState } from "react";
+import { ReactElement, useState } from "react";
 import { styled } from "styled-components";
+import { NextPageWithLayout } from "../_app";
+import { useRouter } from "next/router";
+import Layout from "@/components/Layout";
+import SettingLayout from "@/components/settings/SettingLayout";
 
-const Settings = () => {
-  const [currentPage, setCurrentPage] = useState(1);
+const SettingPage: NextPageWithLayout = () => {
+  const router = useRouter();
+  const { page } = router.query;
 
-  const handlePageChange = (page: number) => {
-    if (currentPage == page) return;
-    setCurrentPage(page);
-  };
+  switch (page) {
+    case "myPage":
+      return <Mypage />;
+    case "myBookmark":
+      return <MyBookmark />;
+    default:
+      return <Mypage />;
+  }
+};
 
+SettingPage.getLayout = (page: ReactElement) => {
   return (
-    <S.Wrapper>
-      <S.Sidebar>
-        <h3>설정</h3>
-        <S.Link onClick={() => handlePageChange(1)}>내 정보</S.Link>
-        <S.Link onClick={() => handlePageChange(2)}>내 북마크</S.Link>
-      </S.Sidebar>
-      <S.Main>{currentPage === 1 ? <Mypage /> : <MyBookmark />}</S.Main>
-    </S.Wrapper>
+    <Layout>
+      <SettingLayout>{page}</SettingLayout>
+    </Layout>
   );
 };
 
-const S = {
-  Wrapper: styled.div`
-    display: flex;
-    justify-content: space-between;
-  `,
-  Sidebar: styled.div`
-    display: flex;
-    flex-direction: column;
-    flex-shrink: 0;
-    width: 20vw;
-  `,
-  Main: styled.div`
-    display: flex;
-    flex-direction: column;
-    flex: 1 0 0;
-    gap: 36px;
-    background: #fafaf8;
-    padding: 36px;
-  `,
-  Link: styled.div`
-    cursor: pointer;
-    margin: 10px 0;
-
-    &:hover {
-      color: #1aabff;
-    }
-  `,
-};
-
-export default Settings;
+export default SettingPage;

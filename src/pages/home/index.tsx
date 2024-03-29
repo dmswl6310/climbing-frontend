@@ -1,8 +1,11 @@
 import styled from "styled-components";
-import { SetStateAction, useEffect, useState } from "react";
-import GymListBanner from "../../components/GymListBanner";
-import SearchBanner from "./searchBanner";
+import { ReactElement, SetStateAction, useEffect, useState } from "react";
+import GymListBanner from "../../components/search/GymListBanner";
+import SearchBanner from "../../components/search/searchBanner";
 import { requestData } from "@/service/api";
+import Layout from "@/components/Layout";
+import { NextPageWithLayout } from "../_app";
+import SearchLayout from "@/components/search/SearchLayout";
 
 const sampleGyms: GymSampleInfo[] = [
   {
@@ -72,7 +75,7 @@ export interface GymSampleInfo {
   likeNumber: number;
 }
 
-const Home = () => {
+const HomePage: NextPageWithLayout = () => {
   requestData({
     option: "GET",
     url: "/gyms",
@@ -97,8 +100,16 @@ const Home = () => {
   );
 };
 
+HomePage.getLayout = (page: ReactElement) => {
+  return (
+    <Layout>
+      <SearchLayout>{page}</SearchLayout>
+    </Layout>
+  );
+};
+
 const Styled = {
   Wrapper: styled.div``,
 };
 
-export default Home;
+export default HomePage;

@@ -1,4 +1,4 @@
-import InputWithTitle from "@/components/InputWithTitle";
+import InputWithTitle from "@/components/common/InputWithTitle";
 import { requestData } from "@/service/api";
 import { useState } from "react";
 import styled from "styled-components";

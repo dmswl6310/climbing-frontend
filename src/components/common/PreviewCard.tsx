@@ -1,6 +1,6 @@
 import { styled } from "styled-components";
 import Image from "next/image";
-import img01 from "../../public/thumbnail3.jpg";
+import img01 from "../../../public/thumbnail3.jpg";
 import { IoBookmarkOutline } from "react-icons/io5";
 import { FcLikePlaceholder } from "react-icons/fc";
 import Link from "next/link";

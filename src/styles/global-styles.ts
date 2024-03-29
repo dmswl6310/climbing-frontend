@@ -32,6 +32,24 @@ ${normalize}
       opacity: 0.8;
     }
   }
+
+  .btn-plain{
+    border: none;
+    background:transparent;
+    cursor: pointer;
+  }
+
+  .btn-plain-clicked{
+    border: none;
+    font-weight:bold;
+    background:transparent;
+    cursor: pointer;
+  }
+
+  .link-plain{
+    text-decoration:none;
+    &:visited { color:black; }
+  }
 `;
 
 export default GlobalStyle;

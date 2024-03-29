@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import GeneralLogin from "./GeneralLogin";
-import OtherLogin from "./OtherLogin";
+import GeneralLogin from "../../components/login/GeneralLogin";
+import OtherLogin from "../../components/login/OtherLogin";
 
 const Login = () => {
   return (

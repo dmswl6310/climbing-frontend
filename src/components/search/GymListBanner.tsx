@@ -1,8 +1,8 @@
-import LazyLoadingItems from "@/components/LazyLoadingItems";
-import PreviewCard from "@/components/PreviewCard";
+import LazyLoadingItems from "@/components/common/LazyLoadingItems";
+import PreviewCard from "@/components/common/PreviewCard";
 import styled from "styled-components";
-import { GymSampleInfo } from "../pages/home";
-import { Dispatch, MouseEventHandler, SetStateAction } from "react";
+import { GymSampleInfo } from "../../pages/home";
+import { Dispatch, MouseEventHandler, SetStateAction, useState } from "react";
 import router from "next/router";
 import { requestData } from "@/service/api";
 
@@ -20,12 +20,14 @@ interface GymListBannerProps {
   gymList: Array<GymSampleInfo>;
   setGymList: Dispatch<SetStateAction<GymSampleInfo[]>>;
   searchWord?: string;
+  sortingType?: string;
 }
 
 const GymListBanner = ({
   gymList,
   setGymList,
   searchWord,
+  sortingType = "",
 }: GymListBannerProps) => {
   // const getData = async (sort: string | null) => {
   //   const res = await fetch(`http://localhost:3000/gyms?s=${sort}`);
@@ -33,12 +35,14 @@ const GymListBanner = ({
   //   setGymList(data);
   // };
 
+  const [selectedButton, setSelectedButton] = useState(sortingType);
+
   requestData({
     option: "GET",
     url: `/gyms?s=인기순`,
     onSuccess: (data) => setGymList(data),
   });
-  const sortingType = ["인기순", "최신순", "거리순"];
+  const sortingTypes = ["인기순", "최신순", "거리순"];
 
   const handleButtonClick: MouseEventHandler<HTMLButtonElement> = (event) => {
     // 누른 버튼(인기순,최신순..)에 따라 다른값을 서버로 요청해서 데이터 받기
@@ -47,25 +51,38 @@ const GymListBanner = ({
     // getData(event.currentTarget.textContent);
     // setGymList(sampleList);
 
+    const buttonText = event.currentTarget.textContent!;
+
     // 검색내용 포함시켜 라우팅
     if (searchWord) {
       router.push({
         pathname: "/search",
-        query: { q: searchWord, s: event.currentTarget.textContent },
+        query: { q: searchWord, s: buttonText },
       });
     } else {
       router.push({
         pathname: "/search",
-        query: { s: event.currentTarget.textContent },
+        query: { s: buttonText },
       });
     }
+
+    setSelectedButton(buttonText);
   };
 
-  const SortingButtons = sortingType.map((type, index) => {
+  const SortingButtons = sortingTypes.map((type, index) => {
     return (
-      <Styled.SortButton key={index} onClick={handleButtonClick}>
-        {type}
-      </Styled.SortButton>
+      <Styled.Container key={index}>
+        <Styled.SortButton
+          className={
+            selectedButton === type ? "btn-plain-clicked" : "btn-plain"
+          }
+          key={index}
+          onClick={handleButtonClick}
+        >
+          {type}
+        </Styled.SortButton>
+        {index !== 2 ? <Styled.Divider>|</Styled.Divider> : null}
+      </Styled.Container>
     );
   });
 
@@ -93,13 +110,20 @@ const GymListBanner = ({
 
 const Styled = {
   Wrapper: styled.div``,
+  Container: styled.div`
+    display: flex;
+  `,
   ButtonWrapper: styled.div`
     display: flex;
     justify-content: flex-end;
     margin-bottom: 20px;
   `,
   SortButton: styled.button`
-    margin-left: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
+  `,
+  Divider: styled.div`
+    color: grey;
   `,
 };
 

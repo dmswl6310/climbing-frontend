@@ -14,6 +14,7 @@ interface SearchProps {
   onSubmit?: (arg: unknown) => unknown; // 엔터 클릭시 발생되는 이벤트
   useLocation?: boolean; // 현재 위치로 검색
   searchWord?: string;
+  border?: string;
 }
 
 export const Search = ({
@@ -25,6 +26,7 @@ export const Search = ({
   onSubmit,
   useLocation = false,
   searchWord,
+  border,
 }: SearchProps) => {
   const searchRef = useRef<HTMLInputElement>(null);
   const [index, setIndex] = useState(-1);
@@ -63,7 +65,13 @@ export const Search = ({
 
   return (
     <Styled.Wrapper width={width} ref={searchRef}>
-      <Styled.Form onSubmit={onSubmit} autoComplete="off">
+      <Styled.Form
+        className={isInputFocus ? "container" : ""}
+        onSubmit={onSubmit}
+        autoComplete="off"
+        border={border}
+        inputFocus={isInputFocus}
+      >
         {/* form에 action 요소 추가하여 전송할 주소 설정가능 */}
         <Styled.Input
           name="search"
@@ -128,10 +136,11 @@ const Styled = {
     position: relative;
     ${(props) => props.width && `width: ${props.width};`}
   `,
-  Form: styled.form`
+  Form: styled.form<{ border?: string; inputFocus?: boolean }>`
     display: flex;
     justify-content: space-between;
-    border: 1px solid black;
+    border: ${(props) =>
+      (!props.inputFocus && props.border) || `1px solid black;`};
     border-radius: 5px;
     padding: 5px;
     margin-bottom: 5px;

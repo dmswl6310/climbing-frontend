@@ -1,6 +1,6 @@
 import { styled } from "styled-components";
 import reactStringReplace from "react-string-replace";
-import CurrentLocationBtn from "./CurrentLocationBtn";
+import CurrentLocationBtn from "../search/CurrentLocationBtn";
 
 interface DropDownProps {
   dropItems: Array<DropItem>;

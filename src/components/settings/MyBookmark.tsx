@@ -1,8 +1,8 @@
 import { styled } from "styled-components";
-import PreviewCard from "../PreviewCard";
+import PreviewCard from "../common/PreviewCard";
 import { GymSampleInfo } from "@/pages/home";
 import { useEffect, useState } from "react";
-import { sampleGyms } from "../LazyLoadingItems";
+import { sampleGyms } from "../common/LazyLoadingItems";
 import { useSession } from "next-auth/react";
 import { requestData } from "@/service/api";
 

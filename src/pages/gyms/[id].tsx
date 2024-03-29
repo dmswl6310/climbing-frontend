@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 import styled from "styled-components";
 import { IoShareSocialOutline, IoHeart, IoHeartOutline } from "react-icons/io5";
 import { FaLocationDot } from "react-icons/fa6";
-import Tag from "@/components/Tag";
+import Tag from "@/components/gyms/Tag";
 import GradeBar from "@/components/gyms/GradeBar";
 import ContactInfo from "@/components/gyms/ContactInfo";
 import DynamicMap from "@/components/gyms/DynamicMap";
@@ -13,12 +13,14 @@ import PricingTable from "@/components/gyms/PricingTable";
 import OpenHoursTable from "@/components/gyms/OpenHoursTable";
 import ImageCarousel from "@/components/gyms/ImageCarousel";
 import Comments from "@/components/gyms/Comments";
-import Bookmark from "@/components/Bookmark";
+import Bookmark from "@/components/common/Bookmark";
 import { requestData } from "@/service/api";
 import useApi from "@/hooks/useApi";
 import { GYM_API, MEMBER_API, NAVERMAP_API } from "@/constants/constants";
 
-const GymInfo = ({ gymData }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const GymInfo = ({
+  gymData,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const [currentLikes, setCurrentLikes] = useState<number>(gymData.likes || 0);
   const [isLiked, setIsLiked] = useState(false);
   const { data: session } = useSession();
@@ -40,7 +42,7 @@ const GymInfo = ({ gymData }: InferGetServerSidePropsType<typeof getServerSidePr
       try {
         // 좋아요 해제: 멤버 데이터에 반영
         const memberRes = await fetch(
-          `${MEMBER_API}${session.user.email}/like?gym=${gymData.id},value=false`,
+          `${MEMBER_API}${session.user.email}/like?gym=${gymData.id},value=false`
         );
         if (!memberRes.ok) throw new Error("DB에 반영 실패");
 
@@ -63,7 +65,7 @@ const GymInfo = ({ gymData }: InferGetServerSidePropsType<typeof getServerSidePr
       try {
         // 좋아요 추가: 멤버 데이터에 반영
         const memberRes = await fetch(
-          `${MEMBER_API}${session.user.email}/like?gym=${gymData.id},value=true`,
+          `${MEMBER_API}${session.user.email}/like?gym=${gymData.id},value=true`
         );
         if (!memberRes.ok) throw new Error("DB에 반영 실패");
 
@@ -88,7 +90,10 @@ const GymInfo = ({ gymData }: InferGetServerSidePropsType<typeof getServerSidePr
   return (
     <S.Wrapper>
       {!gymData.defaultImage && !gymData.images ? null : (
-        <ImageCarousel defaultImage={gymData.defaultImage} imageList={gymData.images} />
+        <ImageCarousel
+          defaultImage={gymData.defaultImage}
+          imageList={gymData.images}
+        />
       )}
       <S.InfoContainer>
         <S.Main>
@@ -101,7 +106,11 @@ const GymInfo = ({ gymData }: InferGetServerSidePropsType<typeof getServerSidePr
               {session ? (
                 <div className="icons">
                   <S.Icon $clickable={true} onClick={handleLike}>
-                    {isLiked ? <IoHeart size="1.3rem" /> : <IoHeartOutline size="1.3rem" />}
+                    {isLiked ? (
+                      <IoHeart size="1.3rem" />
+                    ) : (
+                      <IoHeartOutline size="1.3rem" />
+                    )}
                     {currentLikes}
                   </S.Icon>{" "}
                   <S.Icon $clickable={true}>
@@ -136,9 +145,15 @@ const GymInfo = ({ gymData }: InferGetServerSidePropsType<typeof getServerSidePr
               )}
             </div>
           </div>
-          {gymData.description && <div className="description">{gymData.description}</div>}
+          {gymData.description && (
+            <div className="description">{gymData.description}</div>
+          )}
           {isLoading ? null : <DynamicMap coordinates={gymData.coordinates} />}
-          <Comments id={gymData.id} comments={gymData.comments} session={session} />
+          <Comments
+            id={gymData.id}
+            comments={gymData.comments}
+            session={session}
+          />
         </S.Main>
         <S.Side>
           {gymData.tags && gymData.tags.length > 0 && (
