@@ -1,12 +1,5 @@
+import { InputProps } from "@/constants/login/type";
 import { styled } from "styled-components";
-
-interface InputProps {
-  name: string;
-  title: string;
-  type?: string;
-  onChange?: (event: { target: { value: string } }) => Promise<void> | void;
-  message?: string;
-}
 
 const InputWithTitle = ({
   name,
@@ -14,16 +7,23 @@ const InputWithTitle = ({
   type = "text",
   onChange,
   message = "",
+  buttonText,
+  onClick,
 }: InputProps) => {
   return (
     <Styled.Wrapper>
       <Styled.Title>{title}</Styled.Title>
-      <Styled.Input
-        $hasMessage={message !== ""}
-        name={name}
-        type={type}
-        onChange={onChange}
-      />
+      <Styled.InputContainer>
+        <Styled.Input
+          $hasMessage={message !== ""}
+          name={name}
+          type={type}
+          onChange={onChange}
+        />
+        {buttonText ? (
+          <Styled.Button onClick={onClick}>{buttonText}</Styled.Button>
+        ) : null}
+      </Styled.InputContainer>
       <Styled.Warning>{message}</Styled.Warning>
     </Styled.Wrapper>
   );
@@ -39,6 +39,14 @@ const Styled = {
   Input: styled.input<{ $hasMessage: boolean }>`
     height: 30px;
     outline-color: ${(props) => (props.$hasMessage ? "red" : "green")};
+    flex: 1 1 auto;
+  `,
+  InputContainer: styled.div`
+    display: flex;
+  `,
+  Button: styled.button`
+    margin: 0;
+    padding: 0;
   `,
   Warning: styled.div`
     height: 10px;

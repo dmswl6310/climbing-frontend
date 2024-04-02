@@ -7,7 +7,7 @@ export const requestData = async ({
   data,
   onSuccess, // 성공 후 처리
 }: RequestProps) => {
-  const absoluteUrl = "http://localhost:3000" + url;
+  const absoluteUrl = "http://3.37.207.190:8080" + url;
 
   switch (option) {
     case "GET":
@@ -58,12 +58,18 @@ const getData = ({ absoluteUrl, sessionId, onSuccess }: GetProps) => {
 };
 
 const postData = ({ absoluteUrl, data, sessionId, onSuccess }: PostProps) => {
+  const contentType = { "Content-Type": "application/json" };
+  let headers;
+
+  if (sessionId) {
+    headers = { ...contentType, Authorization: `${sessionId}` };
+  } else {
+    headers = { ...contentType };
+  }
+
   fetch(absoluteUrl, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `${sessionId}`,
-    },
+    headers: headers,
     body: JSON.stringify(data),
   })
     .then((response) => {
