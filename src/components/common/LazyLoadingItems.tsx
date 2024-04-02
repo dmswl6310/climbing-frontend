@@ -22,7 +22,6 @@ const LazyLoadingItems = ({
   };
 
   useEffect(() => {
-    console.log("useEffect");
     // TODO: 쿼리 기준 필요 (둘중 하나만 보내도 될지)
 
     if (pathName?.includes("search")) {

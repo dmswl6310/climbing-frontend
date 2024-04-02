@@ -23,12 +23,18 @@ export const requestData = async ({
 };
 
 const getData = ({ absoluteUrl, sessionId, onSuccess }: GetProps) => {
+  const contentType = { "Content-Type": "application/json" };
+  let headers;
+
+  if (sessionId) {
+    headers = { ...contentType, Authorization: `${sessionId}` };
+  } else {
+    headers = { ...contentType };
+  }
+
   fetch(absoluteUrl, {
     method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      // Authorization: `${sessionId}`,
-    },
+    headers: headers,
   })
     .then((response) => {
       if (!response.ok) {
