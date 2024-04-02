@@ -3,7 +3,7 @@ import Link from "next/link";
 import styled from "styled-components";
 import CommentTextarea from "./CommentTextarea";
 import { CommentsProps, UserComments } from "@/constants/gyms/types";
-import { GYM_API } from "@/constants/constants";
+import { SERVER_ADDRESS } from "@/constants/constants";
 
 const Comments = ({ id, comments, session }: CommentsProps) => {
   const [currentComments, setCurrentComments] = useState<UserComments>(
@@ -20,7 +20,7 @@ const Comments = ({ id, comments, session }: CommentsProps) => {
 
     setCurrentComments((prev) => [newComment, ...prev]);
 
-    fetch(`${GYM_API}${id}`, {
+    fetch(`${SERVER_ADDRESS}/gyms/${id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",

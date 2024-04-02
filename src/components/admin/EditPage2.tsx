@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 import { useBeforeunload } from "react-beforeunload";
 import styled from "styled-components";
 import OpenHoursEditor from "@/components/admin/OpenHoursEditor";
@@ -7,16 +8,21 @@ import AccommodationsEditor from "@/components/admin/AccommodationsEditor";
 import GradeEditor from "@/components/admin/GradeEditor";
 import PricingEditor from "@/components/admin/PricingEditor";
 import SettingDayEditor from "@/components/admin/SettingDayEditor";
-import { GYM_API } from "@/constants/constants";
+import { SERVER_ADDRESS } from "@/constants/constants";
 import type { GymData } from "@/constants/gyms/types";
 
 const EditPage2 = () => {
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const [currentData, setCurrentData] = useState<GymData>(INITIAL_DATA);
   const [loadedData, setLoadedData] = useState<GymData>(INITIAL_DATA);
   const [isLoading, setIsLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
   const tracker = useRef<null | string>(null);
-  const router = useRouter();
+  // const tokenRef = useRef(session?.jwt);
+  console.log("세션 상태:");
+  console.log(session);
+  console.log(status);
 
   // 서버로부터 암장정보 fetch
   useEffect(() => {
@@ -53,30 +59,22 @@ const EditPage2 = () => {
   };
 
   const fetchData = () => {
-    /*
-    // 전역상태에 저장된 관리자계정 정보로 fetch 요청
-    const id = '전역상태에서 가져온 값';
-    fetch(`${GYM_API}${id}`)
+    // if (!session) return;
+    fetch(`${SERVER_ADDRESS}/gyms/1`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        // Authorization: session.jwt,
+      },
+    })
       .then((response) => response.json())
       .then((data) => {
         setLoadedData(JSON.parse(JSON.stringify(data)));
         setCurrentData(JSON.parse(JSON.stringify(data)));
       })
       .catch((error) => {
-        //에러 핸들링
-      });
-    */
-
-    // 관리자계정 정보/API가 준비되기 전에 사용할 임의값
-    fetch(`${testUrl}`)
-      .then((response) => response.json())
-      .then((data) => {
-        setLoadedData(JSON.parse(JSON.stringify(data)));
-        setCurrentData(JSON.parse(JSON.stringify(data)));
-      })
-      .catch((error) => {
-        // 테스트를 위한 임시방편 (추후 에러 핸들링 코드로 교체 필요)
-        console.log("json-server 서버가 오프라인입니다. 암장 정보를 샘플값으로 대체합니다.");
+        // Fetch 실패 시 샘플값 적용
+        console.log("서버가 오프라인입니다. 암장 정보를 샘플값으로 대체합니다.");
         setLoadedData(JSON.parse(JSON.stringify(sampleData)));
         setCurrentData(JSON.parse(JSON.stringify(sampleData)));
       });
@@ -84,10 +82,11 @@ const EditPage2 = () => {
 
   const updateData = async (data: string) => {
     try {
-      await fetch(`${GYM_API}${currentData.id}`, {
+      await fetch(`${SERVER_ADDRESS}/gyms/${currentData.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          // Authorization: session.jwt,
         },
         body: data,
       });
@@ -153,8 +152,6 @@ const INITIAL_DATA = {
 };
 
 // 테스트용 상수값
-const testId = "3ec082af-2425-4cee-983d-714e96e8d192";
-const testUrl = `${GYM_API}${testId}`;
 const sampleData = {
   id: "75334254-93a8-4cfb-afec-29e368ac0803",
   name: "암장 테스트점",

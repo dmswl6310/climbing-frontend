@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import styled from "styled-components";
 import NewGymForm from "@/components/admin/NewGymForm";
 import { GymData } from "@/constants/gyms/types";
-import { GYM_API } from "@/constants/constants";
+import { SERVER_ADDRESS } from "@/constants/constants";
 
 const GymRegistration = () => {
   const router = useRouter();
@@ -23,7 +23,7 @@ const GymRegistration = () => {
 
   // CRUD: Create
   const createData = async (input: GymData) => {
-    const res = await fetch(GYM_API, {
+    const res = await fetch(`${SERVER_ADDRESS}/gyms`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

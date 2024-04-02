@@ -1,15 +1,14 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Image from "next/image";
 import styled from "styled-components";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import { ImageCarouselProps } from "@/constants/gyms/types";
-
-const BASE_WIDTH = 1200;
+import { MAX_WIDTH } from "@/constants/admin/constants";
+import type { ImageCarouselProps } from "@/constants/gyms/types";
 
 const ImageCarousel = ({ defaultImage, imageList }: ImageCarouselProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [currentImages, _] = useState(
-    defaultImage !== "" ? [defaultImage, ...imageList] : [...imageList],
+  const images = useRef(
+    defaultImage && defaultImage !== "" ? [defaultImage, ...imageList] : [...imageList],
   );
 
   return (
@@ -26,19 +25,19 @@ const ImageCarousel = ({ defaultImage, imageList }: ImageCarouselProps) => {
           <S.Button
             $direction="right"
             onClick={() => setCurrentIndex((prev) => prev + 1)}
-            disabled={currentIndex === currentImages.length - 1}
+            disabled={currentIndex === images.current.length - 1}
           >
             <IoIosArrowForward color="white" size="3rem" />
           </S.Button>
         </S.OverlayButtons>
         <S.OverlayText>
-          {currentIndex + 1}/{currentImages.length} | 전체사진
+          {currentIndex + 1}/{images.current.length} | 전체사진
         </S.OverlayText>
       </S.Overlay>
-      <S.Container $shift={`-${currentIndex * BASE_WIDTH}px`}>
-        {currentImages.map((image, i) => (
+      <S.Container $shift={`-${currentIndex * MAX_WIDTH}px`}>
+        {images.current.map((image, i) => (
           <S.Image key={i}>
-            <Image src={image} alt={`${(i + 1).toString()}번 사진`} fill />
+            <Image src={image} alt={`암벽센터 제공 사진 (${(i + 1).toString()})`} fill />
           </S.Image>
         ))}
       </S.Container>
@@ -98,7 +97,6 @@ const S = {
     width: 1200px;
     height: 568px;
     flex-shrink: 0;
-
     img {
       object-fit: cover;
     }

@@ -16,17 +16,26 @@ import Comments from "@/components/gyms/Comments";
 import Bookmark from "@/components/common/Bookmark";
 import { requestData } from "@/service/api";
 import useApi from "@/hooks/useApi";
-import { GYM_API, MEMBER_API, NAVERMAP_API } from "@/constants/constants";
+import { NAVERMAP_API, SERVER_ADDRESS } from "@/constants/constants";
 
-const GymInfo = ({
-  gymData,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const GymInfo = ({ gymData }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const [currentLikes, setCurrentLikes] = useState<number>(gymData.likes || 0);
   const [isLiked, setIsLiked] = useState(false);
   const { data: session } = useSession();
   const { isLoading } = useApi(NAVERMAP_API);
 
   useEffect(() => {
+    const testFetch = async () => {
+      try {
+        const res = await fetch(`${SERVER_ADDRESS}/gyms/1`);
+        console.log(res);
+      } catch (e) {
+        console.log("Fetch failed");
+        console.log(e);
+      }
+    };
+    testFetch();
+
     if (!session || !session.user) return;
     requestData({
       option: "GET",
@@ -42,12 +51,12 @@ const GymInfo = ({
       try {
         // 좋아요 해제: 멤버 데이터에 반영
         const memberRes = await fetch(
-          `${MEMBER_API}${session.user.email}/like?gym=${gymData.id},value=false`
+          `${SERVER_ADDRESS}/members/${session.user.email}/like?gym=${gymData.id},value=false`,
         );
         if (!memberRes.ok) throw new Error("DB에 반영 실패");
 
         // 좋아요 해제: 암장 데이터에 반영
-        await fetch(`${GYM_API}${gymData.id}`, {
+        await fetch(`${SERVER_ADDRESS}/gyms/${gymData.id}`, {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
@@ -56,6 +65,7 @@ const GymInfo = ({
         });
       } catch (e) {
         // 에러 핸들링
+        console.log(e);
         return;
       }
       // 좋아요 해제: 현재 렌더링에 반영
@@ -65,12 +75,12 @@ const GymInfo = ({
       try {
         // 좋아요 추가: 멤버 데이터에 반영
         const memberRes = await fetch(
-          `${MEMBER_API}${session.user.email}/like?gym=${gymData.id},value=true`
+          `${SERVER_ADDRESS}/members/${session.user.email}/like?gym=${gymData.id},value=true`,
         );
         if (!memberRes.ok) throw new Error("DB에 반영 실패");
 
         // 좋아요 추가: 암장 데이터에 반영
-        await fetch(`${GYM_API}${gymData.id}`, {
+        await fetch(`${SERVER_ADDRESS}/gyms/${gymData.id}`, {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
@@ -79,6 +89,7 @@ const GymInfo = ({
         });
       } catch (e) {
         // 에러 핸들링
+        console.log(e);
         return;
       }
       // 좋아요 추가: 현재 렌더링에 반영
@@ -90,10 +101,7 @@ const GymInfo = ({
   return (
     <S.Wrapper>
       {!gymData.defaultImage && !gymData.images ? null : (
-        <ImageCarousel
-          defaultImage={gymData.defaultImage}
-          imageList={gymData.images}
-        />
+        <ImageCarousel defaultImage={gymData.defaultImage} imageList={gymData.images} />
       )}
       <S.InfoContainer>
         <S.Main>
@@ -106,11 +114,7 @@ const GymInfo = ({
               {session ? (
                 <div className="icons">
                   <S.Icon $clickable={true} onClick={handleLike}>
-                    {isLiked ? (
-                      <IoHeart size="1.3rem" />
-                    ) : (
-                      <IoHeartOutline size="1.3rem" />
-                    )}
+                    {isLiked ? <IoHeart size="1.3rem" /> : <IoHeartOutline size="1.3rem" />}
                     {currentLikes}
                   </S.Icon>{" "}
                   <S.Icon $clickable={true}>
@@ -145,15 +149,9 @@ const GymInfo = ({
               )}
             </div>
           </div>
-          {gymData.description && (
-            <div className="description">{gymData.description}</div>
-          )}
+          {gymData.description && <div className="description">{gymData.description}</div>}
           {isLoading ? null : <DynamicMap coordinates={gymData.coordinates} />}
-          <Comments
-            id={gymData.id}
-            comments={gymData.comments}
-            session={session}
-          />
+          <Comments id={gymData.id} comments={gymData.comments} session={session} />
         </S.Main>
         <S.Side>
           {gymData.tags && gymData.tags.length > 0 && (
@@ -245,7 +243,7 @@ const S = {
   Side: styled.div`
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 26px;
     width: 430px;
 
     & > div {
@@ -275,10 +273,16 @@ const S = {
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const gymId = context.query.id;
   try {
-    const gymData = await (await fetch(`${GYM_API}${gymId}`)).json();
+    const gymData = await (await fetch(`${SERVER_ADDRESS}/gyms/${gymId}`)).json();
     return { props: { gymData } };
   } catch (e) {
-    return { notFound: true };
+    // 404에러 시에도 데이터를 채우기 위한 임시방편
+    console.log("*****Server fetch failed. Fetching from local json-server instead*****");
+    const gymData = await (await fetch(`http://localhost:3000/gyms/${gymId}`)).json();
+    return { props: { gymData } };
+
+    // 테스트 완료 시 아래 코드로 교체
+    // return { notFound: true };
   }
 };
 

@@ -4,7 +4,7 @@ import { IoTrash } from "react-icons/io5";
 import AdminLayout from "@/components/admin/AdminLayout";
 import Layout from "@/components/Layout";
 import UserComment from "@/components/admin/UserComment";
-import { GYM_API } from "@/constants/constants";
+import { SERVER_ADDRESS } from "@/constants/constants";
 import type { NextPageWithLayout } from "@/pages/_app";
 import type { UserComments } from "@/constants/gyms/types";
 
@@ -49,7 +49,7 @@ const ManagePage: NextPageWithLayout = () => {
 
   const updateDatabase = async (comments: UserComments) => {
     try {
-      await fetch(`${GYM_API}${testId}`, {
+      await fetch(`${SERVER_ADDRESS}/gyms/${testId}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -141,7 +141,7 @@ const S = {
 
 // 테스트용 상수값
 const testId = "75334254-93a8-4cfb-afec-29e368ac0803";
-const testUrl = `${GYM_API}${testId}`;
+const testUrl = `${SERVER_ADDRESS}/gyms/${testId}`;
 const sampleData: UserComments = [
   { user: "ㅁㄴㅇㄹ", text: "asdlfj", date: "24.01.20" },
   { user: "leop", text: "foliwjd sldkfj sdl", date: "24.01.20" },
