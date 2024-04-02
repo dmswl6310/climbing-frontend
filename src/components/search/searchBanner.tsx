@@ -1,51 +1,15 @@
 import { Search } from "@/components/common/Search";
 import { IoSearch } from "react-icons/io5";
 import styled from "styled-components";
-import { GymSampleInfo } from "../../pages/home";
-import { Dispatch, FormEventHandler, SetStateAction } from "react";
 import router from "next/router";
 import Image from "next/image";
 import img from "../../../public/magnifier.png";
-import { requestData } from "@/service/api";
+import { SearchBannerProps, sampleAddress } from "@/constants/search/types";
 
-const sampleAddress = [
-  { id: 1, info: "잠실" },
-  { id: 2, info: "잠실2동" },
-  { id: 3, info: "잠실1동" },
-  { id: 4, info: "송파동" },
-  { id: 5, info: "송파2동" },
-  { id: 6, info: "송파1동" },
-];
-
-const sampleList = [
-  {
-    thumbnailSrc: "/public/thumbnail2.png",
-    address: "서울 강남구 신사1동 529-4 B2",
-    name: "search클릭",
-    latestSettingDay: "22.03.04",
-    likeNumber: 156,
-  },
-];
-
-interface SearchBannerProps {
-  setGymList: Dispatch<SetStateAction<GymSampleInfo[]>>;
-}
-
-const SearchBanner = ({ setGymList }: SearchBannerProps) => {
-  requestData({
-    option: "GET",
-    url: `/search?q={input}`,
-    onSuccess: (data) => setGymList(data),
-  });
-  // const getData = async (input: string | null) => {
-  //   const res = await fetch(`http://localhost:3000/search?q={input}`);
-  //   const data = await res.json();
-  //   setGymList(data);
-  // };
-
-  const handleGymList = (event: {
-    target: any;
+const SearchBanner = ({ searchWord }: SearchBannerProps) => {
+  const handleSubmit = (event: {
     preventDefault: () => void;
+    target: { [x: string]: { value: any } };
   }) => {
     event.preventDefault();
 
@@ -54,11 +18,6 @@ const SearchBanner = ({ setGymList }: SearchBannerProps) => {
       pathname: "/search",
       query: { q: event.target["search"].value },
     });
-
-    // console.log(event.target["search"].value);
-    // getData(event.target["search"].value); // 서버로 요청해서 데이터 받기
-
-    // setGymList(sampleList);
   };
 
   return (
@@ -71,9 +30,10 @@ const SearchBanner = ({ setGymList }: SearchBannerProps) => {
           width="400px"
           postfixIcon={<IoSearch />}
           placeholder="주소를 입력하면 실내암벽장을 찾아드려요."
-          onSubmit={handleGymList as (unknown: unknown) => unknown}
+          onSubmit={handleSubmit}
           useLocation={true}
           border="3px solid #b1d3ff"
+          searchWord={searchWord}
         />
       </Styled.SearchContainer>
       <Styled.ImageWrapper>

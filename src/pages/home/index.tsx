@@ -1,101 +1,24 @@
 import styled from "styled-components";
-import { ReactElement, SetStateAction, useEffect, useState } from "react";
-import GymListBanner from "../../components/search/GymListBanner";
-import SearchBanner from "../../components/search/searchBanner";
-import { requestData } from "@/service/api";
+import { ReactElement } from "react";
 import Layout from "@/components/Layout";
 import { NextPageWithLayout } from "../_app";
 import SearchLayout from "@/components/search/SearchLayout";
-
-const sampleGyms: GymSampleInfo[] = [
-  {
-    id: 1,
-    thumbnailSrc: "/public/thumbnail2.png",
-    address: "서울 강남구 신사1동 529-4 B2",
-    name: "더자스클라이밍짐2",
-    latestSettingDay: "22.03.04",
-    likeNumber: 156,
-  },
-  {
-    id: 2,
-    thumbnailSrc: "./public/thumbnail1.png",
-    address: "서울 강남구 신사2동 529-4 B1",
-    name: "더자스클라이밍짐",
-    latestSettingDay: "22.03.03",
-    likeNumber: 155,
-  },
-  {
-    id: 3,
-    thumbnailSrc: "./public/thumbnail2.png",
-    address: "서울 송파구 신사동 529-4 B2",
-    name: "더자스클라이밍짐2",
-    latestSettingDay: "22.03.04",
-    likeNumber: 156,
-  },
-  {
-    id: 4,
-    thumbnailSrc: "./public/thumbnail3.png",
-    address: "서울 송파구 송파동 신사동 529-4 B3",
-    name: "더자스클라이밍짐3",
-    latestSettingDay: "22.03.05",
-    likeNumber: 157,
-  },
-  {
-    id: 5,
-    thumbnailSrc: "./public/thumbnail2.png",
-    address: "서울 송파구 송파2동 529-4 B2",
-    name: "더자스클라이밍짐2",
-    latestSettingDay: "22.03.04",
-    likeNumber: 156,
-  },
-  {
-    id: 6,
-    thumbnailSrc: "./public/thumbnail1.png",
-    address: "서울 강남구 신사동 529-4 B1",
-    name: "더자스클라이밍짐1",
-    latestSettingDay: "22.03.03",
-    likeNumber: 155,
-  },
-  {
-    id: 7,
-    thumbnailSrc: "./public/thumbnail1.png",
-    address: "서울 강남구 신사동 529-4 B1",
-    name: "더자스클라이밍짐1",
-    latestSettingDay: "22.03.03",
-    likeNumber: 155,
-  },
-];
-
-export interface GymSampleInfo {
-  id: number;
-  thumbnailSrc: string;
-  address: string;
-  name: string;
-  latestSettingDay: string;
-  likeNumber: number;
-}
+import SearchBanner from "@/components/search/searchBanner";
+import GymListBanner from "@/components/search/GymListBanner";
+import { useRouter } from "next/router";
 
 const HomePage: NextPageWithLayout = () => {
-  requestData({
-    option: "GET",
-    url: "/gyms",
-    onSuccess: (input) => setGymLists(input),
-  });
-  // const getData = async () => {
-  //   const res = await fetch("http://localhost:3000/gyms");
-  //   const data = await res.json();
-  //   setGymLists(data);
-  // };
-  const [gymLists, setGymLists] = useState<GymSampleInfo[]>(sampleGyms); //sampleGyms
-
-  // useEffect(() => {
-  //   getData;
-  // }, []);
+  const router = useRouter();
 
   return (
     <Styled.Wrapper>
-      <SearchBanner setGymList={setGymLists} />
-      <GymListBanner gymList={gymLists} setGymList={setGymLists} />
+      <SearchBanner />
+      <GymListBanner />
+      <Styled.ButtonWrapper>
+        <Styled.MoreButton onClick={() => router.push("/search")}>
+          내 주위 암장 더보기..
+        </Styled.MoreButton>
+      </Styled.ButtonWrapper>
     </Styled.Wrapper>
   );
 };
@@ -110,6 +33,19 @@ HomePage.getLayout = (page: ReactElement) => {
 
 const Styled = {
   Wrapper: styled.div``,
+  ButtonWrapper: styled.div`
+    text-align: right;
+  `,
+  MoreButton: styled.button`
+    background-color: #b1d3ff;
+    display: inline-block;
+    margin-bottom: 300px;
+    border: 1px solid #b1d3ff;
+    border-radius: 10px;
+    padding: 5px;
+    /* font-weight: bold; */
+    font-style: italic;
+  `,
 };
 
 export default HomePage;

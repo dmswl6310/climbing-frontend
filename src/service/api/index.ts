@@ -27,7 +27,7 @@ const getData = ({ absoluteUrl, sessionId, onSuccess }: GetProps) => {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `${sessionId}`,
+      // Authorization: `${sessionId}`,
     },
   })
     .then((response) => {

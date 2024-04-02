@@ -1,14 +1,13 @@
 import { styled } from "styled-components";
 import PreviewCard from "../common/PreviewCard";
-import { GymSampleInfo } from "@/pages/home";
 import { useEffect, useState } from "react";
-import { sampleGyms } from "../common/LazyLoadingItems";
 import { useSession } from "next-auth/react";
 import { requestData } from "@/service/api";
+import { GymCardInfo } from "@/constants/search/types";
 
 const MyBookmark = () => {
   const { data: session, status } = useSession();
-  const [items, setItems] = useState<GymSampleInfo[]>();
+  const [items, setItems] = useState<GymCardInfo[]>();
 
   useEffect(() => {
     // const fetchBookmarksFromServer = async () => {

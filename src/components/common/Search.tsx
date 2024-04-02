@@ -1,7 +1,7 @@
 "use client";
 
 import { styled } from "styled-components";
-import { FormEventHandler, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import DropDown, { DropItem } from "./DropDown";
 import router from "next/router";
 
@@ -11,7 +11,7 @@ interface SearchProps {
   fontSize?: string;
   placeholder?: string;
   postfixIcon?: JSX.Element; // 검색창에 표시되는 아이콘
-  onSubmit?: (arg: unknown) => unknown; // 엔터 클릭시 발생되는 이벤트
+  onSubmit?: (event: any) => any; // 엔터 클릭시 발생되는 이벤트
   useLocation?: boolean; // 현재 위치로 검색
   searchWord?: string;
   border?: string;
@@ -46,8 +46,6 @@ export const Search = ({
     }
   };
 
-  // const handleMoueOver = () => {};
-
   // 바깥쪽을 클릭했을때 dropdown 숨기기 위해
   useEffect(() => {
     function handleClickOutside(e: MouseEvent): void {
@@ -69,8 +67,8 @@ export const Search = ({
         className={isInputFocus ? "container" : ""}
         onSubmit={onSubmit}
         autoComplete="off"
-        border={border}
-        inputFocus={isInputFocus}
+        $border={border}
+        $inputFocus={isInputFocus}
       >
         {/* form에 action 요소 추가하여 전송할 주소 설정가능 */}
         <Styled.Input
@@ -136,11 +134,11 @@ const Styled = {
     position: relative;
     ${(props) => props.width && `width: ${props.width};`}
   `,
-  Form: styled.form<{ border?: string; inputFocus?: boolean }>`
+  Form: styled.form<{ $border?: string; $inputFocus?: boolean }>`
     display: flex;
     justify-content: space-between;
     border: ${(props) =>
-      (!props.inputFocus && props.border) || `1px solid black;`};
+      (!props.$inputFocus && props.$border) || `1px solid black;`};
     border-radius: 5px;
     padding: 5px;
     margin-bottom: 5px;
@@ -156,6 +154,3 @@ const Styled = {
 };
 
 export default Search;
-function querySelector(arg0: string) {
-  throw new Error("Function not implemented.");
-}

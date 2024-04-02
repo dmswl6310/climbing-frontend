@@ -4,7 +4,7 @@ import { styled } from "styled-components";
 import { FaRegHandRock } from "react-icons/fa";
 
 // footer가 적용될 페이지(모두 양옆 마진 붙음)
-const footerPage = ["/gyms"];
+const footerPage = ["/home", "/gyms"];
 
 const Footer = () => {
   const pathName = usePathname();
