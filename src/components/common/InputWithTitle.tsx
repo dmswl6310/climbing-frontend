@@ -5,17 +5,21 @@ const InputWithTitle = ({
   name,
   title,
   type = "text",
+  placeholder,
   onChange,
   message = "",
   buttonText,
   onClick,
 }: InputProps) => {
+  const confirmMessage = "사용 가능";
+
   return (
     <Styled.Wrapper>
       <Styled.Title>{title}</Styled.Title>
       <Styled.InputContainer>
         <Styled.Input
-          $hasMessage={message !== ""}
+          $isWarning={message !== "" && message !== confirmMessage}
+          placeholder={placeholder}
           name={name}
           type={type}
           onChange={onChange}
@@ -24,7 +28,9 @@ const InputWithTitle = ({
           <Styled.Button onClick={onClick}>{buttonText}</Styled.Button>
         ) : null}
       </Styled.InputContainer>
-      <Styled.Warning>{message}</Styled.Warning>
+      <Styled.Result $isWarning={message !== confirmMessage}>
+        {message}
+      </Styled.Result>
     </Styled.Wrapper>
   );
 };
@@ -36,9 +42,9 @@ const Styled = {
     margin-bottom: 15px;
   `,
   Title: styled.div``,
-  Input: styled.input<{ $hasMessage: boolean }>`
+  Input: styled.input<{ $isWarning: boolean }>`
     height: 30px;
-    outline-color: ${(props) => (props.$hasMessage ? "red" : "green")};
+    outline-color: ${(props) => (props.$isWarning ? "red" : "green")};
     flex: 1 1 auto;
   `,
   InputContainer: styled.div`
@@ -48,10 +54,10 @@ const Styled = {
     margin: 0;
     padding: 0;
   `,
-  Warning: styled.div`
+  Result: styled.div<{ $isWarning: boolean }>`
     height: 10px;
     font-size: 12px;
-    color: red;
+    color: ${(props) => (props.$isWarning ? "red" : "green")};
   `,
 };
 

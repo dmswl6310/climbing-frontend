@@ -1,4 +1,5 @@
 import InputWithTitle from "@/components/common/InputWithTitle";
+import EmailVerification from "@/components/login/EmailVerification";
 import { requestData } from "@/service/api";
 import { useState } from "react";
 import styled from "styled-components";
@@ -20,6 +21,10 @@ const Join = () => {
   const [password, setPassword] = useState("");
   const [nickname, setNickname] = useState("");
 
+  const [verificationBtnClicked, setVerificationBtnClicked] = useState(false);
+
+  const confirmMessage = "사용 가능";
+
   const handleEmailChange = async (event: {
     target: {
       value: string;
@@ -35,7 +40,7 @@ const Join = () => {
     } else {
       const onSuccess = (canUse: boolean) => {
         if (canUse) {
-          setEmailMessage("사용 가능");
+          setEmailMessage(confirmMessage);
           setIsEmailValid(true);
           setEmail(currentEmail);
         } else {
@@ -97,65 +102,61 @@ const Join = () => {
     };
   }) => {
     const currentNickname = event.target.value;
-    const nicknameRegrex = /^[가-힣A-Za-z0-9_]{3,}$/;
+    const nicknameRegrex = /^[가-힣A-Za-z0-9_]{2,}$/;
 
     if (!nicknameRegrex.test(currentNickname)) {
-      setNicknameMessage("닉네임은 3자이상이어야 합니다.");
+      setNicknameMessage("닉네임의 형식이 올바르지 않습니다.");
       setIsNicknameValid(false);
     } else {
-      // 서버 없어서 임시 로직 적용(5자 이상일시 valid)
-      if (currentNickname.length < 3) {
-        setNicknameMessage("닉네임은 세자 이상이어야합니다.");
-        setIsNicknameValid(false);
-      } else {
-        const onSuccess = (canUse: boolean) => {
-          if (canUse) {
-            setNicknameMessage("사용 가능");
-            setIsNicknameValid(true);
-            setNickname(currentNickname);
-          } else {
-            setNicknameMessage("중복된 닉네임 입니다.");
-            setIsNicknameValid(false);
-          }
-        };
-
-        requestData({
-          option: "GET",
-          url: `/members/nickname-check/${currentNickname}`,
-          onSuccess,
-        });
-        // setNicknameMessage("");
-        // setIsNicknameValid(true);
-        // setNickname(currentNickname);
-      }
+      const onSuccess = (canUse: boolean) => {
+        if (canUse) {
+          setNicknameMessage(confirmMessage);
+          setIsNicknameValid(true);
+          setNickname(currentNickname);
+        } else {
+          setNicknameMessage("중복된 닉네임 입니다.");
+          setIsNicknameValid(false);
+        }
+      };
+      requestData({
+        option: "GET",
+        url: `/members/nickname-check/${currentNickname}`,
+        onSuccess,
+      });
+      // setNicknameMessage("");
+      // setIsNicknameValid(true);
+      // setNickname(currentNickname);
     }
   };
 
-  const handleVerificationEmail = () => {
-    const onSuccess = (data: any) => {
-      console.log("emailVerfication 결과");
-      console.log(data);
-    };
+  // const handleVerificationEmail = () => {
+  //   const onSuccess = (verficationNum: string) => {
+  //     // 타이머 시작(5분)
 
-    const data = {
-      email: email,
-    };
+  //     console.log("emailVerfication 결과");
+  //     console.log(data);
+  //   };
 
-    requestData({
-      option: "POST",
-      url: `/members/email-auth`,
-      data: data,
-      onSuccess,
-    });
-  };
+  //   const data = {
+  //     email: email,
+  //   };
+
+  //   requestData({
+  //     option: "POST",
+  //     url: `/members/email-auth`,
+  //     data: data,
+  //     onSuccess,
+  //   });
+  // };
+  const handleVerificationEmail = () => {};
 
   const handleSubmit = async (event: any) => {
     event.preventDefault();
 
     const credentials = {
-      username: { label: email, type: "email" },
-      password: { label: password, type: "password" },
-      nickname: { label: nickname, type: "nickname" },
+      email: email,
+      password: password,
+      nickname: nickname,
     };
 
     const onSuccess = () => {
@@ -177,15 +178,24 @@ const Join = () => {
           name="email"
           type="email"
           title="아이디(이메일)"
+          placeholder="사용하실 ID를 입력해주세요.(수신 가능 E-mail)"
           onChange={handleEmailChange}
           message={emailMessage}
         />
+        {/* <button onClick={handleVerificationEmail}>인증번호 받기</button> */}
         <InputWithTitle
+          name="verificationNumber"
+          title="본인 인증"
+          placeholder="인증번호"
+          buttonText={verificationBtnClicked ? "재인증하기" : "인증번호 받기"}
+        />
+        <EmailVerification clicked={false} />
+        {/* <InputWithTitle
           name="verificationEmail"
           title="본인인증 확인"
           buttonText="인증번호 받기"
           onClick={handleVerificationEmail}
-        />
+        /> */}
         <InputWithTitle
           name="password"
           type="password"
@@ -209,12 +219,12 @@ const Join = () => {
         <S.ButtonBox
           type="submit"
           disabled={
-            isEmailValid &&
-            isNicknameValid &&
-            isPasswordValid &&
-            isReEnterPasswordValid
-              ? false
-              : true
+            !(
+              isEmailValid &&
+              isNicknameValid &&
+              isPasswordValid &&
+              isReEnterPasswordValid
+            )
           }
         >
           가입하기

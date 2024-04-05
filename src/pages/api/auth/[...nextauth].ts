@@ -15,9 +15,9 @@ export default NextAuth({
         email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials: any, req: any){
+      async authorize(credentials: any, req: any) {
         return credentials;
-    },
+      },
       // async authorize(credentials) {
       //   const response = await fetch(
       //     "https://http://localhost:3000/api/login",
@@ -55,6 +55,12 @@ export default NextAuth({
       clientSecret: process.env.NAVER_CLIENT_SECRET!,
     }),
   ],
+  // jwt 설정
+  session: {
+    strategy: "jwt",
+    maxAge: 3 * 24 * 60 * 60, // 로그인 유지 기간 (=3일)
+  },
+
   //  jwt나 세션 쓸때
   callbacks: {
     //   async session(session, token) {
@@ -87,4 +93,5 @@ export default NextAuth({
     signIn: "/login",
     error: "error",
   },
+  secret: process.env.AUTH_SECRET,
 });
