@@ -1,7 +1,6 @@
 import { useState } from "react";
 import styled from "styled-components";
-import { LuPlus } from "react-icons/lu";
-import { MdOutlineClose } from "react-icons/md";
+import { MdOutlineClose, MdOutlineSupportAgent } from "react-icons/md";
 import Socket from "./Socket";
 
 const HelpModal = () => {
@@ -19,7 +18,7 @@ const HelpModal = () => {
     <S.Wrapper>
       <S.Modal>
         <S.Button $isOpen={isOpen} onClick={isOpen ? closeChatroom : openChatroom}>
-          {isOpen ? <MdOutlineClose /> : <LuPlus />}
+          {isOpen ? <MdOutlineClose size="2.2rem" /> : <MdOutlineSupportAgent size="2.2rem" />}
         </S.Button>
         {isOpen ? <Socket /> : null}
       </S.Modal>

@@ -34,12 +34,21 @@ const ChatForm = ({ handleSend }: ChatFormProps) => {
 const Wrapper = styled.form`
   display: flex;
   height: 50px;
-  justify-content: space-between;
+  gap: 6px;
 
-  & > input,
-  & > button {
+  & > input {
     border: 1px solid #cacaca;
     border-radius: 6px;
+    flex-grow: 1;
+  }
+
+  & > button {
+    border: none;
+    background: #307fe5;
+    color: white;
+    border-radius: 6px;
+    padding: 0 12px;
+    cursor: pointer;
   }
 `;
 

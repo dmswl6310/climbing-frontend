@@ -1,21 +1,39 @@
-import { ChangeEventHandler, useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
-import { CommentTextareaProps } from "@/constants/gyms/types";
+import type { ChangeEvent } from "react";
+import type { CommentTextareaProps } from "@/constants/gyms/types";
 
 const CommentTextarea = ({ handleAddComment }: CommentTextareaProps) => {
   const [comment, setComment] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const onChange: ChangeEventHandler = (e) => {
-    const input = (e.target as HTMLTextAreaElement).value;
+  const onChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    const input = e.target.value;
     if (input.length > 200) return;
     setComment(input);
   };
 
   const handleCancel = () => setComment("");
 
-  const handlePost = () => {
-    handleAddComment(comment);
-    setComment("");
+  const handlePost = async () => {
+    setIsLoading(true);
+    const response = await handleAddComment(comment);
+    setIsLoading(false);
+
+    switch (response) {
+      case "login": {
+        return alert("로그인한 유저가 아닙니다. 로그인 후 후기를 남겨주세요.");
+      }
+      case "server": {
+        return alert("서버 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
+      }
+      case "successful": {
+        return setComment("");
+      }
+      default: {
+        return alert("알 수 없는 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
+      }
+    }
   };
 
   return (
@@ -28,7 +46,7 @@ const CommentTextarea = ({ handleAddComment }: CommentTextareaProps) => {
         <button className="btn-unfilled" onClick={handleCancel}>
           취소
         </button>
-        <button className="btn-filled" onClick={handlePost}>
+        <button className="btn-filled" onClick={handlePost} disabled={isLoading}>
           댓글
         </button>
       </S.Buttons>
@@ -83,6 +101,10 @@ const S = {
       color: white;
       border-radius: 8px;
       cursor: pointer;
+    }
+
+    button:disabled {
+      background: #bbc3cd;
     }
   `,
 };

@@ -2,31 +2,42 @@ import { useState } from "react";
 import Link from "next/link";
 import styled from "styled-components";
 import CommentTextarea from "./CommentTextarea";
-import { CommentsProps, UserComments } from "@/constants/gyms/types";
 import { SERVER_ADDRESS } from "@/constants/constants";
+import type { CommentsProps, UserComments } from "@/constants/gyms/types";
 
 const Comments = ({ id, comments, session }: CommentsProps) => {
-  const [currentComments, setCurrentComments] = useState<UserComments>(
-    comments || [],
-  );
+  const [currentComments, setCurrentComments] = useState<UserComments>(comments || []);
 
-  const handleAddComment = (input: string) => {
-    if (!session) return;
+  const handleAddComment = async (input: string) => {
+    // if (!session || !session.user) return "login"; // 추후 복원
     const newComment = {
-      user: session.user!.name as string,
+      user: (session?.user?.name as string) || "익명님",
+      // user: session.user.name as string,
       date: getCurrentDate(),
       text: input,
     };
 
-    setCurrentComments((prev) => [newComment, ...prev]);
-
-    fetch(`${SERVER_ADDRESS}/gyms/${id}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ comments: [newComment, ...currentComments] }),
-    });
+    try {
+      const response = await Promise.race([
+        fetch(`${SERVER_ADDRESS}/gyms/${id}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ comments: [newComment, ...currentComments] }),
+        }),
+        new Promise<Response>((_, reject) =>
+          setTimeout(() => reject(new Response(null, { status: 503 })), 3000),
+        ),
+      ]);
+      console.log(response);
+      if (!response.ok) throw new Error(`${response.status}`);
+      setCurrentComments((prev) => [newComment, ...prev]);
+      return "successful";
+    } catch (e) {
+      // 에러 종류에 따라 핸들링
+      return "server";
+    }
   };
 
   const getCurrentDate = () => {
@@ -39,14 +50,15 @@ const Comments = ({ id, comments, session }: CommentsProps) => {
 
   return (
     <S.Wrapper>
-      {session ? (
+      {/* {session ? (
         <CommentTextarea handleAddComment={handleAddComment} />
       ) : (
         <div className="login-prompt">
           로그인해서 후기를 남겨주세요!
           <S.Link href={"/login"}>로그인하기</S.Link>
         </div>
-      )}
+      )} */}
+      <CommentTextarea handleAddComment={handleAddComment} />
       {currentComments && currentComments.length > 0
         ? currentComments.map(({ user, date, text }, i) => (
             <S.Comment key={i}>
@@ -77,6 +89,7 @@ const S = {
   Comment: styled.div`
     display: flex;
     flex-direction: column;
+    white-space: pre-wrap;
     margin: 26px 0px;
     gap: 12px;
 

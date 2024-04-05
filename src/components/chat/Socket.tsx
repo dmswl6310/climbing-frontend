@@ -5,6 +5,7 @@ import styled from "styled-components";
 import ChatForm from "./ChatForm";
 import ChatHistory from "./ChatHistory";
 import { SOCKET_ADDRESS } from "@/constants/constants";
+import type { MessageFormat } from "./ChatHistory";
 
 const Socket = () => {
   const { data: session, status } = useSession();
@@ -15,7 +16,8 @@ const Socket = () => {
       // connectHeaders: { Authorization: "Bearer " + session?.jwt },
     }),
   );
-  const [messages, setMessages] = useState<string[]>([]);
+  const roomRef = useRef("");
+  const [messages, setMessages] = useState<MessageFormat[]>(sampleData);
 
   useEffect(() => {
     const client = clientRef.current;
@@ -27,14 +29,17 @@ const Socket = () => {
       console.log("구독 시도");
       client.subscribe("/app", (message) => {
         console.log(message); // 서버에서 도착한 메시지 확인
+        // ENTER 타입일 경우 리턴받은 roomId를 ref에 저장
+        // roomRef.current = roomId;
+
+        // TALK 타입일 경우 리턴받은 message를 현재 상태에 추가
+        // setMessages((prev) => [...prev, message]);
       });
       client.publish({
         destination: "/queue",
         body: JSON.stringify({
           type: "ENTER",
-          roodId: "testId",
-          sender: "test user",
-          message: "유저 test user가 접속했습니다.",
+          sender: "testUser@gmail.com",
         }),
       });
     };
@@ -63,17 +68,32 @@ const Socket = () => {
       console.log("소켓 연결 안됨");
       return;
     }
+    if (roomRef.current === "") {
+      console.log("입장한 방이 없음");
+      return;
+    }
     clientRef.current.publish({
       destination: "/queue",
-      body: JSON.stringify({ type: "TALK", roodId: "testId", sender: "test user", message }),
+      body: JSON.stringify({
+        type: "TALK",
+        roomId: roomRef.current,
+        sender: "testUser@gmail.com",
+        message,
+      }),
     });
-    setMessages((prev) => [...prev, message]);
+
+    // 렌더링 확인용 (테스트 후 삭제)
+    // const pickRandomUser = () => {
+    //   const rand = Math.random() * 100;
+    //   return rand > 50 ? "customer" : "admin";
+    // };
+    // setMessages((prev) => [...prev, { userType: pickRandomUser(), message, time: Date.now() }]);
   };
 
   return (
     <S.Wrapper>
       <S.Container>
-        <ChatHistory messages={messages} />
+        <ChatHistory history={messages} />
         <ChatForm handleSend={handleSend} />
       </S.Container>
     </S.Wrapper>
@@ -86,12 +106,13 @@ const S = {
     position: absolute;
     bottom: 70px;
     right: 70px;
-    border-radius: 8px;
+    border-radius: 16px;
     padding: 20px;
     border: 1px solid #cacaca;
-    background: #fafafa;
-    width: 300px;
-    height: 450px;
+    box-shadow: 0 3px 7px #cacaca;
+    /* background: #fafafa; */
+    width: 370px;
+    height: 500px;
   `,
   Container: styled.div`
     display: flex;
@@ -100,5 +121,40 @@ const S = {
     width: 100%;
   `,
 };
+
+const sampleData = [
+  {
+    userType: "customer",
+    message: "dflkajsdf",
+    time: 1711215412079,
+  },
+  {
+    userType: "admin",
+    message: "dflkajsdf",
+    time: 1711225692079,
+  },
+  {
+    userType: "admin",
+    message: "dflkajsdf",
+    time: 1712226312579,
+  },
+  {
+    userType: "customer",
+    message:
+      "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Veritatis nesciunt maxime nam vel accusantium fugiat enim recusandae cumque est eligendi?",
+    time: 1712226412091,
+  },
+  {
+    userType: "admin",
+    message: "dflkajsdf",
+    time: 1712237512879,
+  },
+  {
+    userType: "admin",
+    message:
+      "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Veritatis nesciunt maxime nam vel accusantium fugiat enim recusandae cumque est eligendi?",
+    time: 1712237622981,
+  },
+];
 
 export default Socket;

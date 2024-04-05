@@ -1,65 +1,73 @@
 import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
+import { ErrorBoundary } from "react-error-boundary";
 import styled from "styled-components";
 import { IoTrash } from "react-icons/io5";
 import AdminLayout from "@/components/admin/AdminLayout";
-import Layout from "@/components/Layout";
+import { ErrorFallback } from "@/components/common/ErrorFallback";
 import UserComment from "@/components/admin/UserComment";
 import { SERVER_ADDRESS } from "@/constants/constants";
 import type { NextPageWithLayout } from "@/pages/_app";
 import type { UserComments } from "@/constants/gyms/types";
 
 const ManagePage: NextPageWithLayout = () => {
+  const { data: session } = useSession();
+  const router = useRouter();
   const [comments, setComments] = useState<UserComments>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetchData();
-    setIsLoading(false);
-  }, []);
+    // 테스트 후 복원
+    // if (!session) router.push({ pathname: "/login" });
+    const id = "1"; // 테스트 후 사용자 정보를 통해 가져오도록 변경
+    let comments: UserComments;
 
-  const fetchData = () => {
-    /*
-    // 전역상태에 저장된 관리자계정 정보로 fetch 요청
-    const id = '전역상태에서 가져온 값';
-    fetch(`${GYM_API}${id}`)
-      .then((response) => response.json())
-      .then((data) => {
-        const { comments } = data;
+    const fetchData = async () => {
+      try {
+        const response = await Promise.race([
+          fetch(`${testUrl}`),
+          new Promise<Response>((_, reject) =>
+            setTimeout(() => reject(new Response(null, { status: 503 })), 3000),
+          ),
+        ]);
+        if (!response.ok) comments = sampleData;
+        // if (!response.ok) throw new Error(`${response.status}`);
+        else {
+          const data = await response.json();
+          comments = data.comments;
+        }
         setComments(comments);
-      })
-      .catch((error) => {
-        //에러 핸들링
-      });
-    */
+      } catch (e) {
+        // 에러 핸들링
+        console.log(e);
+      }
+      setIsLoading(false);
+    };
 
-    // 관리자계정 정보/API가 준비되기 전에 사용할 임의값
-    fetch(`${testUrl}`)
-      .then((response) => response.json())
-      .then((data) => {
-        const { comments } = data;
-        // setComments(comments);
-        setComments(sampleData);
-      })
-      .catch((error) => {
-        // 테스트를 위한 임시방편 (추후 에러 핸들링 코드로 교체 필요)
-        console.log("json-server 서버가 오프라인입니다. 암장 정보를 샘플값으로 대체합니다.");
-        setComments(sampleData);
-      });
-  };
+    fetchData();
+  }, [router, session]);
 
   const updateDatabase = async (comments: UserComments) => {
     try {
-      await fetch(`${SERVER_ADDRESS}/gyms/${testId}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ comments }),
-      });
+      const response = await Promise.race([
+        fetch(`${SERVER_ADDRESS}/gyms/1`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ comments }),
+        }),
+        new Promise<Response>((_, reject) =>
+          setTimeout(() => reject(new Response(null, { status: 503 })), 3000),
+        ),
+      ]);
+      if (!response.ok) throw new Error(`${response.status}`);
+      setComments(comments);
     } catch (e) {
-      return false;
+      // 에러 핸들링
+      alert("서버 오류가 발생했습니다. 나중에 다시 시도해 주세요.");
     }
-    return true;
   };
 
   const handleDelete = (index: number) => {
@@ -67,37 +75,32 @@ const ManagePage: NextPageWithLayout = () => {
     if (!response) return;
     const remainingComments = comments.filter((_, i) => index !== i);
     updateDatabase(remainingComments);
-    setComments(remainingComments);
   };
 
   return (
-    <S.Wrapper>
-      {isLoading ? null : (
-        <>
-          <S.Header>댓글 관리</S.Header>
-          <S.Content $direction="column">
-            {comments.length > 0 ? (
-              comments.map(({ user, date, text }, i) => (
-                <S.Row key={i}>
-                  <UserComment user={user} date={date} text={text} />
-                  <S.Icon size="1.3rem" onClick={() => handleDelete(i)} />
-                </S.Row>
-              ))
-            ) : (
-              <div>관리할 댓글이 없습니다.</div>
-            )}
-          </S.Content>
-        </>
-      )}
-    </S.Wrapper>
-  );
-};
-
-ManagePage.getLayout = (page) => {
-  return (
-    <Layout>
-      <AdminLayout>{page}</AdminLayout>
-    </Layout>
+    <ErrorBoundary FallbackComponent={ErrorFallback}>
+      <AdminLayout>
+        <S.Wrapper>
+          {isLoading ? null : (
+            <>
+              <S.Header>댓글 관리</S.Header>
+              <S.Content $direction="column">
+                {comments.length > 0 ? (
+                  comments.map(({ user, date, text }, i) => (
+                    <S.Row key={i}>
+                      <UserComment user={user} date={date} text={text} />
+                      <S.Icon size="1.3rem" onClick={() => handleDelete(i)} />
+                    </S.Row>
+                  ))
+                ) : (
+                  <div>관리할 댓글이 없습니다.</div>
+                )}
+              </S.Content>
+            </>
+          )}
+        </S.Wrapper>
+      </AdminLayout>
+    </ErrorBoundary>
   );
 };
 
@@ -140,8 +143,7 @@ const S = {
 };
 
 // 테스트용 상수값
-const testId = "75334254-93a8-4cfb-afec-29e368ac0803";
-const testUrl = `${SERVER_ADDRESS}/gyms/${testId}`;
+const testUrl = `${SERVER_ADDRESS}/gyms/1`;
 const sampleData: UserComments = [
   { user: "ㅁㄴㅇㄹ", text: "asdlfj", date: "24.01.20" },
   { user: "leop", text: "foliwjd sldkfj sdl", date: "24.01.20" },

@@ -27,7 +27,7 @@ export interface GymData {
   grades?: Array<string>;
   accommodations?: Array<string>;
   comments?: Array<{ user: string; date: string; text: string }>;
-  likes?: number;
+  likeNumber?: number;
 }
 
 export interface DetailedListItem {
@@ -59,6 +59,16 @@ export interface SnsList {
 export type UserComments = Array<{ user: string; date: string; text: string }>;
 
 // 컴포넌트 props 타입 정의
+export interface CommentsProps {
+  id: string;
+  comments?: UserComments;
+  session: Session | null;
+}
+
+export interface CommentTextareaProps {
+  handleAddComment: (input: string) => Promise<string>;
+}
+
 export interface ContactInfoProps {
   contact: string;
   snsList: SnsList;
@@ -92,14 +102,4 @@ export interface PricingTableProps {
 export interface TagProps {
   prefix?: string;
   text: string;
-}
-
-export interface CommentsProps {
-  id: string;
-  comments?: UserComments;
-  session: Session | null;
-}
-
-export interface CommentTextareaProps {
-  handleAddComment: (input: string) => void;
 }

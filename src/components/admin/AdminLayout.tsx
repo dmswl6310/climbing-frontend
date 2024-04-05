@@ -1,12 +1,18 @@
 import Link from "next/link";
 import styled from "styled-components";
-import { HiOutlineCog } from "react-icons/hi";
+import { HiOutlineCog, HiOutlineHome } from "react-icons/hi";
 import { MdOutlineComment } from "react-icons/md";
 
 const AdminLayout = ({ children }: React.PropsWithChildren<{}>) => {
   return (
     <S.Wrapper>
       <S.Menu>
+        <S.Header>
+          <HiOutlineHome size="1.3rem" />
+          <Link href="/admin">
+            <strong>메인 화면</strong>
+          </Link>
+        </S.Header>
         <S.Header>
           <HiOutlineCog size="1.3rem" />
           <strong>암장 정보 관리</strong>

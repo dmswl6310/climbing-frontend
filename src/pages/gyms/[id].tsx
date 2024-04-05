@@ -1,41 +1,31 @@
 import { useEffect, useState } from "react";
-import type { InferGetServerSidePropsType, GetServerSideProps } from "next";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import styled from "styled-components";
 import { IoShareSocialOutline, IoHeart, IoHeartOutline } from "react-icons/io5";
 import { FaLocationDot } from "react-icons/fa6";
-import Tag from "@/components/gyms/Tag";
-import GradeBar from "@/components/gyms/GradeBar";
+import Bookmark from "@/components/common/Bookmark";
+import Comments from "@/components/gyms/Comments";
 import ContactInfo from "@/components/gyms/ContactInfo";
 import DynamicMap from "@/components/gyms/DynamicMap";
-import PricingTable from "@/components/gyms/PricingTable";
-import OpenHoursTable from "@/components/gyms/OpenHoursTable";
+import GradeBar from "@/components/gyms/GradeBar";
 import ImageCarousel from "@/components/gyms/ImageCarousel";
-import Comments from "@/components/gyms/Comments";
-import Bookmark from "@/components/common/Bookmark";
-import { requestData } from "@/service/api";
+import OpenHoursTable from "@/components/gyms/OpenHoursTable";
+import PricingTable from "@/components/gyms/PricingTable";
+import Tag from "@/components/gyms/Tag";
 import useApi from "@/hooks/useApi";
+import { requestData } from "@/service/api";
 import { NAVERMAP_API, SERVER_ADDRESS } from "@/constants/constants";
+import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
 
-const GymInfo = ({ gymData }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  const [currentLikes, setCurrentLikes] = useState<number>(gymData.likes || 0);
-  const [isLiked, setIsLiked] = useState(false);
+const GymInfo = ({ gymData }: InferGetServerSidePropsType<GetServerSideProps>) => {
   const { data: session } = useSession();
   const { isLoading } = useApi(NAVERMAP_API);
+  const [currentLikes, setCurrentLikes] = useState<number>(gymData.likeNumber || 0);
+  const [isLiked, setIsLiked] = useState(false);
+  console.log(gymData);
 
   useEffect(() => {
-    const testFetch = async () => {
-      try {
-        const res = await fetch(`${SERVER_ADDRESS}/gyms/1`);
-        console.log(res);
-      } catch (e) {
-        console.log("Fetch failed");
-        console.log(e);
-      }
-    };
-    testFetch();
-
     if (!session || !session.user) return;
     requestData({
       option: "GET",
@@ -61,7 +51,7 @@ const GymInfo = ({ gymData }: InferGetServerSidePropsType<typeof getServerSidePr
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ likes: (gymData.likes || 0) - 1 }),
+          body: JSON.stringify({ likeNumber: (gymData.likeNumber || 0) - 1 }),
         });
       } catch (e) {
         // 에러 핸들링
@@ -85,7 +75,7 @@ const GymInfo = ({ gymData }: InferGetServerSidePropsType<typeof getServerSidePr
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ likes: (gymData.likes || 0) + 1 }),
+          body: JSON.stringify({ likeNumber: (gymData.likeNumber || 0) + 1 }),
         });
       } catch (e) {
         // 에러 핸들링
@@ -273,16 +263,29 @@ const S = {
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const gymId = context.query.id;
   try {
-    const gymData = await (await fetch(`${SERVER_ADDRESS}/gyms/${gymId}`)).json();
-    return { props: { gymData } };
+    const response = await Promise.race([
+      fetch(`${SERVER_ADDRESS}/gyms/${gymId}`),
+      new Promise<Response>((_, reject) =>
+        setTimeout(
+          () =>
+            reject(new Response(null, { status: 503 })),
+          3000,
+        ),
+      ),
+    ]);
+    if (response.status === 200) {
+      const gymData = await response.json();
+      return { props: { gymData } };
+    } else throw response.status;
   } catch (e) {
     // 404에러 시에도 데이터를 채우기 위한 임시방편
     console.log("*****Server fetch failed. Fetching from local json-server instead*****");
-    const gymData = await (await fetch(`http://localhost:3000/gyms/${gymId}`)).json();
+    const gymData = await (await fetch(`http://localhost:8000/gyms/${gymId}`)).json();
     return { props: { gymData } };
 
     // 테스트 완료 시 아래 코드로 교체
-    // return { notFound: true };
+    // if (e === 404) return { notFound: true };
+    // if (e >= 500 && e < 600) throw new Error("서버 에러 발생");
   }
 };
 
