@@ -10,6 +10,7 @@ const InputWithTitle = ({
   message = "",
   buttonText,
   onClick,
+  onDisabled,
 }: InputProps) => {
   const confirmMessage = "사용 가능";
 
@@ -25,7 +26,9 @@ const InputWithTitle = ({
           onChange={onChange}
         />
         {buttonText ? (
-          <Styled.Button onClick={onClick}>{buttonText}</Styled.Button>
+          <Styled.Button onClick={onClick} disabled={onDisabled}>
+            {buttonText}
+          </Styled.Button>
         ) : null}
       </Styled.InputContainer>
       <Styled.Result $isWarning={message !== confirmMessage}>
@@ -46,6 +49,9 @@ const Styled = {
     height: 30px;
     outline-color: ${(props) => (props.$isWarning ? "red" : "green")};
     flex: 1 1 auto;
+    &::placeholder {
+      font-size: 0.8rem;
+    }
   `,
   InputContainer: styled.div`
     display: flex;

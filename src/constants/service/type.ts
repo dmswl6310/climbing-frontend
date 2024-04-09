@@ -13,12 +13,14 @@ export interface RequestProps {
   sessionId?: string;
   data?: any;
   onSuccess?: (data: any) => void;
+  onError?: () => void;
 }
 
 export interface GetProps {
   absoluteUrl: string;
   sessionId?: string;
   onSuccess?: (data: any) => void;
+  onError?: () => void;
 }
 
 export interface PostProps {
@@ -26,4 +28,5 @@ export interface PostProps {
   data: any;
   sessionId?: string;
   onSuccess?: (data: any) => void;
+  onError?: () => void;
 }

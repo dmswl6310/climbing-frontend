@@ -2,11 +2,14 @@
   "gyms": [
     {
       "id": 1,
-      "thumbnailSrc": "/public/thumbnail2.png",
-      "address": "서울 강남구 신사1동 529-4 B2",
-      "name": "더자스클라이밍짐2",
-      "latestSettingDay": "22.03.04",
-      "likeNumber": 156
+      "name": "암장 플러스",
+      "address": {
+        "jibunaddress": "안녕",
+        "hellobin": 3
+      },
+      "latestSettingDay": 31,
+      "like": 156,
+      "contact": "안녕"
     },
     {
       "id": 2,

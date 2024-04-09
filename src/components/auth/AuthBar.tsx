@@ -17,7 +17,7 @@ AuthButtonProps) => {
 
   // 로그인된 상태
   if (status === "authenticated") {
-    return <Sidebar account={session.user!.email!} />;
+    return <Sidebar account={session.user!.nickname!} />;
   }
 
   // 로그인되지 않은 상태

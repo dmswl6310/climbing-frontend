@@ -1,3 +1,15 @@
+import { Dispatch, SetStateAction } from "react";
+
+declare module "next-auth" {
+  interface Session {
+    user: {
+      email: string;
+      nickname: string;
+      token: string;
+    };
+  }
+}
+
 export interface InputProps {
   name: string;
   title: string;
@@ -7,4 +19,15 @@ export interface InputProps {
   message?: string;
   buttonText?: string;
   onClick?: any;
+  onDisabled?: any;
+}
+
+export interface EmailVerificationProps {
+  remainingTime: number;
+  setTime: Dispatch<SetStateAction<number>>;
+  isBtnDisabled: boolean;
+  setBtnDisabled: Dispatch<SetStateAction<boolean>>;
+  verificationNum: string;
+  isCodeValid: boolean;
+  setIsCodeValid: Dispatch<SetStateAction<boolean>>;
 }

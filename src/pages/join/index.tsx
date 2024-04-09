@@ -21,7 +21,10 @@ const Join = () => {
   const [password, setPassword] = useState("");
   const [nickname, setNickname] = useState("");
 
-  const [verificationBtnClicked, setVerificationBtnClicked] = useState(false);
+  const [remainingTime, setRemainingTime] = useState(0);
+  const [isSendDisabled, setIsSendDisabled] = useState(false);
+  const [verificationNumber, setVerificationNumber] = useState("");
+  const [isCodeValid, setIsCodeValid] = useState(false);
 
   const confirmMessage = "사용 가능";
 
@@ -129,28 +132,46 @@ const Join = () => {
     }
   };
 
-  // const handleVerificationEmail = () => {
-  //   const onSuccess = (verficationNum: string) => {
-  //     // 타이머 시작(5분)
+  const handleSendClick = (event: {
+    target: {
+      parentElement: {
+        querySelector: (arg0: string) => {
+          (): any;
+          new (): any;
+          disabled: boolean;
+        };
+      };
+    };
+  }) => {
+    //임시
+    // setVerificationNumber("00000");
+    // event.target.parentElement.querySelector('input[name="email"]').disabled =
+    //   true;
+    // setRemainingTime(10);
+    // setIsSendDisabled(true);
 
-  //     console.log("emailVerfication 결과");
-  //     console.log(data);
-  //   };
+    const onSuccess = (verficationNum: string) => {
+      // input 비활성화
+      event.target.parentElement.querySelector('input[name="email"]').disabled =
+        true;
 
-  //   const data = {
-  //     email: email,
-  //   };
+      // 타이머 세팅
+      setRemainingTime(30);
+      setIsSendDisabled(true);
 
-  //   requestData({
-  //     option: "POST",
-  //     url: `/members/email-auth`,
-  //     data: data,
-  //     onSuccess,
-  //   });
-  // };
-  const handleVerificationEmail = () => {};
+      // 인증번호 세팅
+      setVerificationNumber(verficationNum);
+    };
 
-  const handleSubmit = async (event: any) => {
+    requestData({
+      option: "POST",
+      url: `/members/email-auth`,
+      data: { email: email },
+      onSuccess,
+    });
+  };
+
+  const handleSubmit = async (event: { preventDefault: () => void }) => {
     event.preventDefault();
 
     const credentials = {
@@ -160,7 +181,7 @@ const Join = () => {
     };
 
     const onSuccess = () => {
-      console.log("onSuccess");
+      console.log("회원가입 onSuccess");
     };
 
     requestData({
@@ -181,21 +202,19 @@ const Join = () => {
           placeholder="사용하실 ID를 입력해주세요.(수신 가능 E-mail)"
           onChange={handleEmailChange}
           message={emailMessage}
-        />
-        {/* <button onClick={handleVerificationEmail}>인증번호 받기</button> */}
-        <InputWithTitle
-          name="verificationNumber"
-          title="본인 인증"
-          placeholder="인증번호"
-          buttonText={verificationBtnClicked ? "재인증하기" : "인증번호 받기"}
-        />
-        <EmailVerification clicked={false} />
-        {/* <InputWithTitle
-          name="verificationEmail"
-          title="본인인증 확인"
           buttonText="인증번호 받기"
-          onClick={handleVerificationEmail}
-        /> */}
+          onClick={handleSendClick}
+          onDisabled={isSendDisabled || isCodeValid}
+        />
+        <EmailVerification
+          remainingTime={remainingTime}
+          setTime={setRemainingTime}
+          isBtnDisabled={isSendDisabled}
+          setBtnDisabled={setIsSendDisabled}
+          verificationNum={verificationNumber}
+          isCodeValid={isCodeValid}
+          setIsCodeValid={setIsCodeValid}
+        />
         <InputWithTitle
           name="password"
           type="password"
@@ -221,6 +240,7 @@ const Join = () => {
           disabled={
             !(
               isEmailValid &&
+              isCodeValid &&
               isNicknameValid &&
               isPasswordValid &&
               isReEnterPasswordValid

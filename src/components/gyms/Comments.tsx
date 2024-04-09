@@ -6,13 +6,14 @@ import { SERVER_ADDRESS } from "@/constants/constants";
 import type { CommentsProps, UserComments } from "@/constants/gyms/types";
 
 const Comments = ({ id, comments, session }: CommentsProps) => {
-  const [currentComments, setCurrentComments] = useState<UserComments>(comments || []);
+  const [currentComments, setCurrentComments] = useState<UserComments>(
+    comments || []
+  );
 
   const handleAddComment = async (input: string) => {
     // if (!session || !session.user) return "login"; // 추후 복원
     const newComment = {
-      user: (session?.user?.name as string) || "익명님",
-      // user: session.user.name as string,
+      user: session?.user?.nickname as string,
       date: getCurrentDate(),
       text: input,
     };
@@ -27,7 +28,7 @@ const Comments = ({ id, comments, session }: CommentsProps) => {
           body: JSON.stringify({ comments: [newComment, ...currentComments] }),
         }),
         new Promise<Response>((_, reject) =>
-          setTimeout(() => reject(new Response(null, { status: 503 })), 3000),
+          setTimeout(() => reject(new Response(null, { status: 503 })), 3000)
         ),
       ]);
       console.log(response);

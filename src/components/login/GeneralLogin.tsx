@@ -1,6 +1,5 @@
 import styled from "styled-components";
-import { useSession, signIn, signOut } from "next-auth/react";
-import { FormEventHandler } from "react";
+import { signIn } from "next-auth/react";
 import Link from "next/link";
 
 const GeneralLogin = () => {
@@ -13,6 +12,7 @@ const GeneralLogin = () => {
     const result = await signIn("credentials", {
       email,
       password,
+      redirect: true,
       callbackUrl: "/",
     });
 

@@ -1,19 +1,23 @@
 import { RequestProps, GetProps, PostProps } from "@/constants/service/type";
 
+//10초 후 abort
+const timeLimit = 10000;
+
 export const requestData = async ({
   option,
   url,
   sessionId,
   data,
   onSuccess, // 성공 후 처리
+  onError,
 }: RequestProps) => {
   const absoluteUrl = "http://3.37.207.190:8080" + url;
 
   switch (option) {
     case "GET":
-      return getData({ absoluteUrl, sessionId, onSuccess });
+      return getData({ absoluteUrl, sessionId, onSuccess, onError });
     case "POST":
-      return postData({ absoluteUrl, data, sessionId, onSuccess });
+      return postData({ absoluteUrl, data, sessionId, onSuccess, onError });
     // POST로 DELETE를 대체가능
     // case "DELETE":
     //   break;
@@ -22,7 +26,9 @@ export const requestData = async ({
   }
 };
 
-const getData = ({ absoluteUrl, sessionId, onSuccess }: GetProps) => {
+const getData = ({ absoluteUrl, sessionId, onSuccess, onError }: GetProps) => {
+  const controller = new AbortController();
+  const signal = controller.signal;
   const contentType = { "Content-Type": "application/json" };
   let headers;
 
@@ -32,9 +38,16 @@ const getData = ({ absoluteUrl, sessionId, onSuccess }: GetProps) => {
     headers = { ...contentType };
   }
 
+  // 특정시간 이상 지날시에러 처리
+  const timeout = setTimeout(() => {
+    console.log("응답시간이 초과되었습니다. 요청을 종료합니다");
+    controller.abort();
+  }, timeLimit);
+
   fetch(absoluteUrl, {
     method: "GET",
     headers: headers,
+    signal,
   })
     .then((response) => {
       if (!response.ok) {
@@ -45,19 +58,30 @@ const getData = ({ absoluteUrl, sessionId, onSuccess }: GetProps) => {
       return response.json();
     })
     .then((result) => {
+      clearTimeout(timeout);
       if (onSuccess) {
         return onSuccess(result);
       }
       return result;
     })
     .catch((error) => {
+      clearTimeout(timeout);
       console.log("\n주소 : " + absoluteUrl);
       console.log("옵션 : GET");
       console.log(error.stack + "\n");
+      if (onError) onError();
     });
 };
 
-const postData = ({ absoluteUrl, data, sessionId, onSuccess }: PostProps) => {
+const postData = ({
+  absoluteUrl,
+  data,
+  sessionId,
+  onSuccess,
+  onError,
+}: PostProps) => {
+  const controller = new AbortController();
+  const signal = controller.signal;
   const contentType = { "Content-Type": "application/json" };
   let headers;
 
@@ -67,10 +91,17 @@ const postData = ({ absoluteUrl, data, sessionId, onSuccess }: PostProps) => {
     headers = { ...contentType };
   }
 
+  // 특정시간 이상 지날시에러 처리
+  const timeout = setTimeout(() => {
+    console.log("응답시간이 초과되었습니다. 요청을 종료합니다");
+    controller.abort();
+  }, timeLimit);
+
   fetch(absoluteUrl, {
     method: "POST",
     headers: headers,
     body: JSON.stringify(data),
+    signal,
   })
     .then((response) => {
       if (!response.ok) {
@@ -80,14 +111,17 @@ const postData = ({ absoluteUrl, data, sessionId, onSuccess }: PostProps) => {
       return response.json();
     })
     .then((result) => {
+      clearTimeout(timeout);
       if (onSuccess) {
         return onSuccess(result);
       }
       return;
     })
     .catch((error) => {
+      clearTimeout(timeout);
       console.log("\n주소 : " + absoluteUrl);
       console.log("옵션 : POST");
       console.log(error.stack + "\n");
+      if (onError) onError();
     });
 };
