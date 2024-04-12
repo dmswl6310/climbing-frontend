@@ -1,7 +1,7 @@
 import { RequestProps, GetProps, PostProps } from "@/constants/service/type";
 
-//10초 후 abort
-const timeLimit = 10000;
+//20초 후 abort
+const timeLimit = 20000;
 
 export const requestData = async ({
   option,

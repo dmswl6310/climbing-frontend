@@ -1,3 +1,5 @@
+import { GymData } from "../gyms/types";
+
 // 주소 데이터
 export const sampleAddress = [
   { id: 1, info: "잠실" },
@@ -9,15 +11,15 @@ export const sampleAddress = [
 ];
 
 // 데이터 타입 정의
-export interface GymCardInfo {
-  // 썸네일 요약된 gym 정보
-  id: number;
-  thumbnailSrc: string;
-  address: string;
-  name: string;
-  latestSettingDay: string;
-  likeNumber: number;
-}
+// export interface GymCardInfo {
+//   // 썸네일 요약된 gym 정보
+//   id: number;
+//   thumbnailSrc: string;
+//   address: string;
+//   name: string;
+//   latestSettingDay: string;
+//   likeNumber: number;
+// }
 
 // 컴포넌트 props 타입 정의
 export interface GymListBannerProps {
@@ -32,4 +34,10 @@ export interface LazyLoadingItemsProps {
 
 export interface SearchBannerProps {
   searchWord?: string;
+}
+
+export interface CardProps {
+  width?: string;
+  height?: string;
+  cardInfo: GymData;
 }

@@ -31,3 +31,8 @@ export interface EmailVerificationProps {
   isCodeValid: boolean;
   setIsCodeValid: Dispatch<SetStateAction<boolean>>;
 }
+
+// 백엔드 요청에 대한 응답
+export interface EmailAuthProps {
+  authNum: string;
+}

@@ -36,8 +36,11 @@ const EmailVerification = ({
   const message = "인증코드 유효시간 : " + formatTime(remainingTime);
 
   const handleBtnClick = (event: {
+    preventDefault(): unknown;
     target: { parentElement: { querySelector: (arg0: string) => any } };
   }) => {
+    event.preventDefault();
+    
     const inputTag = event.target.parentElement.querySelector(
       'input[name="verificationNumber"]'
     );

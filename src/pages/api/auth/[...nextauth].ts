@@ -23,7 +23,7 @@ export default NextAuth({
         requestData({
           option: "POST",
           url: `/members/login`,
-          data: credentials,
+          data: { email: credentials.email, password: credentials.password },
           onSuccess: (data: any) => {
             email = data.email;
             nickname = data.nickname;

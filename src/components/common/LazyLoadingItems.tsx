@@ -3,14 +3,15 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { requestData } from "@/service/api";
 import PreviewCard from "./PreviewCard";
 import { usePathname } from "next/dist/client/components/navigation";
-import { GymCardInfo, LazyLoadingItemsProps } from "@/constants/search/types";
+import { LazyLoadingItemsProps } from "@/constants/search/types";
+import { GymData } from "@/constants/gyms/types";
 
 const LazyLoadingItems = ({
   searchWord = "",
   sortingType,
 }: LazyLoadingItemsProps) => {
   const pathName = usePathname() as string;
-  const [items, setItems] = useState<GymCardInfo[]>([]);
+  const [items, setItems] = useState<GymData[]>([]);
   const [hasMore, setHasMore] = useState<boolean>(true);
 
   const getMoreData = () => {

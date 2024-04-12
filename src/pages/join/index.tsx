@@ -1,5 +1,6 @@
 import InputWithTitle from "@/components/common/InputWithTitle";
 import EmailVerification from "@/components/login/EmailVerification";
+import { EmailAuthProps } from "@/constants/login/type";
 import { requestData } from "@/service/api";
 import { useState } from "react";
 import styled from "styled-components";
@@ -132,7 +133,8 @@ const Join = () => {
     }
   };
 
-  const handleSendClick = (event: {
+  const handleSendClick = async (event: {
+    preventDefault(): unknown;
     target: {
       parentElement: {
         querySelector: (arg0: string) => {
@@ -143,14 +145,9 @@ const Join = () => {
       };
     };
   }) => {
-    //임시
-    // setVerificationNumber("00000");
-    // event.target.parentElement.querySelector('input[name="email"]').disabled =
-    //   true;
-    // setRemainingTime(10);
-    // setIsSendDisabled(true);
+    event.preventDefault();
 
-    const onSuccess = (verficationNum: string) => {
+    const onSuccess = ({ authNum }: EmailAuthProps) => {
       // input 비활성화
       event.target.parentElement.querySelector('input[name="email"]').disabled =
         true;
@@ -160,7 +157,7 @@ const Join = () => {
       setIsSendDisabled(true);
 
       // 인증번호 세팅
-      setVerificationNumber(verficationNum);
+      setVerificationNumber(authNum);
     };
 
     requestData({

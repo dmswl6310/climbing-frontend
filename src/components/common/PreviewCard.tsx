@@ -4,21 +4,7 @@ import img01 from "../../../public/thumbnail3.jpg";
 import { FcLikePlaceholder } from "react-icons/fc";
 import Link from "next/link";
 import Bookmark from "./Bookmark";
-
-export interface GymInfo {
-  id: number;
-  thumbnailSrc: string;
-  address: string;
-  name: string;
-  latestSettingDay: string;
-  likeNumber: number;
-}
-
-interface CardProps {
-  width?: string;
-  height?: string;
-  cardInfo: GymInfo;
-}
+import { CardProps } from "@/constants/search/types";
 
 // TODO: 로드 시 큰 이미지가 먼저 뜨는 현상 수정필요(priority로 임시수정)
 const PreviewCard = ({ width, height, cardInfo }: CardProps) => {
@@ -31,7 +17,7 @@ const PreviewCard = ({ width, height, cardInfo }: CardProps) => {
         <S.InfoContainer>
           <S.MainInfoContainer>
             <S.NameContainer>
-              <div>{cardInfo.address}</div>
+              <div>{cardInfo.address.roadAddress}</div>
               <div>{cardInfo.name}</div>
             </S.NameContainer>
             <Bookmark sessionId="임시sessionid" gymId="임시gymId" />
