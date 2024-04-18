@@ -2,7 +2,8 @@ import { useRef, useState } from "react";
 import Image from "next/image";
 import styled from "styled-components";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import { MAX_WIDTH } from "@/constants/admin/constants";
+import { DEVICE_SIZE } from "@/constants/styles";
+import { IMAGE_SIZE } from "@/constants/gyms/constants";
 import type { ImageCarouselProps } from "@/constants/gyms/types";
 
 const ImageCarousel = ({ defaultImage, imageList }: ImageCarouselProps) => {
@@ -20,21 +21,21 @@ const ImageCarousel = ({ defaultImage, imageList }: ImageCarouselProps) => {
             onClick={() => setCurrentIndex((prev) => prev - 1)}
             disabled={currentIndex === 0}
           >
-            <IoIosArrowBack color="white" size="3rem" />
+            <S.ArrowLeft />
           </S.Button>{" "}
           <S.Button
             $direction="right"
             onClick={() => setCurrentIndex((prev) => prev + 1)}
             disabled={currentIndex === images.current.length - 1}
           >
-            <IoIosArrowForward color="white" size="3rem" />
+            <S.ArrowRight />
           </S.Button>
         </S.OverlayButtons>
         <S.OverlayText>
           {currentIndex + 1}/{images.current.length} | 전체사진
         </S.OverlayText>
       </S.Overlay>
-      <S.Container $shift={`-${currentIndex * MAX_WIDTH}px`}>
+      <S.Container $shiftIndex={currentIndex}>
         {images.current.map((image, i) => (
           <S.Image key={i}>
             <Image src={image} alt={`암벽센터 제공 사진 (${(i + 1).toString()})`} fill />
@@ -48,9 +49,21 @@ const ImageCarousel = ({ defaultImage, imageList }: ImageCarouselProps) => {
 const S = {
   Wrapper: styled.div`
     overflow: hidden;
-    height: 568px;
-    width: 1200px;
     border-radius: 8px;
+    width: inherit;
+    height: ${IMAGE_SIZE.desktop.height + "px"};
+    @media ${DEVICE_SIZE.laptop} {
+      height: ${IMAGE_SIZE.laptop.height + "px"};
+    }
+    @media ${DEVICE_SIZE.tablet} {
+      height: ${IMAGE_SIZE.tablet.height + "px"};
+    }
+    @media ${DEVICE_SIZE.mobileLarge} {
+      height: ${IMAGE_SIZE.mobileLarge.height + "px"};
+    }
+    @media ${DEVICE_SIZE.mobileSmall} {
+      height: ${IMAGE_SIZE.mobileSmall.height + "px"};
+    }
   `,
   Overlay: styled.div`
     overflow: hidden;
@@ -70,17 +83,36 @@ const S = {
   Button: styled.button<{ $direction: string }>`
     border: none;
     height: 125px;
-    width: 80px;
+    width: 70px;
+    padding: 0;
     background: #7be1ff;
     opacity: 0.7;
     border-radius: ${({ $direction }) =>
-      $direction === "left" ? "0px 8px 8px 0px" : "8px 0px 0px 8px"};
+      $direction === "left" ? "0px 12px 12px 0px" : "12px 0px 0px 12px"};
     cursor: pointer;
+    @media ${DEVICE_SIZE.tablet} {
+      height: 80px;
+      width: 40px;
+    }
   `,
-  Container: styled.div<{ $shift: string }>`
+  Container: styled.div<{ $shiftIndex: number }>`
     display: flex;
     position: relative;
-    left: ${({ $shift }) => $shift};
+    width: inherit;
+    height: inherit;
+    left: ${({ $shiftIndex }) => -1 * $shiftIndex * IMAGE_SIZE.desktop.width + "px"};
+    @media ${DEVICE_SIZE.laptop} {
+      left: ${({ $shiftIndex }) => -1 * $shiftIndex * IMAGE_SIZE.laptop.width + "px"};
+    }
+    @media ${DEVICE_SIZE.tablet} {
+      left: ${({ $shiftIndex }) => -1 * $shiftIndex * IMAGE_SIZE.tablet.width + "px"};
+    }
+    @media ${DEVICE_SIZE.mobileLarge} {
+      left: ${({ $shiftIndex }) => -1 * $shiftIndex * IMAGE_SIZE.mobileLarge.width + "px"};
+    }
+    @media ${DEVICE_SIZE.mobileSmall} {
+      left: ${({ $shiftIndex }) => -1 * $shiftIndex * IMAGE_SIZE.mobileSmall.width + "px"};
+    }
   `,
   OverlayText: styled.div`
     position: absolute;
@@ -94,11 +126,31 @@ const S = {
   `,
   Image: styled.div`
     position: relative;
-    width: 1200px;
-    height: 568px;
     flex-shrink: 0;
-    img {
+    width: inherit;
+    height: inherit;
+    & img {
       object-fit: cover;
+    }
+  `,
+  ArrowLeft: styled(IoIosArrowBack)`
+    color: white;
+    font-size: 3rem;
+    @media ${DEVICE_SIZE.tablet} {
+      font-size: 2rem;
+    }
+    @media ${DEVICE_SIZE.mobileSmall} {
+      font-size: 1.4rem;
+    }
+  `,
+  ArrowRight: styled(IoIosArrowForward)`
+    color: white;
+    font-size: 3rem;
+    @media ${DEVICE_SIZE.tablet} {
+      font-size: 2rem;
+    }
+    @media ${DEVICE_SIZE.mobileSmall} {
+      font-size: 1.4rem;
     }
   `,
 };

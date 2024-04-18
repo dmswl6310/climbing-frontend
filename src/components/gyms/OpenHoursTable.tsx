@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import { OpenHours, OpenHoursTableProps } from "@/constants/gyms/types";
+import NoData from "./NoData";
+import type { OpenHours, OpenHoursTableProps } from "@/constants/gyms/types";
 
 // 상수
 const DAYS_TEXT = {
@@ -17,15 +18,19 @@ const OpenHoursTable = ({ openHours }: OpenHoursTableProps) => {
   };
   return (
     <S.Wrapper>
-      {openHours.map(({ days, openTime, closeTime }: OpenHours, i) => (
-        <li key={i}>
-          <div>{DAYS_TEXT[days as keyof typeof DAYS_TEXT]}</div>
-          <S.Divider>
-            <hr />
-          </S.Divider>
-          <div>{`${get24HrTime(openTime)} - ${get24HrTime(closeTime)}`}</div>
-        </li>
-      ))}
+      {!openHours || openHours.length < 1 ? (
+        <NoData />
+      ) : (
+        openHours.map(({ days, openTime, closeTime }: OpenHours, i) => (
+          <li key={i}>
+            <div>{DAYS_TEXT[days as keyof typeof DAYS_TEXT]}</div>
+            <S.Divider>
+              <hr />
+            </S.Divider>
+            <div>{`${get24HrTime(openTime)} - ${get24HrTime(closeTime)}`}</div>
+          </li>
+        ))
+      )}
     </S.Wrapper>
   );
 };

@@ -18,7 +18,6 @@ export interface GymData {
   sns?: { twitter?: string; facebook?: string; instagram?: string };
   homepage?: string;
   images?: Array<string>;
-  imageThumbnails?: Array<string>;
   defaultImage?: string;
   openHours?: Array<{ days: string; openTime: string; closeTime: string }>;
   pricing?: Array<{ item: string; price: string }>;

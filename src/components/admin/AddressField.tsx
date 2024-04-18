@@ -6,7 +6,7 @@ import useApi from "@/hooks/useApi";
 import { NAVERMAP_GEOCODE_API } from "@/constants/constants";
 import type { AddressFieldProps } from "@/constants/admin/types";
 
-const AddressField = ({ address, handleAddressChange }: AddressFieldProps) => {
+const AddressField = ({ address, handleAddressChange, handleFocus }: AddressFieldProps) => {
   const [isShowing, setIsShowing] = useState(false);
   const [userDisplay, setUserDisplay] = useState("R");
   useApi(NAVERMAP_GEOCODE_API);
@@ -18,7 +18,13 @@ const AddressField = ({ address, handleAddressChange }: AddressFieldProps) => {
 
   const callGeocodingApi = (queryString: string) => {
     naver.maps.Service.geocode({ query: queryString }, (status, response) => {
-      if (status === naver.maps.Service.Status.ERROR) console.log("error occurred"); // 추후에 예외 처리
+      if (status === naver.maps.Service.Status.ERROR) {
+        // 에러 로깅
+        console.log(status);
+        return alert(
+          "네이버 지도 서비스에 오류가 발생했습니다.\n오류가 지속되면 관리자에게 문의해 주세요.",
+        );
+      }
 
       const [result] = response.v2.addresses;
       const unitAddress = (document.querySelector(".field__unit-address") as HTMLInputElement)
@@ -45,7 +51,6 @@ const AddressField = ({ address, handleAddressChange }: AddressFieldProps) => {
 
     // 유저가 선택한 주소 형식(도로명 또는 지번)을 감지하고 해당 형식을 input 필드에 반영
     if (userSelectedType !== "R") setUserDisplay("J");
-
     callGeocodingApi(roadAddress);
     setIsShowing(false);
     unitAddressField.focus();
@@ -58,6 +63,7 @@ const AddressField = ({ address, handleAddressChange }: AddressFieldProps) => {
         className="field__display-address"
         placeholder="주소 검색"
         readOnly
+        tabIndex={-1}
         value={userDisplay === "R" ? address.roadAddress : address.jibunAddress}
       />
       <input
@@ -73,6 +79,12 @@ const AddressField = ({ address, handleAddressChange }: AddressFieldProps) => {
             const currentAddress = prev.address;
             return { ...prev, address: { ...currentAddress, unitAddress } };
           });
+        }}
+        onFocus={() => {
+          if (handleFocus) handleFocus("address");
+        }}
+        onBlur={() => {
+          if (handleFocus) handleFocus("");
         }}
       />
       {isShowing ? (

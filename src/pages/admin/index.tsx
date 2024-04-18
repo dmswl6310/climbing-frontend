@@ -15,7 +15,7 @@ const AdminHome = () => {
     <AdminLayout>
       <Overview />
       <HR />
-      <Text>현재 관리하고 있는 암장이 없습니다. 내 암장을 사이트에 등록해 보아요!</Text>
+      <Text>현재 관리하고 있는 암장이 없습니다.</Text>
       <Link href={"/admin/register"}>
         <Btn>암장 등록하기</Btn>
       </Link>

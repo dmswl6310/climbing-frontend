@@ -20,6 +20,7 @@ export interface AccommodationsEditorProps {
 export interface AddressFieldProps {
   address: { jibunAddress: string; roadAddress: string; unitAddress: string };
   handleAddressChange: Dispatch<SetStateAction<GymData>>;
+  handleFocus?: (key: string) => void;
 }
 
 export interface BasicInfoProps {
@@ -47,8 +48,7 @@ export interface GradeEditorProps {
 }
 
 export interface ImageEditorProps {
-  loadedImages: string[] | undefined;
-  thumbnails: string[] | undefined;
+  images: string[] | undefined;
   defaultImage: string | undefined;
   setCurrentData: Dispatch<SetStateAction<GymData>>;
   setLoadedData: Dispatch<SetStateAction<GymData>>;
@@ -63,16 +63,12 @@ export interface ImageListProps {
 export interface ImageUploadProps {
   dataKey: string;
   imageCount?: number;
-  handleS3Upload: (
-    file: File,
-    fileName: string,
-    fileCount: number,
-    dataKey: string,
-  ) => Promise<void>;
+  handleS3Upload: (file: File, fileName: string, dataKey: string) => Promise<void>;
 }
 
 export interface NewGymFormProps {
   handleSubmit: (formData: GymData) => void;
+  disableForm: boolean;
 }
 
 export interface OpenHoursEditorProps {

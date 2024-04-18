@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { BsTwitterX, BsFacebook, BsInstagram, BsTelephoneFill } from "react-icons/bs";
-import { ContactInfoProps } from "@/constants/gyms/types";
+import type { ContactInfoProps } from "@/constants/gyms/types";
 
 // 상수
 export const CONTACT_ICONS = {
@@ -33,17 +33,13 @@ const ContactInfo = ({ contact, snsList }: ContactInfoProps) => {
 
 const S = {
   Wrapper: styled.div`
-    display: flex;
-    flex-wrap: wrap;
-    max-width: calc("181px" * 2 + "12px");
-    gap: 12px;
-
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(181px, 1fr));
+    gap: 10px;
     div {
       display: flex;
       gap: 6px;
       align-items: center;
-      flex-shrink: 0;
-      width: 181px;
     }
   `,
 };

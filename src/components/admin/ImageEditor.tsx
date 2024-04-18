@@ -1,73 +1,62 @@
 import Image from "next/image";
 import styled from "styled-components";
 import { RiDeleteBin6Fill } from "react-icons/ri";
-import ImageUploader from "./ImageUploader";
 import ImageList from "./ImageList";
-import useS3 from "../../hooks/useS3";
+import ImageUploader from "./ImageUploader";
+import useS3, { FOLDER_NAME, THUMBNAIL_PREFIX } from "../../hooks/useS3";
 import type { ImageEditorProps } from "@/constants/admin/types";
 
 const ImageEditor = ({
-  loadedImages,
-  thumbnails,
+  images,
   defaultImage,
   setCurrentData,
   setLoadedData,
   updateData,
 }: ImageEditorProps) => {
-  const uploadImage = (url: string, fileCount: number, key: string) => {
-    if (key === "default") {
-      setCurrentData((prev) => ({ ...prev, defaultImage: url }));
-      setLoadedData((prev) => {
-        updateData(JSON.stringify({ ...prev, defaultImage: url }));
-        return { ...prev, defaultImage: url };
-      });
-      return;
-    }
-    if (!url.includes("thumb_")) return;
+  const thumbnails =
+    images?.map((image) =>
+      image.replace(`${FOLDER_NAME}/`, `${FOLDER_NAME}/${THUMBNAIL_PREFIX}`),
+    ) || [];
 
-    const originImage = url.replace("thumb_", "");
-
+  const uploadImage = (url: string, key: string) => {
+    // 썸네일 이미지가 아닌 URL만 DB 및 상태에 반영
+    if (url.includes(`${THUMBNAIL_PREFIX}`)) return;
     setCurrentData((current) => {
-      const currentThumbnails = current.imageThumbnails || [];
-      const currentImages = current.images || [];
-      if (currentThumbnails.length - (loadedImages ? loadedImages.length : 0) === fileCount - 1) {
-        const images = [...currentImages, originImage];
-        const imageThumbnails = [...currentThumbnails, url];
+      if (key === "default") {
         setLoadedData((prev) => {
-          updateData(JSON.stringify({ ...prev, images, imageThumbnails }));
-          return { ...prev, images, imageThumbnails };
+          updateData(JSON.stringify({ ...prev, defaultImage: url }));
+          return { ...prev, defaultImage: url };
         });
+        return { ...current, defaultImage: url };
+      } else {
+        const currentImages = current.images || [];
+        const images = [...currentImages, url];
+        setLoadedData((prev) => {
+          updateData(JSON.stringify({ ...prev, images }));
+          return { ...prev, images };
+        });
+        return { ...current, images };
       }
-      return {
-        ...current,
-        images: [...currentImages, originImage],
-        imageThumbnails: [...currentThumbnails, url],
-      };
     });
   };
 
   const deleteImage = (url: string, key: string) => {
-    if (key === "default") {
-      setCurrentData((prev) => ({ ...prev, defaultImage: "" }));
-      setLoadedData((prev) => {
-        updateData(JSON.stringify({ ...prev, defaultImage: "" }));
-        return { ...prev, defaultImage: "" };
-      });
-
-      return;
-    }
-
-    const imageUrl = url.replace("thumb_", "");
-    setCurrentData((prev) => {
-      const images = prev.images!.filter((img) => img !== imageUrl);
-      const imageThumbnails = prev.imageThumbnails!.filter((img) => img !== url);
-      updateData(JSON.stringify({ ...prev, images, imageThumbnails }));
-      return { ...prev, images, imageThumbnails };
-    });
-    setLoadedData((prev) => {
-      const images = prev.images!.filter((img) => img !== imageUrl);
-      const imageThumbnails = prev.imageThumbnails!.filter((img) => img !== url);
-      return { ...prev, images, imageThumbnails };
+    setCurrentData((current) => {
+      if (key === "default") {
+        setLoadedData((prev) => {
+          updateData(JSON.stringify({ ...prev, defaultImage: "" }));
+          return { ...prev, defaultImage: "" };
+        });
+        return { ...current, defaultImage: "" };
+      } else {
+        const originUrl = url.replace(`${THUMBNAIL_PREFIX}`, "");
+        const images = current.images!.filter((img) => img !== originUrl);
+        setLoadedData((prev) => {
+          updateData(JSON.stringify({ ...prev, images }));
+          return { ...prev, images };
+        });
+        return { ...current, images };
+      }
     });
   };
 

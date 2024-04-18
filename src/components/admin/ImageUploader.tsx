@@ -22,8 +22,7 @@ const ImageUploader = ({ dataKey, imageCount, handleS3Upload }: ImageUploadProps
 
     const allFiles = Array.from(files);
     const uploadFiles = allFiles.filter((file) => ALLOWED_IMG_TYPES.includes(file.type));
-    const uploadFileCount = uploadFiles.length;
-    const rejectedFileCount = allFiles.length - uploadFileCount; // 유효한 이미지 형식(jpeg/png)이 아닐 시 이용자에게 알리기 위해 파일 갯수 트랙킹
+    const rejectedFileCount = allFiles.length - uploadFiles.length;
 
     uploadFiles.forEach((file) => {
       FileResizer.imageFileResizer(
@@ -31,22 +30,21 @@ const ImageUploader = ({ dataKey, imageCount, handleS3Upload }: ImageUploadProps
         MAX_WIDTH,
         MAX_HEIGHT,
         IMG_FORMAT,
-        70,
+        85,
         0,
         (resizedImg) => {
           const randomizedFileName = `${crypto.randomUUID()}.${IMG_FORMAT}`;
-          handleS3Upload(resizedImg as File, randomizedFileName, uploadFileCount, dataKey);
-          if (dataKey === "default") return;
+          handleS3Upload(resizedImg as File, randomizedFileName, dataKey);
           FileResizer.imageFileResizer(
             resizedImg as File,
             THUMBNAIL_WIDTH,
             THUMBNAIL_HEIGHT,
             IMG_FORMAT,
-            100,
+            70,
             0,
             (thumb) => {
               const thumbFileName = `thumb_${randomizedFileName}`;
-              handleS3Upload(thumb as File, thumbFileName, uploadFileCount, dataKey);
+              handleS3Upload(thumb as File, thumbFileName, dataKey);
             },
             "file",
           );

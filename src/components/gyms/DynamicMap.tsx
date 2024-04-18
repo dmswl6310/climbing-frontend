@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import styled from "styled-components";
-import { MapProps } from "@/constants/gyms/types";
+import { DEVICE_SIZE } from "@/constants/styles";
+import type { MapProps } from "@/constants/gyms/types";
 
 const getMap = (lat: number, lng: number) => {
   const position = new naver.maps.LatLng(lat, lng);
@@ -29,6 +30,9 @@ const S = {
   Wrapper: styled.div`
     width: 100%;
     height: 400px;
+    @media ${DEVICE_SIZE.mobileLarge} {
+      height: 200px;
+    }
   `,
 };
 

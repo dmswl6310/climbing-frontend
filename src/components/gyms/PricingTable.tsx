@@ -1,18 +1,23 @@
 import styled from "styled-components";
-import { Pricing, PricingTableProps } from "@/constants/gyms/types";
+import NoData from "./NoData";
+import type { Pricing, PricingTableProps } from "@/constants/gyms/types";
 
 const PricingTable = ({ pricing }: PricingTableProps) => {
   return (
     <S.Wrapper>
-      {pricing.map(({ item, price }: Pricing, i) => (
-        <li key={i}>
-          <div>{item}</div>
-          <S.Divider>
-            <hr />
-          </S.Divider>
-          <div>{`${Number(price).toLocaleString()} 원`}</div>
-        </li>
-      ))}
+      {!pricing || pricing.length < 1 ? (
+        <NoData />
+      ) : (
+        pricing.map(({ item, price }: Pricing, i) => (
+          <li key={i}>
+            <div>{item}</div>
+            <S.Divider>
+              <hr />
+            </S.Divider>
+            <div>{`${Number(price).toLocaleString()} 원`}</div>
+          </li>
+        ))
+      )}
     </S.Wrapper>
   );
 };

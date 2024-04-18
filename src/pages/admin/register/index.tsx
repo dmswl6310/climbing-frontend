@@ -1,59 +1,121 @@
+import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 import styled from "styled-components";
+import { FaBuildingCircleCheck } from "react-icons/fa6";
 import NewGymForm from "@/components/admin/NewGymForm";
-import { GymData } from "@/constants/gyms/types";
 import { SERVER_ADDRESS } from "@/constants/constants";
+import type { GetServerSideProps } from "next";
+import type { GymData } from "@/constants/gyms/types";
 
 const GymRegistration = () => {
+  const { status } = useSession();
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [isRegistered, setIsRegistered] = useState(false);
 
-  const handleSubmit = (formData: GymData) => {
-    // 서버로부터 내려받는 데이터의 형식에 따라 처리 (현재는 id만 응답받는다는 가정 하에 then에 id만 명시함)
-    createData(formData).then((id) => {
-      formData.id = id;
-      router.push(
-        {
-          pathname: "/admin/edit",
-          query: { newRegister: true, gymData: JSON.stringify(formData) },
-        },
-        "/admin/edit",
-      );
-    });
+  // useEffect(() => {
+  //   if (status !== "unauthenticated") router.push("/login");
+  // }, []);
+
+  const handleSubmit = async (formData: GymData) => {
+    setIsLoading(true);
+    try {
+      const id = await createData(formData);
+      setIsRegistered(true);
+      setIsLoading(false);
+      router.push(`/admin/register?id=${id}`);
+    } catch (e) {
+      // 필요 시 응답 유형에 따른 에러 핸들링
+      setIsLoading(false);
+      return alert("암장 생성에 실패했습니다. 잠시 후 다시 시도해 주세요.");
+    }
   };
 
-  // CRUD: Create
   const createData = async (input: GymData) => {
-    const res = await fetch(`${SERVER_ADDRESS}/gyms`, {
+    const response = await fetch(`${SERVER_ADDRESS}/gyms`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
+        // Bearer token
       },
       body: JSON.stringify(input),
     });
-    const newGym = await res.json();
+    if (!response.ok) throw new Error();
+    const newGym = await response.json();
     return newGym.id; // 추후 서버에서 response로 오는 데이터의 구조에 맞게 수정
   };
 
-  return (
-    <Styled.Wrapper>
+  // if (status === "loading" || status === "unauthenticated") return null;
+  return isRegistered ? (
+    <S.Wrapper $isRegistered={isRegistered}>
+      <div>
+        <FaBuildingCircleCheck size="5rem" />
+        <p>암장을 생성했습니다!</p>
+      </div>
+      <S.Container>
+        <S.Button>
+          <Link href={`/admin`}>암장 관리하기</Link>
+        </S.Button>
+        <S.Button>
+          <Link href={`/gyms/${router.query.id}`}>내 암장 페이지 보기</Link>
+        </S.Button>
+      </S.Container>
+    </S.Wrapper>
+  ) : (
+    <S.Wrapper $isRegistered={isRegistered}>
+      {router.query.id}
       <h1>내 암장 등록하기</h1>
-      <NewGymForm handleSubmit={handleSubmit} />
-    </Styled.Wrapper>
+      <NewGymForm handleSubmit={handleSubmit} disableForm={isLoading} />
+    </S.Wrapper>
   );
 };
 
-const Styled = {
-  Wrapper: styled.div`
+const S = {
+  Wrapper: styled.div<{ $isRegistered: boolean }>`
     border-radius: 6px;
-    border: 1px solid #e0e0e0;
     padding: 24px;
-    margin-bottom: 32px;
-    overflow: auto;
+    width: 500px;
+    margin: auto;
+    margin-top: ${({ $isRegistered }) => ($isRegistered ? "120px" : null)};
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    align-items: center;
+    gap: ${({ $isRegistered }) => ($isRegistered ? "50px" : "30px")};
+    text-align: center;
+    & p {
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
   `,
+  Container: styled.div`
+    display: flex;
+    gap: 24px;
+  `,
+  Button: styled.div`
+    background: #307fe5;
+    color: white;
+    padding: 24px;
+    border-radius: 12px;
+    display: grid;
+    width: 160px;
+    place-content: center center;
+    margin-left: auto;
+    margin-right: auto;
+    cursor: pointer;
+    & a {
+      color: white;
+      text-decoration: none;
+    }
+  `,
+};
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  return {
+    props: {},
+  };
 };
 
 export default GymRegistration;

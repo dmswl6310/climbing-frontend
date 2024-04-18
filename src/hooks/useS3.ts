@@ -1,18 +1,14 @@
-import {
-  DeleteObjectCommand,
-  PutObjectCommand,
-  S3Client,
-} from '@aws-sdk/client-s3';
+import { DeleteObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 
 // 테스트용 값
-const S3_REGION = 'ap-northeast-2';
-const BUCKET_NAME = 'oruritest';
-const S3_PATH = `https://${BUCKET_NAME}.s3.${S3_REGION}.amazonaws.com/`;
-const FOLDER_NAME = 'bubu';
-const THUMBNAIL_PREFIX = 'thumb_';
+const S3_REGION = "ap-northeast-2";
+const BUCKET_NAME = "oruritest";
+export const S3_PATH = `https://${BUCKET_NAME}.s3.${S3_REGION}.amazonaws.com/`;
+export const FOLDER_NAME = "bubu";
+export const THUMBNAIL_PREFIX = "thumb_";
 
 const useS3 = (
-  uploadCallback: (url: string, fileCount: number, dataKey: string) => void,
+  uploadCallback: (url: string, dataKey: string) => void,
   deleteCallback: (url: string, dataKey: string) => void,
 ) => {
   // S3 클라이언트 생성
@@ -25,12 +21,7 @@ const useS3 = (
   });
 
   // S3에 업로드하는 함수
-  const handleS3Upload = async (
-    file: File,
-    fileName: string,
-    fileCount: number,
-    dataKey: string,
-  ) => {
+  const handleS3Upload = async (file: File, fileName: string, dataKey: string) => {
     const params = {
       Bucket: BUCKET_NAME,
       Key: `${FOLDER_NAME}/${fileName}`,
@@ -40,53 +31,37 @@ const useS3 = (
     try {
       await client.send(new PutObjectCommand(params));
     } catch (error) {
-      console.log('에러 발생: ' + error);
-    } finally {
-      uploadCallback(
-        `${S3_PATH}${FOLDER_NAME}/${fileName}`,
-        fileCount,
-        dataKey,
-      );
+      // 에러 로깅
+      console.log("에러 발생: " + error);
+      throw new Error(`${error}`);
     }
+    uploadCallback(`${S3_PATH}${FOLDER_NAME}/${fileName}`, dataKey);
   };
 
   // 삭제 함수
   const handleS3Delete = async (url: string, dataKey: string) => {
-    if (dataKey === 'default') {
-      const fileKey = url.replace(S3_PATH, '');
-      const params = {
-        Bucket: BUCKET_NAME,
-        Key: fileKey.replace(THUMBNAIL_PREFIX, ''),
-      };
-
-      try {
-        await client.send(new DeleteObjectCommand(params));
-      } catch (error) {
-        console.log('에러 발생: ' + error);
-      } finally {
-        deleteCallback(url, dataKey);
-      }
-      return;
-    }
-
-    const fileKey = url.replace(S3_PATH, '');
+    const fileKey =
+      dataKey === "default"
+        ? url.replace(S3_PATH, "").replace(FOLDER_NAME + "/", `${FOLDER_NAME}/${THUMBNAIL_PREFIX}`)
+        : url.replace(S3_PATH, "");
     const thumbParams = {
       Bucket: BUCKET_NAME,
       Key: fileKey,
     };
     const originParams = {
       Bucket: BUCKET_NAME,
-      Key: fileKey.replace(THUMBNAIL_PREFIX, ''),
+      Key: fileKey.replace(THUMBNAIL_PREFIX, ""),
     };
 
     try {
       await client.send(new DeleteObjectCommand(thumbParams));
       await client.send(new DeleteObjectCommand(originParams));
     } catch (error) {
-      console.log('에러 발생: ' + error);
-    } finally {
-      deleteCallback(url, dataKey);
+      // 에러 로깅
+      console.log("에러 발생: " + error);
+      throw new Error(`${error}`);
     }
+    deleteCallback(url, dataKey);
   };
 
   return {

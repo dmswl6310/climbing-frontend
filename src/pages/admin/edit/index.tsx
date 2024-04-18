@@ -36,7 +36,7 @@ const EditPage = () => {
   useEffect(() => {
     // 테스트 후 복원
     // if (!session) router.push({ pathname: "/login" });
-    const id = "1"; // 테스트 후 사용자 정보를 통해 가져오도록 변경
+    const id = "7"; // 테스트 후 사용자 정보를 통해 가져오도록 변경
     let data: GymData;
 
     const fetchData = async () => {
@@ -60,9 +60,16 @@ const EditPage = () => {
           setCurrentData(JSON.parse(JSON.stringify(data)));
         }
       } catch (e) {
+        // 테스트전용
+        const res = await fetch(`http://localhost:8000/gyms/${id}`);
+        data = await res.json();
+        setCurrentData(JSON.parse(JSON.stringify(data)));
+        setLoadedData(JSON.parse(JSON.stringify(data)));
+
+        // 테스트 후 복원
         // 에러 핸들링
-        console.log(e);
-        setIsError(true);
+        // console.log(e);
+        // setIsError(true);
       }
       setIsLoading(false);
     };
@@ -108,7 +115,23 @@ const EditPage = () => {
 
   const updateData = async (data: string) => {
     try {
-      await fetch(`${SERVER_ADDRESS}/gyms/${loadedData.id}`, {
+      const response = await Promise.race([
+        fetch(`${SERVER_ADDRESS}/gyms/${loadedData.id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            // Authorization: session.jwt,
+          },
+          body: data,
+        }),
+        new Promise<Response>((_, reject) =>
+          setTimeout(() => reject(new Response(null, { status: 503 })), 3000),
+        ),
+      ]);
+      if (!response.ok) throw new Error(`${response.status}`);
+    } catch (e) {
+      //임시 *******************************************************************
+      await fetch(`http://localhost:8000/gyms/${loadedData.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -116,8 +139,10 @@ const EditPage = () => {
         },
         body: data,
       });
-    } catch (e) {
-      return false;
+      //임시 *******************************************************************
+
+      // 테스트 끝나고 복원
+      // return false;
     }
     return true;
   };
@@ -144,8 +169,7 @@ const EditPage = () => {
         ) : page === "1" || !page ? (
           <>
             <ImageEditor
-              loadedImages={loadedData.images}
-              thumbnails={currentData.imageThumbnails}
+              images={currentData.images}
               defaultImage={currentData.defaultImage}
               setCurrentData={setCurrentData}
               setLoadedData={setLoadedData}
@@ -164,11 +188,7 @@ const EditPage = () => {
               setCurrentData={setCurrentData}
             />
             <Button>
-              <button
-                className="btn-primary"
-                onClick={handleSave}
-                disabled={isUpdating ? true : false}
-              >
+              <button className="btn-primary" onClick={handleSave} disabled={isUpdating}>
                 {isUpdating ? "저장중..." : "저장하기"}
               </button>
             </Button>
@@ -187,11 +207,7 @@ const EditPage = () => {
             <GradeEditor gradesList={currentData.grades} setCurrentData={setCurrentData} />
             <SettingDayEditor date={currentData.latestSettingDay} setCurrentData={setCurrentData} />
             <Button>
-              <button
-                className="btn-primary"
-                onClick={handleSave}
-                disabled={isUpdating ? true : false}
-              >
+              <button className="btn-primary" onClick={handleSave} disabled={isUpdating}>
                 {isUpdating ? "저장중..." : "저장하기"}
               </button>
             </Button>
@@ -204,10 +220,13 @@ const EditPage = () => {
 
 const Button = styled.div`
   align-self: flex-end;
+  & button:disabled {
+    background: #bbc3cd;
+  }
 `;
 
 const INITIAL_DATA = {
-  name: "init",
+  name: "",
   address: {
     jibunAddress: "",
     roadAddress: "",

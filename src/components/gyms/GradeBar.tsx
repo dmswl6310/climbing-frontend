@@ -1,18 +1,25 @@
 import styled from "styled-components";
-import { GradeBarProps } from "@/constants/gyms/types";
+import NoData from "./NoData";
+import type { GradeBarProps } from "@/constants/gyms/types";
 
 const GradeBar = ({ grades }: GradeBarProps) => {
   return (
     <S.Wrapper>
-      <S.BarContainer>
-        {grades.map((color, i) => (
-          <S.BarItem key={i} $color={color} />
-        ))}
-      </S.BarContainer>
-      <S.Label>
-        <span>easy</span>
-        <span>hard</span>
-      </S.Label>
+      {!grades || grades.length < 1 ? (
+        <NoData />
+      ) : (
+        <>
+          <S.BarContainer>
+            {grades.map((color, i) => (
+              <S.BarItem key={i} $color={color} />
+            ))}
+          </S.BarContainer>
+          <S.Label>
+            <span>easy</span>
+            <span>hard</span>
+          </S.Label>
+        </>
+      )}
     </S.Wrapper>
   );
 };

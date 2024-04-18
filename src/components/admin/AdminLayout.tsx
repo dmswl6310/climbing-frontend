@@ -17,12 +17,18 @@ const AdminLayout = ({ children }: React.PropsWithChildren<{}>) => {
           <HiOutlineCog size="1.3rem" />
           <strong>암장 정보 관리</strong>
         </S.Header>
-        <Link href={{ pathname: "/admin/edit/", query: { page: "1" } }} as="/admin/edit/">
-          기본 정보
-        </Link>
-        <Link href={{ pathname: "/admin/edit/", query: { page: "2" } }} as="/admin/edit/">
-          상세 정보
-        </Link>
+        <S.Links>
+          <li>
+            <Link href={{ pathname: "/admin/edit/", query: { page: "1" } }} as="/admin/edit/">
+              기본 정보
+            </Link>
+          </li>
+          <li>
+            <Link href={{ pathname: "/admin/edit/", query: { page: "2" } }} as="/admin/edit/">
+              상세 정보
+            </Link>
+          </li>
+        </S.Links>
         <S.Header>
           <MdOutlineComment size="1.3rem" />
           <Link href="/admin/manage">
@@ -69,6 +75,16 @@ const S = {
     gap: 36px;
     background: #fafaf8;
     padding: 36px 63px;
+    & input:focus, textarea:focus, select:focus {
+      outline: none;
+    }
+  `,
+  Links: styled.ul`
+    margin: 0;
+    list-style-type: circle;
+    & li {
+      margin-bottom: 10px;
+    }
   `,
 };
 

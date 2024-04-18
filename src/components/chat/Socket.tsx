@@ -9,11 +9,13 @@ import type { MessageFormat } from "./ChatHistory";
 
 const Socket = () => {
   const { data: session, status } = useSession();
+  console.log("세션");
   console.log(session); // 세션 확인
+
   const clientRef = useRef(
     new Client({
       brokerURL: `ws://${SOCKET_ADDRESS}/ws/chat`,
-      // connectHeaders: { Authorization: "Bearer " + session?.jwt },
+      connectHeaders: { Authorization: "Bearer " + session?.user.token },
     }),
   );
   const roomRef = useRef("");
@@ -46,6 +48,12 @@ const Socket = () => {
 
     const onClientDisconnect = () => {
       console.log("연결 종료");
+      client.publish({
+        destination: "/queue",
+        body: JSON.stringify({
+          type: "LEAVE",
+        }),
+      });
     };
 
     const onClientError = (frame: IFrame) => {
@@ -110,7 +118,6 @@ const S = {
     padding: 20px;
     border: 1px solid #cacaca;
     box-shadow: 0 3px 7px #cacaca;
-    /* background: #fafafa; */
     width: 370px;
     height: 500px;
   `,

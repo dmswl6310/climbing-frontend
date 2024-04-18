@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { TagProps } from "@/constants/gyms/types";
+import type { TagProps } from "@/constants/gyms/types";
 
 const Tag = ({ prefix, text }: TagProps) => {
   return (
@@ -18,7 +18,6 @@ const S = {
     background-color: #dcdcdc;
     color: #666;
     padding: 4px 8px;
-    margin-right: 8px;
   `,
 };
 
