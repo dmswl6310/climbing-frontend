@@ -1,3 +1,4 @@
+import { COLOR } from "@/styles/global-color";
 import { ChangeEventHandler, FormEventHandler, useState } from "react";
 import styled from "styled-components";
 
@@ -25,7 +26,12 @@ const ChatForm = ({ handleSend }: ChatFormProps) => {
 
   return (
     <Wrapper onSubmit={handleSubmit}>
-      <input type="text" value={input} onChange={handleInput} placeholder="문의를 남겨주세요 :)" />
+      <input
+        type="text"
+        value={input}
+        onChange={handleInput}
+        placeholder="문의를 남겨주세요 :)"
+      />
       <button>전송</button>
     </Wrapper>
   );
@@ -44,7 +50,7 @@ const Wrapper = styled.form`
 
   & > button {
     border: none;
-    background: #307fe5;
+    background: ${COLOR.MAIN};
     color: white;
     border-radius: 6px;
     padding: 0 12px;

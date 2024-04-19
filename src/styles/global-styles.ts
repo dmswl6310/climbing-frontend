@@ -1,5 +1,6 @@
 import { createGlobalStyle } from "styled-components";
 import { normalize } from "styled-normalize";
+import { COLOR } from "./global-color";
 
 const GlobalStyle = createGlobalStyle`
 ${normalize}
@@ -11,7 +12,7 @@ ${normalize}
 
   .btn-primary {
     border: none;
-    background: #307fe5;
+    background:  ${COLOR.MAIN};
     padding: 8px 10px;
     color: white;
     border-radius: 8px;

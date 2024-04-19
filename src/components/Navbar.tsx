@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import AuthBar from "./auth/AuthBar";
 import { usePathname } from "next/navigation";
 import { FaRegHandRock } from "react-icons/fa";
+import { COLOR } from "@/styles/global-color";
 
 // navbar(헤더)를 보여주지 않을 페이지 주소 지정
 const nonNavPage = ["/login", "/join"];
@@ -49,10 +50,10 @@ const S = {
     display: flex;
     text-decoration: none;
     font-size: 20px;
-    color: #307fe5;
+    color: ${COLOR.MAIN};
     font-weight: bold;
     &:visited {
-      color: #307fe5;
+      color: ${COLOR.MAIN};
     }
     align-items: center;
   `,
@@ -70,7 +71,7 @@ const S = {
     height: 80px;
   `,
   Wrapper: styled.div<{ $needMargin: boolean }>`
-    background: linear-gradient(45deg, white, #b1d3ff);
+    background: linear-gradient(45deg, white, ${COLOR.LIGHT_MAIN});
     position: fixed;
     top: 0;
     left: 0;

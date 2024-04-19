@@ -5,6 +5,7 @@ import NaverIcon from "../../../public/naver_rec.png";
 import GoogleIcon from "../../../public/google_rec.png";
 import KakaoIcon from "../../../public/kakao_rec.png";
 import Link from "next/link";
+import { SERVER_ADDRESS } from "@/constants/constants";
 
 // 세션 사용시의 코드
 // const OtherLogin = () => {
@@ -25,6 +26,11 @@ import Link from "next/link";
 //     </>
 //   );
 // };
+const handleKakaoLogin = () => {
+  // signIn("kakao", {
+  //   // callbackUrl: "/login/oauth2/code/kakao",
+  // });
+};
 
 // 백엔드에서 세션 처리시 사용할 코드
 const OtherLogin = () => {
@@ -38,8 +44,20 @@ const OtherLogin = () => {
         <Link href={"/oauth2/authorization/google"}>
           <Image src={GoogleIcon} alt="구글 아이콘" height={30} />
         </Link>
-        <Link href={"/oauth2/authorization/kakao"}>
-          <Image src={KakaoIcon} alt="카카오 아이콘" height={30} />
+        <Link
+          href={`https://kauth.kakao.com/oauth/authorize?client_id=${
+            process.env.KAKAO_CLIENT_ID
+          }\
+&redirect_uri=${
+            SERVER_ADDRESS + "/login/oauth2/code/kakao"
+          }&response_type=code`}
+        >
+          <Image
+            src={KakaoIcon}
+            alt="카카오 아이콘"
+            height={30}
+            // onClick={handleKakaoLogin}
+          />
         </Link>
       </S.IconContainer>
     </S.Wrapper>

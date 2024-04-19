@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { styled } from "styled-components";
 import SidebarDetails from "./SidebarDetails";
+import { COLOR } from "@/styles/global-color";
 
 interface SidebarProps {
   account: string;
@@ -35,7 +36,7 @@ const S = {
   `,
   Span: styled.span`
     font-weight: bold;
-    text-decoration: underline #307fe5;
+    text-decoration: underline ${COLOR.MAIN};
     text-underline-position: under;
     text-decoration-thickness: 2px;
   `,

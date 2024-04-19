@@ -2,6 +2,7 @@ import InputWithTitle from "@/components/common/InputWithTitle";
 import EmailVerification from "@/components/login/EmailVerification";
 import { EmailAuthProps } from "@/constants/login/type";
 import { requestData } from "@/service/api";
+import router from "next/router";
 import { useState } from "react";
 import styled from "styled-components";
 
@@ -178,7 +179,10 @@ const Join = () => {
     };
 
     const onSuccess = () => {
-      console.log("회원가입 onSuccess");
+      router.push({
+        pathname: "/join/result",
+        query: { nickname: nickname, email: email },
+      });
     };
 
     requestData({
@@ -186,6 +190,7 @@ const Join = () => {
       url: "/members/join",
       data: credentials,
       onSuccess,
+      hasBody: false,
     });
   };
 

@@ -1,3 +1,4 @@
+import { SERVER_ADDRESS } from "@/constants/constants";
 import { RequestProps, GetProps, PostProps } from "@/constants/service/type";
 
 //20초 후 abort
@@ -10,14 +11,22 @@ export const requestData = async ({
   data,
   onSuccess, // 성공 후 처리
   onError,
+  hasBody,
 }: RequestProps) => {
-  const absoluteUrl = "http://3.37.207.190:8080" + url;
+  const absoluteUrl = SERVER_ADDRESS + url;
 
   switch (option) {
     case "GET":
       return getData({ absoluteUrl, sessionId, onSuccess, onError });
     case "POST":
-      return postData({ absoluteUrl, data, sessionId, onSuccess, onError });
+      return postData({
+        absoluteUrl,
+        data,
+        sessionId,
+        onSuccess,
+        onError,
+        hasBody,
+      });
     // POST로 DELETE를 대체가능
     // case "DELETE":
     //   break;
@@ -54,15 +63,17 @@ const getData = ({ absoluteUrl, sessionId, onSuccess, onError }: GetProps) => {
         // 404, 500...등의 에러
         throw new Error(`${response.status} 에러`);
       }
-      // 실제 데이터 반환
+
       return response.json();
     })
-    .then((result) => {
+    .then((data) => {
       clearTimeout(timeout);
+
       if (onSuccess) {
-        return onSuccess(result);
+        return onSuccess(data);
       }
-      return result;
+      // 실제 데이터 반환
+      return data;
     })
     .catch((error) => {
       clearTimeout(timeout);
@@ -79,6 +90,7 @@ const postData = ({
   sessionId,
   onSuccess,
   onError,
+  hasBody = true,
 }: PostProps) => {
   const controller = new AbortController();
   const signal = controller.signal;
@@ -108,14 +120,16 @@ const postData = ({
         // 404, 500...등의 에러
         throw new Error(`${response.status} 에러`);
       }
-      return response.json();
+      if (hasBody) return response.json();
+      return response;
     })
-    .then((result) => {
+    .then((data) => {
       clearTimeout(timeout);
+
       if (onSuccess) {
-        return onSuccess(result);
+        return onSuccess(data);
       }
-      return;
+      return data;
     })
     .catch((error) => {
       clearTimeout(timeout);

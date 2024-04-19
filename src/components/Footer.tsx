@@ -2,6 +2,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { styled } from "styled-components";
 import { FaRegHandRock } from "react-icons/fa";
+import { COLOR } from "@/styles/global-color";
 
 // footer가 적용될 페이지(모두 양옆 마진 붙음)
 const footerPage = ["/home", "/gyms"];
@@ -57,10 +58,10 @@ const S = {
     display: flex;
     text-decoration: none;
     font-size: 20px;
-    color: #307fe5;
+    color: ${COLOR.MAIN};
     font-weight: bold;
     &:visited {
-      color: #307fe5;
+      color: ${COLOR.MAIN};
     }
     align-items: center;
   `,

@@ -4,6 +4,7 @@ import Link from "next/link";
 import styled from "styled-components";
 import AdminLayout from "@/components/admin/AdminLayout";
 import Overview from "@/components/admin/Overview";
+import { COLOR } from "@/styles/global-color";
 
 const AdminHome = () => {
   const { data: session, status } = useSession();
@@ -44,7 +45,7 @@ const Text = styled.div`
 `;
 
 const Btn = styled.div`
-  background: #307fe5;
+  background: ${COLOR.MAIN};
   color: white;
   padding: 24px;
   border-radius: 12px;

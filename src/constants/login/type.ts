@@ -1,12 +1,31 @@
+import { DefaultSession, DefaultUser } from "next-auth";
+import { DefaultJWT } from "next-auth/jwt";
 import { Dispatch, SetStateAction } from "react";
 
 declare module "next-auth" {
-  interface Session {
+  interface Session extends DefaultSession {
     user: {
       email: string;
       nickname: string;
-      token: string;
     };
+
+    jwt: {
+      accessToken: string;
+      refreshToken: string;
+    };
+  }
+  interface User extends DefaultUser {
+    jwt: {
+      accessToken: string;
+      refreshToken: string;
+    };
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT extends DefaultJWT {
+    accessToken: string;
+    refreshToken: string;
   }
 }
 

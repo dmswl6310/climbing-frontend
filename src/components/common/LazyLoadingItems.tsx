@@ -34,19 +34,30 @@ const LazyLoadingItems = ({
       requestData({
         option: "GET",
         url: `/search${queryUrl}`,
-        onSuccess: (data) => setItems(data),
+        onSuccess: (data: GymData[]) => setItems(data),
       });
     } else {
       // home page의 일부 부르기
       requestData({
         option: "GET",
         url: `/gyms`,
-        onSuccess: (data) => setItems(data),
+        onSuccess: (data: GymData[]) => setItems(data),
       });
     }
 
     setHasMore(true);
   }, [pathName, searchWord, sortingType]);
+
+  const PreviewCards = items.map((gymInfo, index) => {
+    return (
+      <PreviewCard
+        key={index}
+        width="350px"
+        height="300px"
+        cardInfo={gymInfo}
+      />
+    );
+  });
 
   return (
     <InfiniteScroll
@@ -62,16 +73,7 @@ const LazyLoadingItems = ({
         </p>
       }
     >
-      {items.map((gymInfo, index) => {
-        return (
-          <PreviewCard
-            key={index}
-            width="350px"
-            height="300px"
-            cardInfo={gymInfo}
-          />
-        );
-      })}
+      {PreviewCards}
     </InfiniteScroll>
   );
 };

@@ -14,6 +14,7 @@ export interface RequestProps {
   data?: any;
   onSuccess?: (data: any) => void;
   onError?: () => void;
+  hasBody?: boolean; // response의 body 여부
 }
 
 export interface GetProps {
@@ -29,4 +30,5 @@ export interface PostProps {
   sessionId?: string;
   onSuccess?: (data: any) => void;
   onError?: () => void;
+  hasBody?: boolean;
 }

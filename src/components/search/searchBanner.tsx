@@ -5,6 +5,7 @@ import router from "next/router";
 import Image from "next/image";
 import img from "../../../public/magnifier.png";
 import { SearchBannerProps, sampleAddress } from "@/constants/search/types";
+import { COLOR } from "@/styles/global-color";
 
 const SearchBanner = ({ searchWord }: SearchBannerProps) => {
   const handleSubmit = (event: {
@@ -32,7 +33,7 @@ const SearchBanner = ({ searchWord }: SearchBannerProps) => {
           placeholder="주소를 입력하면 실내암벽장을 찾아드려요."
           onSubmit={handleSubmit}
           useLocation={true}
-          border="3px solid #b1d3ff"
+          border={"3px solid " + COLOR.LIGHT_MAIN}
           searchWord={searchWord}
         />
       </Styled.SearchContainer>
@@ -60,7 +61,7 @@ const Styled = {
     font-size: 40px;
     margin-bottom: 30px;
     font-weight: bold;
-    color: #307fe5;
+    color: ${COLOR.MAIN};
   `,
   SearchContainer: styled.div`
     width: 400px;

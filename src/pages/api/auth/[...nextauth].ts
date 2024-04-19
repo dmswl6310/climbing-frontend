@@ -1,3 +1,4 @@
+import { SERVER_ADDRESS } from "@/constants/constants";
 import { requestData } from "@/service/api";
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -18,20 +19,38 @@ export default NextAuth({
       async authorize(credentials: any) {
         let email = "tempEmail";
         let nickname = "tempNickname";
-        let token = "tempToken";
+        let jwt = { accessToken: "tempAccess", refreshToken: "tempRefresh" };
 
         requestData({
           option: "POST",
           url: `/members/login`,
           data: { email: credentials.email, password: credentials.password },
-          onSuccess: (data: any) => {
-            email = data.email;
-            nickname = data.nickname;
-            token = data.token;
+          onSuccess: (response: any) => {
+            const responseHeaders = response.headers;
+            const responseAccessToken = responseHeaders.get("Authorization");
+            const responseRefreshToken = responseHeaders.get(
+              "Authorization-refresh"
+            );
+            if (
+              !(responseHeaders && responseAccessToken && responseRefreshToken)
+            ) {
+              throw Error("missing header or token");
+            }
+
+            // 받은 토큰
+            jwt = {
+              accessToken: responseHeaders.get("Authorization"),
+              refreshToken: responseHeaders.get("Authorization-refresh"),
+            };
+
+            // 받은 유저정보
+            // const data = response.json();
+            // email = data.email;
+            // nickname = data.nickname;
           },
+          hasBody: false,
         });
-        const user = { email, nickname, token };
-        return user as any;
+        return { user: { email, nickname }, jwt } as any;
       },
     }),
     // 다른 경로로 로그인 => 콜백으로 토큰받아서 서버에 넘겨줘야..
@@ -58,18 +77,49 @@ export default NextAuth({
   callbacks: {
     // 로그인 시 return한 값이 user로 들어옴
     async jwt({ token, user }) {
-      return { ...token, ...user };
+      if (user) {
+        return {
+          ...token,
+          ...user,
+          jwt: user.jwt,
+        };
+      }
+      return token;
     },
     // jwt에서 return한 값이 token으로 들어옴
     async session({ session, token }) {
-      session.user = token as any;
+      if (token) {
+        session.jwt = token.jwt as any;
+        session.user = token.user as any;
+      }
       return session;
     },
+    // async redirect({ url, baseUrl }) {
+    //   console.log("url", url);
+    //   console.log("baseUrl", baseUrl);
+
+    //   return url.startsWith(SERVER_ADDRESS) ? url : baseUrl;
+    // },
+    // async redirect({ url, baseUrl }) {
+    // if (url.startsWith(SERVER_ADDRESS)) {
+    //   console.log("이상하네");
+    //   return Promise.resolve(
+    //     "http://3.37.207.190:8080/login/oauth2/code/kakao"
+    //   );
+    //   return;
+    // }
+
+    // Allows relative callback URLs
+    //   if (url.startsWith("/")) return `${baseUrl}${url}`;
+    //   // Allows callback URLs on the same origin
+    //   else if (new URL(url).origin === baseUrl) return url;
+    //   return baseUrl;
+    // },
   },
 
   pages: {
     signIn: "/login",
     error: "error",
   },
-  secret: process.env.AUTH_SECRET,
+  // async redirect({ url, baseUrl }) { const redirectUrl = url.startsWith('/') ? new URL(url, baseUrl).toString() : url console.log([next-auth] Redirecting to "${redirectUrl}" (resolved from url "${url}" and baseUrl "${baseUrl}")) return '/start' },
 });

@@ -2,6 +2,7 @@ import { useState } from "react";
 import styled from "styled-components";
 import type { ChangeEvent } from "react";
 import type { CommentTextareaProps } from "@/constants/gyms/types";
+import { COLOR } from "@/styles/global-color";
 
 const CommentTextarea = ({ handleAddComment }: CommentTextareaProps) => {
   const [comment, setComment] = useState("");
@@ -31,7 +32,9 @@ const CommentTextarea = ({ handleAddComment }: CommentTextareaProps) => {
         return setComment("");
       }
       default: {
-        return alert("알 수 없는 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
+        return alert(
+          "알 수 없는 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."
+        );
       }
     }
   };
@@ -41,12 +44,20 @@ const CommentTextarea = ({ handleAddComment }: CommentTextareaProps) => {
       <S.Header>
         한줄평 <span>{comment.length}</span>
       </S.Header>
-      <S.Textarea placeholder="소중한 후기를 남겨주세요 :)" value={comment} onChange={onChange} />
+      <S.Textarea
+        placeholder="소중한 후기를 남겨주세요 :)"
+        value={comment}
+        onChange={onChange}
+      />
       <S.Buttons>
         <button className="btn-unfilled" onClick={handleCancel}>
           취소
         </button>
-        <button className="btn-filled" onClick={handlePost} disabled={isLoading}>
+        <button
+          className="btn-filled"
+          onClick={handlePost}
+          disabled={isLoading}
+        >
           댓글
         </button>
       </S.Buttons>
@@ -66,7 +77,7 @@ const S = {
     font-weight: 700;
 
     span {
-      color: #307fe5;
+      color: ${COLOR.MAIN};
     }
   `,
   Textarea: styled.textarea`
@@ -96,7 +107,7 @@ const S = {
 
     .btn-filled {
       border: none;
-      background: #307fe5;
+      background: ${COLOR.MAIN};
       padding: 8px 10px;
       color: white;
       border-radius: 8px;

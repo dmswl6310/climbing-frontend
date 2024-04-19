@@ -6,6 +6,7 @@ import SearchLayout from "@/components/search/SearchLayout";
 import SearchBanner from "@/components/search/searchBanner";
 import GymListBanner from "@/components/search/GymListBanner";
 import { useRouter } from "next/router";
+import { COLOR } from "@/styles/global-color";
 
 const HomePage: NextPageWithLayout = () => {
   const router = useRouter();
@@ -37,10 +38,10 @@ const Styled = {
     text-align: right;
   `,
   MoreButton: styled.button`
-    background-color: #b1d3ff;
+    background-color: ${COLOR.LIGHT_MAIN};
     display: inline-block;
     margin-bottom: 300px;
-    border: 1px solid #b1d3ff;
+    border: 1px solid ${COLOR.LIGHT_MAIN};
     border-radius: 10px;
     padding: 5px;
     /* font-weight: bold; */

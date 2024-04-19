@@ -15,8 +15,8 @@ const Socket = () => {
   const clientRef = useRef(
     new Client({
       brokerURL: `ws://${SOCKET_ADDRESS}/ws/chat`,
-      connectHeaders: { Authorization: "Bearer " + session?.user.token },
-    }),
+      connectHeaders: { Authorization: "Bearer " + session?.jwt.accessToken },
+    })
   );
   const roomRef = useRef("");
   const [messages, setMessages] = useState<MessageFormat[]>(sampleData);
