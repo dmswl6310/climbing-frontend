@@ -113,7 +113,7 @@ const GymInfo = ({ gymData }: InferGetServerSidePropsType<GetServerSideProps>) =
                     </S.Icon>{" "}
                     <S.Icon $clickable={true}>
                       <Bookmark
-                        sessionId={session.user?.email as string}
+                        token={session.user?.email as string}
                         gymId={gymData.id}
                         size="1.3rem"
                       />

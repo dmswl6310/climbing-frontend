@@ -1,9 +1,10 @@
 import { useSession } from "next-auth/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { styled } from "styled-components";
 import { useRouter } from "next/router";
 import React from "react";
 import { requestData } from "@/service/api";
+import { CONFIRM_MESSAGE } from "@/constants/login/constants";
 
 const Mypage = () => {
   // 현재는 세션이 있을때 메이페이지가 보이지만 추후 백엔드 요청시 정보가 있을때만 표시
@@ -20,10 +21,23 @@ const Mypage = () => {
   const [password, setPassword] = useState("");
   const [nickname, setNickname] = useState("");
 
-  const confirmMessage = "사용 가능";
+  const [infoFromServer, setInfoFromServer] = useState({
+    email: "temp@naver.com",
+    nickname: "tempNickname",
+  });
 
   const router = useRouter();
-
+  useEffect(() => {
+    const onSuccess = (data: any) => {
+      setInfoFromServer({ email: data.email, nickname: data.nickname });
+    };
+    requestData({
+      option: "GET",
+      url: "/members/myInfo",
+      token: `${session?.jwt.accessToken}`,
+      onSuccess,
+    });
+  });
   const handlePasswordChange = (event: {
     target: {
       value: string;
@@ -71,10 +85,14 @@ const Mypage = () => {
     if (!nicknameRegrex.test(currentNickname)) {
       setNicknameMessage("닉네임은 2자이상이어야 합니다.");
       setIsNicknameValid(false);
+    } else if (currentNickname === infoFromServer.nickname) {
+      setNicknameMessage("기존 닉네임(" + CONFIRM_MESSAGE + ")");
+      setIsNicknameValid(true);
+      setNickname(currentNickname);
     } else {
       const onSuccess = (canUse: boolean) => {
         if (canUse) {
-          setNicknameMessage(confirmMessage);
+          setNicknameMessage(CONFIRM_MESSAGE);
           setIsNicknameValid(true);
           setNickname(currentNickname);
         } else {
@@ -97,16 +115,17 @@ const Mypage = () => {
     event.preventDefault();
 
     const credentials = {
-      username: { label: session!.user!.email, type: "email" },
-      password: { label: password, type: "password" },
-      nickname: { label: nickname, type: "nickname" },
+      // username: { label: session!.user!.email, type: "email" },
+      // password: { label: password, type: "password" },
+      nickname: nickname,
     };
 
     requestData({
-      option: "POST",
+      option: "PUT",
       url: "/members/update",
       onSuccess: () => router.reload(),
     });
+
     // const response = await fetch("http://localhost:3000/members/update", {
     //   method: "UPDATE",
     //   headers: { "Content-Type": "application/json" },
@@ -136,7 +155,7 @@ const Mypage = () => {
         <tbody>
           <tr>
             <td width="150px">아이디(이메일)</td>
-            <td>서버에서 준 아이디</td>
+            <td>{infoFromServer.email}</td>
           </tr>
           <tr>
             <td>비밀번호</td>
@@ -170,7 +189,7 @@ const Mypage = () => {
                 type="text"
                 $hasMessage={nicknameMessage !== ""}
                 onChange={handleNicknameChange}
-                defaultValue={"서버로 부터 받은 닉네임"}
+                defaultValue={infoFromServer.nickname}
               ></S.Input>
               <S.Warning>{nicknameMessage}</S.Warning>
             </td>

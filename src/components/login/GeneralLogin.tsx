@@ -17,7 +17,7 @@ const GeneralLogin = () => {
     });
 
     if (result?.error) {
-      // 로그인 실패 시 오류 메시지
+      console.log("login fail");
     } else {
       console.log("login success");
     }

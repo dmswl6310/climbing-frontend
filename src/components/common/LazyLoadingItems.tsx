@@ -34,14 +34,14 @@ const LazyLoadingItems = ({
       requestData({
         option: "GET",
         url: `/search${queryUrl}`,
-        onSuccess: (data: GymData[]) => setItems(data),
+        // onSuccess: (data) => setItems(data.data),
       });
     } else {
       // home page의 일부 부르기
       requestData({
         option: "GET",
         url: `/gyms`,
-        onSuccess: (data: GymData[]) => setItems(data),
+        // onSuccess: (data) => setItems(data.data),
       });
     }
 

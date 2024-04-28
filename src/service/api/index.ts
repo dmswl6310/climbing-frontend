@@ -7,42 +7,50 @@ const timeLimit = 20000;
 export const requestData = async ({
   option,
   url,
-  sessionId,
+  token,
   data,
   onSuccess, // 성공 후 처리
   onError,
-  hasBody,
+  hasBody, // json화하지않고 통째로 response받을때 false로 하면됨
 }: RequestProps) => {
   const absoluteUrl = SERVER_ADDRESS + url;
 
   switch (option) {
     case "GET":
-      return getData({ absoluteUrl, sessionId, onSuccess, onError });
+      return getData({ absoluteUrl, token, onSuccess, onError, hasBody });
+
     case "POST":
+    case "PUT":
+    case "DELETE":
       return postData({
+        option,
         absoluteUrl,
         data,
-        sessionId,
+        token,
         onSuccess,
         onError,
         hasBody,
       });
-    // POST로 DELETE를 대체가능
-    // case "DELETE":
-    //   break;
+
     default:
       console.log("잘못된 옵션 설정");
   }
 };
 
-const getData = ({ absoluteUrl, sessionId, onSuccess, onError }: GetProps) => {
+const getData = ({
+  absoluteUrl,
+  token,
+  onSuccess,
+  onError,
+  hasBody = false,
+}: GetProps) => {
   const controller = new AbortController();
   const signal = controller.signal;
   const contentType = { "Content-Type": "application/json" };
   let headers;
 
-  if (sessionId) {
-    headers = { ...contentType, Authorization: `${sessionId}` };
+  if (token) {
+    headers = { ...contentType, Authorization: `Bearer ${token}` };
   } else {
     headers = { ...contentType };
   }
@@ -53,7 +61,7 @@ const getData = ({ absoluteUrl, sessionId, onSuccess, onError }: GetProps) => {
     controller.abort();
   }, timeLimit);
 
-  fetch(absoluteUrl, {
+  return fetch(absoluteUrl, {
     method: "GET",
     headers: headers,
     signal,
@@ -63,8 +71,8 @@ const getData = ({ absoluteUrl, sessionId, onSuccess, onError }: GetProps) => {
         // 404, 500...등의 에러
         throw new Error(`${response.status} 에러`);
       }
-
-      return response.json();
+      if (hasBody) return response.json();
+      return response;
     })
     .then((data) => {
       clearTimeout(timeout);
@@ -85,9 +93,10 @@ const getData = ({ absoluteUrl, sessionId, onSuccess, onError }: GetProps) => {
 };
 
 const postData = ({
+  option,
   absoluteUrl,
   data,
-  sessionId,
+  token,
   onSuccess,
   onError,
   hasBody = true,
@@ -97,8 +106,8 @@ const postData = ({
   const contentType = { "Content-Type": "application/json" };
   let headers;
 
-  if (sessionId) {
-    headers = { ...contentType, Authorization: `${sessionId}` };
+  if (token) {
+    headers = { ...contentType, Authorization: `${token}` };
   } else {
     headers = { ...contentType };
   }
@@ -109,8 +118,8 @@ const postData = ({
     controller.abort();
   }, timeLimit);
 
-  fetch(absoluteUrl, {
-    method: "POST",
+  return fetch(absoluteUrl, {
+    method: option,
     headers: headers,
     body: JSON.stringify(data),
     signal,

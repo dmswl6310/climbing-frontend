@@ -16,7 +16,7 @@ const MyBookmark = () => {
     //   method: "GET",
     //   headers: {
     //     "Content-Type": "application/json",
-    //     Authorization: { sessionId },
+    //     Authorization: { token },
     //   },
     // });
     // const data = await response.json();
@@ -30,7 +30,7 @@ const MyBookmark = () => {
       requestData({
         option: "GET",
         url: "/api/bookmarks",
-        // sessionId:{session.user.sessionId}
+        // token:{session.user.accessToken}
         onSuccess: (data) => setItems(data),
       });
       // fetchBookmarksFromServer();

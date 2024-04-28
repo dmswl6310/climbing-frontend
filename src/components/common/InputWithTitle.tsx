@@ -1,5 +1,6 @@
 import { InputProps } from "@/constants/login/type";
 import { styled } from "styled-components";
+import { CONFIRM_MESSAGE } from "@/constants/login/constants";
 
 const InputWithTitle = ({
   name,
@@ -12,14 +13,12 @@ const InputWithTitle = ({
   onClick,
   onDisabled,
 }: InputProps) => {
-  const confirmMessage = "사용 가능";
-
   return (
     <Styled.Wrapper>
       <Styled.Title>{title}</Styled.Title>
       <Styled.InputContainer>
         <Styled.Input
-          $isWarning={message !== "" && message !== confirmMessage}
+          $isWarning={message !== "" && message !== CONFIRM_MESSAGE}
           placeholder={placeholder}
           name={name}
           type={type}
@@ -31,7 +30,7 @@ const InputWithTitle = ({
           </Styled.Button>
         ) : null}
       </Styled.InputContainer>
-      <Styled.Result $isWarning={message !== confirmMessage}>
+      <Styled.Result $isWarning={message !== CONFIRM_MESSAGE}>
         {message}
       </Styled.Result>
     </Styled.Wrapper>

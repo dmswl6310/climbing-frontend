@@ -20,7 +20,7 @@ const PreviewCard = ({ width, height, cardInfo }: CardProps) => {
               <div>{cardInfo.address.roadAddress}</div>
               <div>{cardInfo.name}</div>
             </S.NameContainer>
-            <Bookmark sessionId="임시sessionid" gymId="임시gymId" />
+            <Bookmark token="임시token" gymId="임시gymId" />
           </S.MainInfoContainer>
           <S.SubInfoContainer>
             <S.Date>최근 세팅일 : {cardInfo.latestSettingDay}</S.Date>

@@ -5,6 +5,7 @@ import { requestData } from "@/service/api";
 import router from "next/router";
 import { useState } from "react";
 import styled from "styled-components";
+import { CONFIRM_MESSAGE } from "@/constants/login/constants";
 
 const Join = () => {
   const [isEmailValid, setIsEmailValid] = useState(false);
@@ -28,8 +29,6 @@ const Join = () => {
   const [verificationNumber, setVerificationNumber] = useState("");
   const [isCodeValid, setIsCodeValid] = useState(false);
 
-  const confirmMessage = "사용 가능";
-
   const handleEmailChange = async (event: {
     target: {
       value: string;
@@ -45,7 +44,7 @@ const Join = () => {
     } else {
       const onSuccess = (canUse: boolean) => {
         if (canUse) {
-          setEmailMessage(confirmMessage);
+          setEmailMessage(CONFIRM_MESSAGE);
           setIsEmailValid(true);
           setEmail(currentEmail);
         } else {
@@ -115,7 +114,7 @@ const Join = () => {
     } else {
       const onSuccess = (canUse: boolean) => {
         if (canUse) {
-          setNicknameMessage(confirmMessage);
+          setNicknameMessage(CONFIRM_MESSAGE);
           setIsNicknameValid(true);
           setNickname(currentNickname);
         } else {
@@ -206,7 +205,7 @@ const Join = () => {
           message={emailMessage}
           buttonText="인증번호 받기"
           onClick={handleSendClick}
-          onDisabled={isSendDisabled || isCodeValid}
+          onDisabled={isSendDisabled || isCodeValid || !isEmailValid}
         />
         <EmailVerification
           remainingTime={remainingTime}

@@ -2,6 +2,7 @@ const requestOptions = {
   GET: "GET",
   POST: "POST",
   DELETE: "DELETE",
+  PUT: "PUT",
 } as const;
 
 type Option = (typeof requestOptions)[keyof typeof requestOptions];
@@ -10,25 +11,27 @@ type Option = (typeof requestOptions)[keyof typeof requestOptions];
 export interface RequestProps {
   option: Option;
   url: string;
-  sessionId?: string;
+  token?: string;
   data?: any;
-  onSuccess?: (data: any) => void;
+  onSuccess?: (data: any) => void | any;
   onError?: () => void;
   hasBody?: boolean; // response의 body 여부
 }
 
 export interface GetProps {
   absoluteUrl: string;
-  sessionId?: string;
-  onSuccess?: (data: any) => void;
+  token?: string;
+  onSuccess?: (data: any) => void | any;
   onError?: () => void;
+  hasBody?: boolean;
 }
 
 export interface PostProps {
+  option: Option;
   absoluteUrl: string;
   data: any;
-  sessionId?: string;
-  onSuccess?: (data: any) => void;
+  token?: string;
+  onSuccess?: (data: any) => void | any;
   onError?: () => void;
   hasBody?: boolean;
 }

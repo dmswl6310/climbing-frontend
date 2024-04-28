@@ -28,7 +28,7 @@ const ManagePage: NextPageWithLayout = () => {
         const response = await Promise.race([
           fetch(`${testUrl}`),
           new Promise<Response>((_, reject) =>
-            setTimeout(() => reject(new Response(null, { status: 503 })), 3000),
+            setTimeout(() => reject(new Response(null, { status: 503 })), 3000)
           ),
         ]);
         if (!response.ok) comments = sampleData;
@@ -59,7 +59,7 @@ const ManagePage: NextPageWithLayout = () => {
           body: JSON.stringify({ comments }),
         }),
         new Promise<Response>((_, reject) =>
-          setTimeout(() => reject(new Response(null, { status: 503 })), 3000),
+          setTimeout(() => reject(new Response(null, { status: 503 })), 3000)
         ),
       ]);
       if (!response.ok) throw new Error(`${response.status}`);
@@ -71,7 +71,9 @@ const ManagePage: NextPageWithLayout = () => {
   };
 
   const handleDelete = (index: number) => {
-    const response = confirm("삭제한 댓글은 복구할 수 없습니다. 댓글을 삭제하시겠습니까?");
+    const response = confirm(
+      "삭제한 댓글은 복구할 수 없습니다. 댓글을 삭제하시겠습니까?"
+    );
     if (!response) return;
     const remainingComments = comments.filter((_, i) => index !== i);
     updateDatabase(remainingComments);
