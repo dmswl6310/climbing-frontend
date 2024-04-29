@@ -42,7 +42,7 @@ const getData = ({
   token,
   onSuccess,
   onError,
-  hasBody = false,
+  hasBody = true,
 }: GetProps) => {
   const controller = new AbortController();
   const signal = controller.signal;
