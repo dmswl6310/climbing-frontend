@@ -23,7 +23,7 @@ const JoinResult = () => {
         회원가입이 <S.CompleteText>완료</S.CompleteText> 되었습니다.
       </h1>
       <h4>
-        {query.nickname || "tempNickname"}의 회원가입을 축하합니다.
+        {query.nickname || "tempNickname"}님의 회원가입을 축하합니다.
         <br />
         가입하신 아이디는 <S.IdText>{query.email || "tempEmail"}</S.IdText>
         입니다.

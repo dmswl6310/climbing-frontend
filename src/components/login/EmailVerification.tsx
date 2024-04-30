@@ -2,13 +2,14 @@ import { useEffect } from "react";
 import { styled } from "styled-components";
 import InputWithTitle from "../common/InputWithTitle";
 import { EmailVerificationProps } from "@/constants/login/type";
+import { requestData } from "@/service/api";
 
 const EmailVerification = ({
+  enteredEmail,
   remainingTime,
   setTime,
   isBtnDisabled,
   setBtnDisabled,
-  verificationNum,
   isCodeValid,
   setIsCodeValid,
 }: EmailVerificationProps) => {
@@ -40,16 +41,26 @@ const EmailVerification = ({
     target: { parentElement: { querySelector: (arg0: string) => any } };
   }) => {
     event.preventDefault();
-    
+
     const inputTag = event.target.parentElement.querySelector(
       'input[name="verificationNumber"]'
     );
+
     const enteredNum = inputTag.value;
-    if (enteredNum == verificationNum) {
-      setIsCodeValid(true);
-      inputTag.disabled = true;
-      setTime(0);
-    }
+
+    const onSuccess = (isCorrect: boolean) => {
+      if (isCorrect) {
+        setIsCodeValid(true);
+        inputTag.disabled = true;
+        setTime(0);
+      }
+    };
+
+    requestData({
+      option: "GET",
+      url: `/members/email-auth-check/${enteredEmail}/${enteredNum}`,
+      onSuccess,
+    });
   };
 
   return (

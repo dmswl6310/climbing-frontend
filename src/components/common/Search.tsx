@@ -116,6 +116,7 @@ export const Search = ({
           dropItems={filteredList}
           highlightWord={filterStr}
           highlightIndex={index}
+          setHighlightIndex={setIndex}
           fontSize={fontSize}
           handleClick={handleClick as (arg: unknown) => unknown}
           // onMouseOver={handleMouseOver}

@@ -42,11 +42,11 @@ export interface InputProps {
 }
 
 export interface EmailVerificationProps {
+  enteredEmail: string;
   remainingTime: number;
   setTime: Dispatch<SetStateAction<number>>;
   isBtnDisabled: boolean;
   setBtnDisabled: Dispatch<SetStateAction<boolean>>;
-  verificationNum: string;
   isCodeValid: boolean;
   setIsCodeValid: Dispatch<SetStateAction<boolean>>;
 }

@@ -26,7 +26,6 @@ const Join = () => {
 
   const [remainingTime, setRemainingTime] = useState(0);
   const [isSendDisabled, setIsSendDisabled] = useState(false);
-  const [verificationNumber, setVerificationNumber] = useState("");
   const [isCodeValid, setIsCodeValid] = useState(false);
 
   const handleEmailChange = async (event: {
@@ -147,7 +146,7 @@ const Join = () => {
   }) => {
     event.preventDefault();
 
-    const onSuccess = ({ authNum }: EmailAuthProps) => {
+    const onSuccess = () => {
       // input 비활성화
       event.target.parentElement.querySelector('input[name="email"]').disabled =
         true;
@@ -155,9 +154,6 @@ const Join = () => {
       // 타이머 세팅
       setRemainingTime(30);
       setIsSendDisabled(true);
-
-      // 인증번호 세팅
-      setVerificationNumber(authNum);
     };
 
     requestData({
@@ -165,6 +161,7 @@ const Join = () => {
       url: `/members/email-auth`,
       data: { email: email },
       onSuccess,
+      hasBody: false,
     });
   };
 
@@ -208,11 +205,11 @@ const Join = () => {
           onDisabled={isSendDisabled || isCodeValid || !isEmailValid}
         />
         <EmailVerification
+        enteredEmail={email}
           remainingTime={remainingTime}
           setTime={setRemainingTime}
           isBtnDisabled={isSendDisabled}
           setBtnDisabled={setIsSendDisabled}
-          verificationNum={verificationNumber}
           isCodeValid={isCodeValid}
           setIsCodeValid={setIsCodeValid}
         />

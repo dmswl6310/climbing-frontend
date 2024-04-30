@@ -37,7 +37,7 @@ const Mypage = () => {
       token: `${session?.jwt.accessToken}`,
       onSuccess,
     });
-  });
+  }, [session]);
   const handlePasswordChange = (event: {
     target: {
       value: string;
