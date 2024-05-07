@@ -69,7 +69,12 @@ const NewGymForm = ({ handleSubmit, disableForm }: NewGymFormProps) => {
             />
           </S.TextField>
         </div>
-        <input type="submit" value="등록" className="btn-primary" disabled={disableForm} />
+        <input
+          type="submit"
+          value={disableForm ? "등록 중..." : "등록"}
+          className="btn-primary"
+          disabled={disableForm}
+        />
       </S.Form>
     </S.Wrapper>
   );

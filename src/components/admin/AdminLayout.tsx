@@ -1,6 +1,6 @@
 import Link from "next/link";
 import styled from "styled-components";
-import { HiOutlineCog, HiOutlineHome } from "react-icons/hi";
+import { HiOutlineChat, HiOutlineCog, HiOutlineHome } from "react-icons/hi";
 import { MdOutlineComment } from "react-icons/md";
 
 const AdminLayout = ({ children }: React.PropsWithChildren<{}>) => {
@@ -33,6 +33,12 @@ const AdminLayout = ({ children }: React.PropsWithChildren<{}>) => {
           <MdOutlineComment size="1.3rem" />
           <Link href="/admin/manage">
             <strong>댓글 관리</strong>
+          </Link>
+        </S.Header>
+        <S.Header>
+          <HiOutlineChat size="1.3rem" />
+          <Link href="/admin/chat">
+            <strong>1:1 문의</strong>
           </Link>
         </S.Header>
       </S.Menu>
@@ -75,7 +81,9 @@ const S = {
     gap: 36px;
     background: #fafaf8;
     padding: 36px 63px;
-    & input:focus, textarea:focus, select:focus {
+    & input:focus,
+    textarea:focus,
+    select:focus {
       outline: none;
     }
   `,

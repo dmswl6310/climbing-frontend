@@ -1,0 +1,76 @@
+import styled from "styled-components";
+import ContactInfo from "./ContactInfo";
+import GradeBar from "./GradeBar";
+import NoData from "./NoData";
+import OpenHoursTable from "./OpenHoursTable";
+import PricingTable from "./PricingTable";
+import Tag from "./Tag";
+import { DEVICE_SIZE } from "@/constants/styles";
+import type { GymData } from "@/constants/gyms/types";
+
+const SideContent = ({ gymData }: { gymData: GymData }) => {
+  return (
+    <Wrapper>
+      <div className="container">
+        <h4>관련 태그</h4>
+        {!gymData.tags ? (
+          <NoData />
+        ) : (
+          <TagList>
+            {gymData.tags.map((tag: string, i: number) => (
+              <Tag key={i} prefix="#" text={tag} />
+            ))}
+          </TagList>
+        )}
+      </div>
+      <div className="container">
+        <h4>이용금액</h4>
+        <PricingTable pricing={gymData.pricing || null} />
+      </div>
+      <div className="container">
+        <h4>영업시간</h4>
+        <OpenHoursTable openHours={gymData.openHours || null} />
+      </div>
+      <div className="container">
+        <h4>시설 정보</h4>
+        {!gymData.accommodations ? <NoData /> : gymData.accommodations.join(", ")}
+      </div>
+      <div className="container">
+        <h4>난이도</h4>
+        <GradeBar grades={gymData.grades || null} />
+      </div>
+      <div className="container">
+        <ContactInfo contact={gymData.contact} snsList={gymData.sns || null} />
+      </div>
+    </Wrapper>
+  );
+};
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  & > div {
+    box-sizing: border-box;
+    padding: 24px 28px;
+  }
+  h4 {
+    margin-top: 0;
+    margin-bottom: 16px;
+  }
+  @media ${DEVICE_SIZE.desktop} {
+    width: 430px;
+  }
+  @media ${DEVICE_SIZE.laptop} {
+    margin-top: 40px;
+    width: inherit;
+  }
+`;
+
+const TagList = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+`;
+
+export default SideContent;

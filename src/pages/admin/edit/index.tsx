@@ -28,25 +28,20 @@ const EditPage = () => {
   const [isError, setIsError] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const tracker = useRef<null | string>(null);
-  // const tokenRef = useRef(session?.jwt);
-  console.log("세션 상태:");
-  console.log(session);
-  console.log(status);
 
   useEffect(() => {
-    // 테스트 후 복원
-    // if (!session) router.push({ pathname: "/login" });
+    if (!session) router.push({ pathname: "/login" });
     const id = "7"; // 테스트 후 사용자 정보를 통해 가져오도록 변경
     let data: GymData;
 
     const fetchData = async () => {
+      if (!session) return;
       try {
         const response = await Promise.race([
           fetch(`${SERVER_ADDRESS}/gyms/${id}`, {
             method: "GET",
             headers: {
-              "Content-Type": "application/json",
-              // Authorization: session.jwt,
+              Authorization: session.jwt.accessToken,
             },
           }),
           new Promise<Response>((_, reject) =>
@@ -88,7 +83,7 @@ const EditPage = () => {
     fetchData();
     router.events.on("routeChangeStart", handlePageLeave);
     return () => router.events.off("routeChangeStart", handlePageLeave);
-  }, [router.events]);
+  }, [session, router]);
 
   useEffect(() => {
     tracker.current = isEdited(loadedData, currentData) ? "edited" : null;

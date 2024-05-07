@@ -12,13 +12,21 @@ ${normalize}
 
   .btn-primary {
     border: none;
-    background:  ${COLOR.MAIN};
+    background: ${COLOR.MAIN};
     padding: 8px 10px;
     color: white;
     border-radius: 8px;
     cursor: pointer;
     &:hover {
       opacity: 0.8;
+    }
+  }
+
+  .btn-primary:disabled {
+    background: ${COLOR.DISABLED};
+    cursor: default;
+    &:hover {
+      opacity: 1;
     }
   }
 

@@ -5,6 +5,11 @@ import { GymData } from "../gyms/types";
 type Range<T> = [T, T];
 type ValuePiece = Date | null;
 export type Value = ValuePiece | Range<ValuePiece>;
+export type Chatroom = { roomId: number; roomName: string };
+export type ChatroomRef = {
+  url: string;
+  windowRef: Window;
+};
 
 // 컴포넌트 props 타입 정의
 export interface DescriptionEditorProps {

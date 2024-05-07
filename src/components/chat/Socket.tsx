@@ -1,78 +1,118 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
-import { Client, IFrame } from "@stomp/stompjs";
+import { Client, Message, type IFrame } from "@stomp/stompjs";
 import styled from "styled-components";
 import ChatForm from "./ChatForm";
 import ChatHistory from "./ChatHistory";
-import { SOCKET_ADDRESS } from "@/constants/constants";
-import type { MessageFormat } from "./ChatHistory";
+import LoginPrompt from "../common/LoginPrompt";
+import { type ChatHistoryProps, ChatHistoryContext } from "@/ChatHistoryContext";
+import { SERVER_ADDRESS, SOCKET_ADDRESS } from "@/constants/constants";
 
-const Socket = () => {
-  const { data: session, status } = useSession();
-  console.log("세션");
-  console.log(session); // 세션 확인
+const Socket = ({ gymName, gymId }: { gymName: string; gymId: string }) => {
+  const { data: session } = useSession();
+  const [isLoading, setIsLoading] = useState(true);
+  const clientRef = useRef<null | Client>(null);
+  const roomRef = useRef(null);
+  const { history, updateHistory } = useContext(ChatHistoryContext);
+  const currentHistory = useRef(history);
 
-  const clientRef = useRef(
-    new Client({
-      brokerURL: `ws://${SOCKET_ADDRESS}/ws/chat`,
-      connectHeaders: { Authorization: "Bearer " + session?.jwt.accessToken },
-    })
-  );
-  const roomRef = useRef("");
-  const [messages, setMessages] = useState<MessageFormat[]>(sampleData);
+  const onServerMessage = (res: Message) => {
+    if (!session || !roomRef.current) return;
+    const messageBody = JSON.parse(res.body);
+    const { type, message, sender } = messageBody;
+    console.log(messageBody);
+
+    if (type === "TALK") {
+      const newMessage = {
+        userType: sender === session.user.email ? "customer" : "admin",
+        message,
+        time: Date.now(),
+      };
+      const newHistory: ChatHistoryProps = { ...currentHistory.current };
+      newHistory[roomRef.current as keyof typeof newHistory] = [
+        ...(currentHistory.current?.[roomRef.current as keyof typeof currentHistory.current] || []),
+        newMessage,
+      ];
+      currentHistory.current = { ...currentHistory.current, ...newHistory };
+      updateHistory((prev) => ({ ...prev, ...newHistory }));
+    }
+  };
 
   useEffect(() => {
+    if (!session) return setIsLoading(false);
+
+    clientRef.current = new Client({
+      brokerURL: `ws://${SOCKET_ADDRESS}/ws/chat`,
+      connectHeaders: { Authorization: "Bearer " + session.jwt.accessToken },
+    });
     const client = clientRef.current;
-    console.log("STOMP 클라이언트:"); // 클라이언트 생성 확인
-    console.log(client);
 
-    const onClientConnect = () => {
-      console.log("연결 성공");
-      console.log("구독 시도");
-      client.subscribe("/app", (message) => {
-        console.log(message); // 서버에서 도착한 메시지 확인
-        // ENTER 타입일 경우 리턴받은 roomId를 ref에 저장
-        // roomRef.current = roomId;
+    const connectClient = async () => {
+      try {
+        await getRoomId();
+      } catch (e) {
+        console.log(e);
+        return;
+      }
 
-        // TALK 타입일 경우 리턴받은 message를 현재 상태에 추가
-        // setMessages((prev) => [...prev, message]);
-      });
-      client.publish({
-        destination: "/queue",
-        body: JSON.stringify({
-          type: "ENTER",
-          sender: "testUser@gmail.com",
-        }),
-      });
+      client.onConnect = () => {
+        console.log("roomId: " + roomRef.current);
+        client.subscribe(`/queue/chat/room/${roomRef.current}`, onServerMessage);
+        client.publish({
+          destination: "/app/chat/message",
+          body: JSON.stringify({
+            type: "ENTER",
+            roomId: roomRef.current,
+            sender: session.user.email,
+          }),
+        });
+      };
+
+      client.onStompError = (frame: IFrame) => {
+        console.log("에러 발생");
+        console.log(frame); // 에러 확인
+      };
+
+      client.activate();
+      setIsLoading(false);
     };
 
-    const onClientDisconnect = () => {
-      console.log("연결 종료");
-      client.publish({
-        destination: "/queue",
-        body: JSON.stringify({
-          type: "LEAVE",
-        }),
+    const getRoomId = async () => {
+      const res = await fetch(`${SERVER_ADDRESS}/chat/room`, {
+        method: "POST",
+        headers: { Authorization: "Bearer " + session.jwt.accessToken },
       });
+      if (res.redirected) throw new Error("로그인이 필요한 서비스입니다.");
+      const { roomId } = await res.json();
+      roomRef.current = roomId;
     };
 
-    const onClientError = (frame: IFrame) => {
-      console.log("에러 발생");
-      console.log(frame); // 에러 확인
-    };
+    const loadedHistory: ChatHistoryProps = {};
 
-    client.onConnect = onClientConnect;
-    client.onDisconnect = onClientDisconnect;
-    client.onStompError = onClientError;
-    client.activate();
+    // 해당 room의 이전 채팅기록 fetch하고 context에 업데이트
+    // fetch()
+    // loadedHistory[roomRef.current as keyof typeof loadedHistory] = "fetch한 값"
+    // updateHistory((prev) => ({ ...prev, ...loadedHistory }));
+    // currentHistory.current = {...loadedHistory}
+
+    connectClient();
 
     return () => {
+      client.publish({
+        destination: "/app/chat/message",
+        body: JSON.stringify({
+          type: "LEAVE",
+          roomId: roomRef.current,
+        }),
+      });
       client.deactivate();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleSend = (message: string) => {
-    if (!clientRef.current.connected) {
+    if (message === "") return;
+    if (!clientRef.current || !clientRef.current.connected) {
       console.log("소켓 연결 안됨");
       return;
     }
@@ -81,28 +121,31 @@ const Socket = () => {
       return;
     }
     clientRef.current.publish({
-      destination: "/queue",
+      destination: "/app/chat/message",
       body: JSON.stringify({
         type: "TALK",
         roomId: roomRef.current,
-        sender: "testUser@gmail.com",
+        sender: session?.user.email,
         message,
       }),
     });
-
-    // 렌더링 확인용 (테스트 후 삭제)
-    // const pickRandomUser = () => {
-    //   const rand = Math.random() * 100;
-    //   return rand > 50 ? "customer" : "admin";
-    // };
-    // setMessages((prev) => [...prev, { userType: pickRandomUser(), message, time: Date.now() }]);
   };
 
   return (
     <S.Wrapper>
       <S.Container>
-        <ChatHistory history={messages} />
-        <ChatForm handleSend={handleSend} />
+        <S.Header>{gymName}</S.Header>
+        {isLoading ? null : session ? (
+          <>
+            <ChatHistory
+              speaker="customer"
+              history={currentHistory.current?.[roomRef.current ?? ""]}
+            />
+            <ChatForm placeholder="문의를 남겨주세요 :)" handleSend={handleSend} />
+          </>
+        ) : (
+          <LoginPrompt />
+        )}
       </S.Container>
     </S.Wrapper>
   );
@@ -112,12 +155,13 @@ const S = {
   Wrapper: styled.div`
     box-sizing: border-box;
     position: absolute;
-    bottom: 70px;
-    right: 70px;
+    bottom: 75px;
+    right: 0;
     border-radius: 16px;
     padding: 20px;
     border: 1px solid #cacaca;
     box-shadow: 0 3px 7px #cacaca;
+    background: white;
     width: 370px;
     height: 500px;
   `,
@@ -127,41 +171,15 @@ const S = {
     height: 100%;
     width: 100%;
   `,
+  Header: styled.div`
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: 700;
+    padding-bottom: 8px;
+    -webkit-box-shadow: 0 3px 7px -7px #cacaca;
+    -moz-box-shadow: 0 3px 7px -7px #cacaca;
+    box-shadow: 0 3px 7px -7px #cacaca;
+  `,
 };
-
-const sampleData = [
-  {
-    userType: "customer",
-    message: "dflkajsdf",
-    time: 1711215412079,
-  },
-  {
-    userType: "admin",
-    message: "dflkajsdf",
-    time: 1711225692079,
-  },
-  {
-    userType: "admin",
-    message: "dflkajsdf",
-    time: 1712226312579,
-  },
-  {
-    userType: "customer",
-    message:
-      "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Veritatis nesciunt maxime nam vel accusantium fugiat enim recusandae cumque est eligendi?",
-    time: 1712226412091,
-  },
-  {
-    userType: "admin",
-    message: "dflkajsdf",
-    time: 1712237512879,
-  },
-  {
-    userType: "admin",
-    message:
-      "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Veritatis nesciunt maxime nam vel accusantium fugiat enim recusandae cumque est eligendi?",
-    time: 1712237622981,
-  },
-];
 
 export default Socket;

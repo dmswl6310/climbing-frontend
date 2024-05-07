@@ -14,7 +14,7 @@ export interface RequestProps {
   token?: string;
   data?: any;
   onSuccess?: (data: any) => void | any;
-  onError?: () => void;
+  onError?: (error: Error) => void;
   hasBody?: boolean; // response의 body 여부
 }
 
@@ -22,7 +22,7 @@ export interface GetProps {
   absoluteUrl: string;
   token?: string;
   onSuccess?: (data: any) => void | any;
-  onError?: () => void;
+  onError?: (error: Error) => void;
   hasBody?: boolean;
 }
 
@@ -32,6 +32,6 @@ export interface PostProps {
   data: any;
   token?: string;
   onSuccess?: (data: any) => void | any;
-  onError?: () => void;
+  onError?: (error: Error) => void;
   hasBody?: boolean;
 }

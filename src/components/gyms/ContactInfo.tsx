@@ -18,7 +18,7 @@ const ContactInfo = ({ contact, snsList }: ContactInfoProps) => {
         {CONTACT_ICONS.phone} {contact}
       </div>
       {platforms.map((platform, i) => {
-        if (snsList[platform as keyof typeof snsList] !== "") {
+        if (snsList && snsList[platform as keyof typeof snsList] !== "") {
           return (
             <div key={i}>
               {CONTACT_ICONS[platform as keyof typeof CONTACT_ICONS]}{" "}

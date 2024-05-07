@@ -5,10 +5,11 @@ import styled from "styled-components";
 export type SocketData = string | ArrayBufferLike | Blob | ArrayBufferView;
 
 interface ChatFormProps {
+  placeholder?: string;
   handleSend: (message: string) => void;
 }
 
-const ChatForm = ({ handleSend }: ChatFormProps) => {
+const ChatForm = ({ placeholder, handleSend }: ChatFormProps) => {
   const [input, setInput] = useState("");
 
   const handleInput: ChangeEventHandler = (e) => {
@@ -26,12 +27,7 @@ const ChatForm = ({ handleSend }: ChatFormProps) => {
 
   return (
     <Wrapper onSubmit={handleSubmit}>
-      <input
-        type="text"
-        value={input}
-        onChange={handleInput}
-        placeholder="문의를 남겨주세요 :)"
-      />
+      <input type="text" value={input} onChange={handleInput} placeholder={placeholder || ""} />
       <button>전송</button>
     </Wrapper>
   );

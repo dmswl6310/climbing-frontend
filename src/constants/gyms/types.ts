@@ -29,31 +29,31 @@ export interface GymData {
   likeNumber?: number;
 }
 
-export interface DetailedListItem {
+export type DetailedListItem = {
   [key: string]: string | number;
-}
+};
 
-export interface MapCoordinates {
+export type MapCoordinates = {
   latitude: number;
   longitude: number;
-}
+};
 
-export interface OpenHours {
+export type OpenHours = {
   days: string;
   openTime: string;
   closeTime: string;
-}
+};
 
-export interface Pricing {
+export type Pricing = {
   item: string;
   price: string;
-}
+};
 
-export interface SnsList {
+export type SnsList = {
   twitter?: string;
   facebook?: string;
   instagram?: string;
-}
+} | null;
 
 export type UserComments = Array<{ user: string; date: string; text: string }>;
 
@@ -74,11 +74,11 @@ export interface ContactInfoProps {
 }
 
 export interface DetailedListProps {
-  items: Array<DetailedListItem>;
+  items: Array<DetailedListItem> | null;
 }
 
 export interface GradeBarProps {
-  grades: string[];
+  grades: string[] | null;
 }
 
 export interface ImageCarouselProps {
@@ -91,11 +91,11 @@ export interface MapProps {
 }
 
 export interface OpenHoursTableProps {
-  openHours: Array<OpenHours>;
+  openHours: Array<OpenHours> | null;
 }
 
 export interface PricingTableProps {
-  pricing: Array<Pricing>;
+  pricing: Array<Pricing> | null;
 }
 
 export interface TagProps {

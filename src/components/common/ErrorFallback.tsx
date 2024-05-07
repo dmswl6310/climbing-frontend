@@ -1,6 +1,6 @@
-import { FallbackProps } from "react-error-boundary";
-import { CgUnavailable } from "react-icons/cg";
 import styled from "styled-components";
+import { CgUnavailable } from "react-icons/cg";
+import type { FallbackProps } from "react-error-boundary";
 
 export const ErrorFallback = ({ error }: FallbackProps) => {
   // 에러 로깅

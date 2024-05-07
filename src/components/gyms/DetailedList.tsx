@@ -4,7 +4,7 @@ import { DetailedListProps } from "@/constants/gyms/types";
 const DetailedList = ({ items }: DetailedListProps) => {
   return (
     <S.Wrapper>
-      {items.map((item, i) => {
+      {items && items.map((item, i) => {
         const keys = Object.keys(item);
         return (
           <li key={i}>

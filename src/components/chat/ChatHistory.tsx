@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import styled from "styled-components";
+import { BiSolidHelpCircle } from "react-icons/bi";
 
 // 소켓 동작 확인 후에 적용
 export type MessageFormat = {
@@ -14,10 +15,11 @@ type SortedMessageList = {
 }[];
 
 interface ChatHistoryProps {
-  history: MessageFormat[];
+  history: MessageFormat[] | undefined;
+  speaker: string;
 }
 
-const ChatHistory = ({ history }: ChatHistoryProps) => {
+const ChatHistory = ({ history, speaker }: ChatHistoryProps) => {
   useEffect(() => {
     document.querySelector(".tracker")?.scrollIntoView();
   }, [history]);
@@ -45,49 +47,50 @@ const ChatHistory = ({ history }: ChatHistoryProps) => {
     return new Date(epoch).toLocaleTimeString("ko-KR").slice(0, -3);
   };
 
-  // const sortedMessages: SortedMessageList = sortMessages(history);
-  const sortedMessages: SortedMessageList = sortMessages(history); // 임시
-
-  console.log(sortedMessages);
+  const sortedMessages: SortedMessageList = history ? sortMessages(history) : [];
 
   return (
     <Wrapper>
-      {sortedMessages.map((batch, i) => (
-        <div className="batch" key={i}>
-          <div className="divider">{batch.date}</div>
-          {batch.messages.map(({ userType, message, time }, i) => (
-            <M.Wrapper key={i}>
-              {userType === "admin" && batch.messages[i - 1]?.userType !== userType
-                ? "관리자"
-                : null}
-              <M.Message
-                $userType={userType}
-                className={batch.messages[i + 1]?.userType !== userType ? "lastMessage" : ""}
-              >
-                {userType === "admin" ||
-                (batch.messages[i + 1]?.userType === userType &&
-                  batch.messages[i + 1] &&
-                  getTime(batch.messages[i + 1].time) === getTime(time)) ? null : (
-                  <span>{getTime(time)}</span>
-                )}
-                <div>{message}</div>
-                {userType === "customer" ||
-                (batch.messages[i + 1]?.userType === userType &&
-                  batch.messages[i + 1] &&
-                  getTime(batch.messages[i + 1].time) === getTime(time)) ? null : (
-                  <span>{getTime(time)}</span>
-                )}
-              </M.Message>
-            </M.Wrapper>
-          ))}
-        </div>
-      ))}
-      {/* {messages.map(({ user, message }, i) => (
-        <M.Wrapper $direction={user === "관리자" ? "flex-start" : "flex-end"} key={i}>
-          {user === "관리자" ? <M.Name>{user}</M.Name> : null}
-          <M.Message>{message}</M.Message>
-        </M.Wrapper>
-      ))} */}
+      {sortedMessages.length < 1 ? (
+        <M.Placeholder>
+          {speaker === "customer" ? (
+            <>
+              <BiSolidHelpCircle size="2rem" />
+              <p>문의를 남겨주시면 신속하게 도와드리겠습니다.</p>
+            </>
+          ) : (
+            <p>문의 내용이 없습니다.</p>
+          )}
+        </M.Placeholder>
+      ) : (
+        sortedMessages.map((batch, i) => (
+          <div className="batch" key={i}>
+            <div className="divider">{batch.date}</div>
+            {batch.messages.map(({ userType, message, time }, i) => (
+              <M.Wrapper key={i}>
+                <M.Message
+                  $speaker={userType === speaker}
+                  className={batch.messages[i + 1]?.userType !== userType ? "lastMessage" : ""}
+                >
+                  {userType !== speaker ||
+                  (batch.messages[i + 1]?.userType === userType &&
+                    batch.messages[i + 1] &&
+                    getTime(batch.messages[i + 1].time) === getTime(time)) ? null : (
+                    <span>{getTime(time)}</span>
+                  )}
+                  <div>{message}</div>
+                  {userType === speaker ||
+                  (batch.messages[i + 1]?.userType === userType &&
+                    batch.messages[i + 1] &&
+                    getTime(batch.messages[i + 1].time) === getTime(time)) ? null : (
+                    <span>{getTime(time)}</span>
+                  )}
+                </M.Message>
+              </M.Wrapper>
+            ))}
+          </div>
+        ))
+      )}
       <div className="tracker"></div>
     </Wrapper>
   );
@@ -124,12 +127,12 @@ const M = {
   Name: styled.div`
     font-weight: 700;
   `,
-  Message: styled.div<{ $userType: string }>`
+  Message: styled.div<{ $speaker: boolean }>`
     display: flex;
     align-items: flex-end;
     gap: 4px;
     max-width: 90%;
-    align-self: ${({ $userType }) => ($userType === "admin" ? "flex-start" : "flex-end")};
+    align-self: ${({ $speaker }) => ($speaker ? "flex-end" : "flex-start")};
 
     &.lastMessage {
       margin-bottom: 18px;
@@ -145,8 +148,12 @@ const M = {
       border-radius: 6px;
       border: 1px solid #cacaca;
       padding: 8px;
-      background: ${({ $userType }) => ($userType === "admin" ? "#cacaca" : null)};
+      background: ${({ $speaker }) => ($speaker ? null : "#cacaca")};
     }
+  `,
+  Placeholder: styled.div`
+    margin-top: 26px;
+    text-align: center;
   `,
 };
 

@@ -6,18 +6,18 @@ import styled from "styled-components";
 import { FaBuildingCircleCheck } from "react-icons/fa6";
 import NewGymForm from "@/components/admin/NewGymForm";
 import { SERVER_ADDRESS } from "@/constants/constants";
-import type { GetServerSideProps } from "next";
 import type { GymData } from "@/constants/gyms/types";
 
 const GymRegistration = () => {
-  const { status } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [isRegistered, setIsRegistered] = useState(false);
 
-  // useEffect(() => {
-  //   if (status !== "unauthenticated") router.push("/login");
-  // }, []);
+  useEffect(() => {
+    if (!session) router.push("/login");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleSubmit = async (formData: GymData) => {
     setIsLoading(true);
@@ -48,7 +48,7 @@ const GymRegistration = () => {
     return newGym.id; // 추후 서버에서 response로 오는 데이터의 구조에 맞게 수정
   };
 
-  // if (status === "loading" || status === "unauthenticated") return null;
+  if (status === "loading" || status === "unauthenticated") return null;
   return isRegistered ? (
     <S.Wrapper $isRegistered={isRegistered}>
       <div>
@@ -57,10 +57,12 @@ const GymRegistration = () => {
       </div>
       <S.Container>
         <S.Button>
-          <Link href={`/admin`}>암장 관리하기</Link>
+          <Link href={`/admin`} replace>홈으로 돌아가기</Link>
         </S.Button>
         <S.Button>
-          <Link href={`/gyms/${router.query.id}`}>내 암장 페이지 보기</Link>
+          <Link href={`/gyms/${router.query.id}`} rel="noopener noreferrer" target="_blank">
+            내 암장 페이지 보기
+          </Link>
         </S.Button>
       </S.Container>
     </S.Wrapper>
@@ -110,12 +112,6 @@ const S = {
       text-decoration: none;
     }
   `,
-};
-
-export const getServerSideProps: GetServerSideProps = async () => {
-  return {
-    props: {},
-  };
 };
 
 export default GymRegistration;

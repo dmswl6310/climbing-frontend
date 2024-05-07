@@ -1,4 +1,5 @@
 import Layout from "@/components/Layout";
+import { ChatHistoryProvider } from "@/ChatHistoryContext";
 import { SessionProvider } from "next-auth/react";
 import { AppContext, AppInitialProps, AppProps } from "next/app";
 import { NextComponentType, NextPage } from "next/types";
@@ -18,7 +19,9 @@ const MyApp: NextComponentType<AppContext, AppInitialProps, AppPropsWithLayout> 
 }) => {
   const getLayout = Component.getLayout ?? ((page: any) => <Layout>{page}</Layout>);
   return (
-    <SessionProvider session={session}>{getLayout(<Component {...pageProps} />)}</SessionProvider>
+    <ChatHistoryProvider>
+      <SessionProvider session={session}>{getLayout(<Component {...pageProps} />)}</SessionProvider>
+    </ChatHistoryProvider>
   );
 };
 
