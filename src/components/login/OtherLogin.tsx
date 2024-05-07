@@ -37,7 +37,6 @@ client_id=${process.env.NEXT_PUBLIC_KAKAO_CLIENT_ID}
 
   return (
     <S.Wrapper>
-      <div>간편로그인</div>
       <S.IconContainer>
         <button className="btn-plain" onClick={handleNaverLogin}>
           <Image src={NaverIcon} alt="네이버 아이콘" height={30} />

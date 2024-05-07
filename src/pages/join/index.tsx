@@ -152,7 +152,7 @@ const Join = () => {
         true;
 
       // 타이머 세팅
-      setRemainingTime(30);
+      setRemainingTime(300);
       setIsSendDisabled(true);
     };
 
@@ -205,7 +205,7 @@ const Join = () => {
           onDisabled={isSendDisabled || isCodeValid || !isEmailValid}
         />
         <EmailVerification
-        enteredEmail={email}
+          enteredEmail={email}
           remainingTime={remainingTime}
           setTime={setRemainingTime}
           isBtnDisabled={isSendDisabled}
