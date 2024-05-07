@@ -107,7 +107,7 @@ const postData = ({
   let headers;
 
   if (token) {
-    headers = { ...contentType, Authorization: `${token}` };
+    headers = { ...contentType, Authorization: `Bearer ${token}` };
   } else {
     headers = { ...contentType };
   }
