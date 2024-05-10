@@ -3,9 +3,7 @@ import Image from "next/image";
 import NaverIcon from "../../../public/naver_rec.png";
 import GoogleIcon from "../../../public/google_rec.png";
 import KakaoIcon from "../../../public/kakao_rec.png";
-import Link from "next/link";
 import { useRouter } from "next/router";
-import { RiRouterLine } from "react-icons/ri";
 
 // 백엔드로 리다이렉트(백엔드에서 인가코드->토큰받고 프론트로 보내줌)
 const OtherLogin = () => {
@@ -28,11 +26,14 @@ client_id=${process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}
   };
 
   const handleKakaoLogin = () => {
-    router.push(`https://kauth.kakao.com/oauth/authorize?
-client_id=${process.env.NEXT_PUBLIC_KAKAO_CLIENT_ID}
-&redirect_uri=${process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URI}
-&response_type=code
-&scope=account_email`);
+    //     router.push(`https://kauth.kakao.com/oauth/authorize?
+    // client_id=${process.env.NEXT_PUBLIC_KAKAO_CLIENT_ID}
+    // &redirect_uri=${process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URI}
+    // &response_type=code
+    // &scope=account_email`);
+    router.push(
+      `http://ec2-3-37-207-190.ap-northeast-2.compute.amazonaws.com:8080/oauth2/authorization/kakao`
+    );
   };
 
   return (
