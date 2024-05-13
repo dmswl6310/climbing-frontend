@@ -24,7 +24,7 @@ const Socket = ({ gymName, gymId }: { gymName: string; gymId: string }) => {
 
     if (type === "TALK") {
       const newMessage = {
-        userType: sender === session.user.email ? "customer" : "admin",
+        userType: sender === session.user.email ? "customer" : "manager",
         message,
         time: Date.now(),
       };

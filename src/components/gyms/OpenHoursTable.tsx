@@ -40,13 +40,15 @@ const S = {
     margin-block: 0;
     padding: 0;
     list-style: none;
-
     li {
       display: flex;
       justify-content: space-between;
       gap: 8px;
+      margin-bottom: 0.5rem;
+      &:last-child {
+        margin: 0;
+      }
     }
-
     hr {
       position: relative;
       top: 2px;

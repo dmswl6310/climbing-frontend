@@ -4,7 +4,7 @@ import GradeBar from "./GradeBar";
 import NoData from "./NoData";
 import OpenHoursTable from "./OpenHoursTable";
 import PricingTable from "./PricingTable";
-import Tag from "./Tag";
+import Tag from "../common/Tag";
 import { DEVICE_SIZE } from "@/constants/styles";
 import type { GymData } from "@/constants/gyms/types";
 
@@ -40,15 +40,15 @@ const SideContent = ({ gymData }: { gymData: GymData }) => {
         <GradeBar grades={gymData.grades || null} />
       </div>
       <div className="container">
-        <ContactInfo contact={gymData.contact} snsList={gymData.sns || null} />
+        <ContactInfo contact={gymData.contact} snsList={gymData.sns} />
       </div>
     </Wrapper>
   );
 };
 
 const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(1fr);
   gap: 20px;
   & > div {
     box-sizing: border-box;
@@ -70,7 +70,7 @@ const Wrapper = styled.div`
 const TagList = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 6px;
 `;
 
 export default SideContent;

@@ -2,7 +2,7 @@ import { useState } from "react";
 import Link from "next/link";
 import styled from "styled-components";
 import CommentTextarea from "./CommentTextarea";
-import { SERVER_ADDRESS } from "@/constants/constants";
+import { SERVER_ADDRESS, TEST_ADDRESS } from "@/constants/constants";
 import { DEVICE_SIZE } from "@/constants/styles";
 import type { CommentsProps, UserComments } from "@/constants/gyms/types";
 import { COLOR } from "@/styles/global-color";
@@ -12,20 +12,21 @@ const Comments = ({ id, comments, session }: CommentsProps) => {
 
   const handleAddComment = async (input: string) => {
     // if (!session || !session.user) return "login"; // 추후 복원
+
     const newComment = {
-      user: session?.user?.nickname as string,
+      user: (session?.user?.nickname as string) ?? "익명",
       date: getCurrentDate(),
       text: input,
     };
 
     try {
       const response = await Promise.race([
-        fetch(`${SERVER_ADDRESS}/gyms/${id}`, {
-          method: "PATCH",
+        fetch(`${TEST_ADDRESS}/comments`, {
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ comments: [newComment, ...currentComments] }),
+          body: JSON.stringify({ newComment }),
         }),
         new Promise<Response>((_, reject) =>
           setTimeout(() => reject(new Response(null, { status: 503 })), 3000),
@@ -93,7 +94,6 @@ const S = {
   Container: styled.div`
     display: flex;
     flex-direction: column;
-
     .login-prompt {
       display: flex;
       flex-direction: column;
@@ -107,12 +107,10 @@ const S = {
     white-space: pre-wrap;
     margin: 26px 0px;
     gap: 12px;
-
     .comment__user {
       font-weight: 700;
       margin-right: 16px;
     }
-
     .comment__date {
       color: #c3c3c3;
     }

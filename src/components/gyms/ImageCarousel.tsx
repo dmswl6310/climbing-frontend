@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import styled from "styled-components";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
@@ -8,10 +8,8 @@ import type { ImageCarouselProps } from "@/constants/gyms/types";
 
 const ImageCarousel = ({ defaultImage, imageList }: ImageCarouselProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const images = useRef(
-    defaultImage && defaultImage !== "" ? [defaultImage, ...imageList] : [...imageList],
-  );
-
+  if ((!defaultImage && !imageList) || (!defaultImage && imageList.length < 1)) return null;
+  const images = defaultImage && defaultImage !== "" ? [defaultImage, ...imageList] : imageList;
   return (
     <S.Wrapper>
       <S.Overlay>
@@ -26,19 +24,24 @@ const ImageCarousel = ({ defaultImage, imageList }: ImageCarouselProps) => {
           <S.Button
             $direction="right"
             onClick={() => setCurrentIndex((prev) => prev + 1)}
-            disabled={currentIndex === images.current.length - 1}
+            disabled={currentIndex === images.length - 1}
           >
             <S.ArrowRight />
           </S.Button>
         </S.OverlayButtons>
         <S.OverlayText>
-          {currentIndex + 1}/{images.current.length} | 전체사진
+          {currentIndex + 1}/{images.length} | 전체사진
         </S.OverlayText>
       </S.Overlay>
       <S.Container $shiftIndex={currentIndex}>
-        {images.current.map((image, i) => (
-          <S.Image key={i}>
-            <Image src={image} alt={`암벽센터 제공 사진 (${(i + 1).toString()})`} fill />
+        {images.map((image, i) => (
+          <S.Image key={image}>
+            <Image
+              src={image}
+              alt={`암벽센터 제공 사진 (${(i + 1).toString()})`}
+              fill
+              priority={i === 0}
+            />
           </S.Image>
         ))}
       </S.Container>

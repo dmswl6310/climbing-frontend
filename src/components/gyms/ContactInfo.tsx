@@ -1,8 +1,7 @@
 import styled from "styled-components";
 import { BsTwitterX, BsFacebook, BsInstagram, BsTelephoneFill } from "react-icons/bs";
-import type { ContactInfoProps } from "@/constants/gyms/types";
+import type { ContactInfoProps, SnsList } from "@/constants/gyms/types";
 
-// 상수
 export const CONTACT_ICONS = {
   phone: <BsTelephoneFill />,
   twitter: <BsTwitterX />,
@@ -17,12 +16,12 @@ const ContactInfo = ({ contact, snsList }: ContactInfoProps) => {
       <div>
         {CONTACT_ICONS.phone} {contact}
       </div>
-      {platforms.map((platform, i) => {
-        if (snsList && snsList[platform as keyof typeof snsList] !== "") {
+      {platforms.map((platform) => {
+        if (snsList && snsList[platform as keyof SnsList] !== "") {
           return (
-            <div key={i}>
+            <div key={platform}>
               {CONTACT_ICONS[platform as keyof typeof CONTACT_ICONS]}{" "}
-              {snsList[platform as keyof typeof snsList]}
+              {snsList[platform as keyof SnsList]}
             </div>
           );
         }
@@ -34,12 +33,15 @@ const ContactInfo = ({ contact, snsList }: ContactInfoProps) => {
 const S = {
   Wrapper: styled.div`
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(181px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 10px;
     div {
       display: flex;
       gap: 6px;
       align-items: center;
+      & > * {
+        flex-shrink: 0;
+      }
     }
   `,
 };

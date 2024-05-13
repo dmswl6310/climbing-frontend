@@ -1,18 +1,19 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
-import Error from "next/error";
 import styled from "styled-components";
 import Comments from "@/components/gyms/Comments";
 import DynamicMap from "@/components/gyms/DynamicMap";
+import ErrorPage from "@/components/common/ErrorPage";
 import HelpModal from "@/components/chat/HelpModal";
 import ImageCarousel from "@/components/gyms/ImageCarousel";
 import MainContent from "@/components/gyms/MainContent";
 import SideContent from "@/components/gyms/SideContent";
 import useApi from "@/hooks/useApi";
+import { requestData } from "@/service/api";
 import { DEVICE_SIZE } from "@/constants/styles";
 import { IMAGE_SIZE } from "@/constants/gyms/constants";
-import { NAVERMAP_API, SERVER_ADDRESS } from "@/constants/constants";
+import { NAVERMAP_API, SERVER_ADDRESS, TEST_ADDRESS } from "@/constants/constants";
 import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
 
 const GymInfo = ({
@@ -27,30 +28,40 @@ const GymInfo = ({
 
   const toggleModal = () => setIsOpen((prev) => !prev);
 
-  const handlePageLeave = () => {
-    if (isOpen) setIsOpen(false);
-  };
-
   useEffect(() => {
+    const handlePageLeave = () => {
+      if (isOpen) setIsOpen(false);
+    };
     router.events.on("routeChangeStart", handlePageLeave);
+
+    return () => router.events.off("routeChangeStart", handlePageLeave);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (error) return <Error statusCode={statusCode} />;
+  if (error) return <ErrorPage statusCode={statusCode} />;
   return (
     <S.Page>
       <S.Wrapper>
-        {!gymData.defaultImage && !gymData.images ? null : (
-          <ImageCarousel defaultImage={gymData.defaultImage} imageList={gymData.images} />
-        )}
+        <ImageCarousel
+          key={crypto.randomUUID()}
+          defaultImage={gymData.defaultImage}
+          imageList={gymData.images}
+        />
         <S.InfoContainer>
           <S.Main>
             <MainContent gymData={gymData} />
-            {isLoading ? null : <DynamicMap coordinates={gymData.coordinates} />}
+            {isLoading ? null : (
+              <DynamicMap name={gymData.name} coordinates={gymData.coordinates} />
+            )}
           </S.Main>
           <SideContent gymData={gymData} />
         </S.InfoContainer>
-        <Comments id={gymData.id} comments={gymData.comments} session={session} />
+        <Comments
+          key={crypto.randomUUID()}
+          id={gymData.id}
+          comments={gymData.comments}
+          session={session}
+        />
       </S.Wrapper>
       <HelpModal
         gymId={gymData.id}
@@ -82,16 +93,22 @@ const S = {
     .header {
       display: flex;
       align-items: flex-end;
+      align-content: flex-end;
+      flex-wrap: wrap;
+      gap: 0.5rem;
     }
     .header__text {
       font-weight: 700;
-      font-size: 2.5rem;
+      font-size: 2.3rem;
     }
     .icons {
       position: relative;
       bottom: 6px;
       display: flex;
       gap: 6px;
+    }
+    .description {
+      white-space: break-spaces;
     }
     @media ${DEVICE_SIZE.laptop} {
       width: ${IMAGE_SIZE.laptop.width + "px"};
@@ -101,9 +118,18 @@ const S = {
     }
     @media ${DEVICE_SIZE.mobileLarge} {
       width: ${IMAGE_SIZE.mobileLarge.width + "px"};
+      .header__text {
+        font-size: 1.7rem;
+      }
     }
     @media ${DEVICE_SIZE.mobileSmall} {
       width: ${IMAGE_SIZE.mobileSmall.width + "px"};
+      .header {
+        line-height: 2.3rem;
+      }
+      .header__text {
+        font-size: 1.5rem;
+      }
     }
   `,
   InfoContainer: styled.div`
@@ -144,24 +170,15 @@ const S = {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const gymId = context.query.id;
+  const controller = new AbortController();
+  setTimeout(() => controller.abort(), 3000);
   try {
-    const response = await Promise.race([
-      fetch(`${SERVER_ADDRESS}/gyms/${gymId}`),
-      new Promise<Response>((_, reject) =>
-        setTimeout(() => reject(new Response(null, { status: 503 })), 3000),
-      ),
-    ]);
+    const response = await fetch(`${TEST_ADDRESS}/gyms/${gymId}`, { signal: controller.signal });
     if (response.status === 200) {
       const gymData = await response.json();
       return { props: { gymData } };
     } else throw response.status;
   } catch (statusCode) {
-    // 404에러 시에도 데이터를 채우기 위한 임시방편
-    console.log("*****Server fetch failed. Fetching from local json-server instead*****");
-    const gymData = await (await fetch(`http://localhost:8000/gyms/${gymId}`)).json();
-    return { props: { gymData } };
-
-    // 테스트 완료 시 아래 코드로 교체
     return { props: { error: true, statusCode } };
   }
 };

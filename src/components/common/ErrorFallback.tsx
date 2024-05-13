@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { CgUnavailable } from "react-icons/cg";
 import type { FallbackProps } from "react-error-boundary";
 
-export const ErrorFallback = ({ error }: FallbackProps) => {
+const ErrorFallback = ({ error }: FallbackProps) => {
   // 에러 로깅
   console.log(error);
   return (
@@ -23,3 +23,5 @@ const Wrapper = styled.div`
   min-height: 60vh;
   text-align: center;
 `;
+
+export default ErrorFallback;

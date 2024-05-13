@@ -4,6 +4,7 @@ import { SessionProvider } from "next-auth/react";
 import { AppContext, AppInitialProps, AppProps } from "next/app";
 import { NextComponentType, NextPage } from "next/types";
 import { ReactElement, ReactNode } from "react";
+import { NavContextProvider } from "@/NavContext";
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<PageTransitionEvent, IP> & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -19,9 +20,11 @@ const MyApp: NextComponentType<AppContext, AppInitialProps, AppPropsWithLayout> 
 }) => {
   const getLayout = Component.getLayout ?? ((page: any) => <Layout>{page}</Layout>);
   return (
-    <ChatHistoryProvider>
-      <SessionProvider session={session}>{getLayout(<Component {...pageProps} />)}</SessionProvider>
-    </ChatHistoryProvider>
+    <SessionProvider session={session}>
+      <NavContextProvider>
+        <ChatHistoryProvider>{getLayout(<Component {...pageProps} />)}</ChatHistoryProvider>
+      </NavContextProvider>
+    </SessionProvider>
   );
 };
 
