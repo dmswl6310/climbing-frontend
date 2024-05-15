@@ -36,7 +36,7 @@ const ManageLayout = ({ children }: React.PropsWithChildren<{}>) => {
         const init = data[0].gyms ?? [];
         setGymList(init);
         if (router.query.id) setSelectedGymId(router.query.id as string);
-        else if (!selectedGymId) setSelectedGymId(selectedGymId);
+        else if (selectedGymId) setSelectedGymId(selectedGymId);
         else setSelectedGymId(data[0].gyms[0].id);
       };
       fetch("http://localhost:8000/gymids?user=hopp")
