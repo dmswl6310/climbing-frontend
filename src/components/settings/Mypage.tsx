@@ -4,7 +4,11 @@ import { styled } from "styled-components";
 import { useRouter } from "next/router";
 import React from "react";
 import { requestData } from "@/service/api";
-import { CONFIRM_MESSAGE } from "@/constants/login/constants";
+import {
+  CONFIRM_MESSAGE,
+  NICKNAME_REGREX,
+  PASSWORD_REGREX,
+} from "@/constants/login/constants";
 
 const Mypage = () => {
   // 현재는 세션이 있을때 메이페이지가 보이지만 추후 백엔드 요청시 정보가 있을때만 표시
@@ -44,10 +48,8 @@ const Mypage = () => {
     };
   }) => {
     const currentPassword = event.target.value;
-    const passwordRegrex =
-      /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,25}$/;
 
-    if (!passwordRegrex.test(currentPassword)) {
+    if (!PASSWORD_REGREX.test(currentPassword)) {
       setPasswordMessage(
         "숫자+영문자+특수문자 조합으로 8자리 이상 입력해주세요."
       );
@@ -80,9 +82,8 @@ const Mypage = () => {
     };
   }) => {
     const currentNickname = event.target.value;
-    const nicknameRegrex = /^[가-힣A-Za-z0-9_]{2,}$/;
 
-    if (!nicknameRegrex.test(currentNickname)) {
+    if (!NICKNAME_REGREX.test(currentNickname)) {
       setNicknameMessage("닉네임은 2자이상이어야 합니다.");
       setIsNicknameValid(false);
     } else if (currentNickname === infoFromServer.nickname) {

@@ -2,7 +2,7 @@ import InputWithTitle from "@/components/common/InputWithTitle";
 import { COLOR } from "@/styles/global-color";
 import { useState } from "react";
 import styled from "styled-components";
-import { CONFIRM_MESSAGE } from "@/constants/login/constants";
+import { CONFIRM_MESSAGE, NICKNAME_REGREX } from "@/constants/login/constants";
 import { requestData } from "@/service/api";
 import router, { useRouter } from "next/router";
 
@@ -19,9 +19,8 @@ const AdditionalJoin = () => {
     };
   }) => {
     const currentNickname = event.target.value;
-    const nicknameRegrex = /^[가-힣A-Za-z0-9_]{2,}$/;
 
-    if (!nicknameRegrex.test(currentNickname)) {
+    if (!NICKNAME_REGREX.test(currentNickname)) {
       setNicknameMessage("닉네임의 형식이 올바르지 않습니다.");
       setIsNicknameValid(false);
     } else {

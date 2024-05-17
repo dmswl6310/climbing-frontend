@@ -1,11 +1,16 @@
 import InputWithTitle from "@/components/common/InputWithTitle";
 import EmailVerification from "@/components/login/EmailVerification";
-import { EmailAuthProps } from "@/constants/login/type";
 import { requestData } from "@/service/api";
 import router from "next/router";
 import { useState } from "react";
 import styled from "styled-components";
-import { CONFIRM_MESSAGE } from "@/constants/login/constants";
+import {
+  CONFIRM_MESSAGE,
+  EMAIL_REGREX,
+  NICKNAME_REGREX,
+  PASSWORD_REGREX,
+} from "@/constants/login/constants";
+import { EmailCheckResponse, socialTypeToKorean } from "@/constants/login/type";
 
 const Join = () => {
   const [isEmailValid, setIsEmailValid] = useState(false);
@@ -34,20 +39,19 @@ const Join = () => {
     };
   }) => {
     const currentEmail = event.target.value;
-    const emailRegrex =
-      /^[A-Za-z0-9_]+[A-Za-z0-9]*[@]{1}[A-Za-z0-9]+[A-Za-z0-9]*[.]{1}[A-Za-z]{1,3}$/;
 
-    if (!emailRegrex.test(currentEmail)) {
+    if (!EMAIL_REGREX.test(currentEmail)) {
       setEmailMessage("이메일의 형식이 올바르지 않습니다.");
       setIsEmailValid(false);
     } else {
-      const onSuccess = (canUse: boolean) => {
-        if (canUse) {
+      const onSuccess = ({ check, socialType }: EmailCheckResponse) => {
+        if (check) {
           setEmailMessage(CONFIRM_MESSAGE);
           setIsEmailValid(true);
           setEmail(currentEmail);
         } else {
-          setEmailMessage("중복된 이메일 입니다.");
+          const socialTypeString = socialTypeToKorean(socialType);
+          setEmailMessage(`이미 ${socialTypeString}로 가입된 메일입니다.`);
           setIsEmailValid(false);
         }
       };
@@ -69,10 +73,8 @@ const Join = () => {
     };
   }) => {
     const currentPassword = event.target.value;
-    const passwordRegrex =
-      /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,25}$/;
 
-    if (!passwordRegrex.test(currentPassword)) {
+    if (!PASSWORD_REGREX.test(currentPassword)) {
       setPasswordMessage(
         "숫자+영문자+특수문자 조합으로 8자리 이상 입력해주세요."
       );
@@ -105,9 +107,8 @@ const Join = () => {
     };
   }) => {
     const currentNickname = event.target.value;
-    const nicknameRegrex = /^[가-힣A-Za-z0-9_]{2,}$/;
 
-    if (!nicknameRegrex.test(currentNickname)) {
+    if (!NICKNAME_REGREX.test(currentNickname)) {
       setNicknameMessage("닉네임의 형식이 올바르지 않습니다.");
       setIsNicknameValid(false);
     } else {

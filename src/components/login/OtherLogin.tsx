@@ -10,19 +10,25 @@ const OtherLogin = () => {
   const router = useRouter();
 
   const handleNaverLogin = () => {
-    router.push(`https://nid.naver.com/oauth2.0/authorize?
-response_type=code
-&client_id=${process.env.NEXT_PUBLIC_NAVER_CLIENT_ID}
-&redirect_uri=${process.env.NEXT_PUBLIC_NAVER_REDIRECT_URI}
-&state=${process.env.NEXT_PUBLIC_NAVER_STATE}`);
+    //     router.push(`https://nid.naver.com/oauth2.0/authorize?
+    // response_type=code
+    // &client_id=${process.env.NEXT_PUBLIC_NAVER_CLIENT_ID}
+    // &redirect_uri=${process.env.NEXT_PUBLIC_NAVER_REDIRECT_URI}
+    // &state=${process.env.NEXT_PUBLIC_NAVER_STATE}`);
+    router.push(
+      `http://ec2-3-37-207-190.ap-northeast-2.compute.amazonaws.com:8080/oauth2/authorization/naver`
+    );
   };
 
   const handleGoogleLogin = () => {
-    router.push(`https://accounts.google.com/o/oauth2/v2/auth?
-client_id=${process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}
-&redirect_uri=${process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URI}
-&response_type=code
-&scope=email profile`);
+    //     router.push(`https://accounts.google.com/o/oauth2/v2/auth?
+    // client_id=${process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}
+    // &redirect_uri=${process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URI}
+    // &response_type=code
+    // &scope=email profile`);
+    router.push(
+      `http://ec2-3-37-207-190.ap-northeast-2.compute.amazonaws.com:8080/oauth2/authorization/google`
+    );
   };
 
   const handleKakaoLogin = () => {

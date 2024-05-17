@@ -53,7 +53,27 @@ export interface EmailVerificationProps {
   setIsCodeValid: Dispatch<SetStateAction<boolean>>;
 }
 
+const socialType = {
+  KAKAO: "KAKAO",
+  GOOGLE: "GOOGLE",
+  NAVER: "NAVER",
+} as const;
+
+type SocialType = (typeof socialType)[keyof typeof socialType];
+
+export const socialTypeToKorean = (type: SocialType) => {
+  switch (type) {
+    case "KAKAO":
+      return "카카오";
+    case "GOOGLE":
+      return "구글";
+    case "NAVER":
+      return "네이버";
+  }
+};
+
 // 백엔드 요청에 대한 응답
-export interface EmailAuthProps {
-  authNum: string;
+export interface EmailCheckResponse {
+  check: string;
+  socialType: SocialType;
 }
