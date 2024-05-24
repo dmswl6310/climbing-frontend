@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { ReactElement } from "react";
+import { ReactElement, useEffect } from "react";
 import Layout from "@/components/Layout";
 import { NextPageWithLayout } from "../_app";
 import SearchLayout from "@/components/search/SearchLayout";
@@ -7,10 +7,28 @@ import SearchBanner from "@/components/search/searchBanner";
 import GymListBanner from "@/components/search/GymListBanner";
 import { useRouter } from "next/router";
 import { COLOR } from "@/styles/global-color";
+import { signIn } from "next-auth/react";
 
 const HomePage: NextPageWithLayout = () => {
   const router = useRouter();
 
+  useEffect(() => {
+    if (router.query.accessToken) {
+      console.log("get");
+
+      const saveTokens = async () => {
+        return await signIn("CredentialsForOAuth", {
+          accessToken: router.query.accessToken,
+          refreshToken: router.query.refreshToken,
+          redirect: true,
+          callbackUrl: "/",
+        });
+      };
+
+      saveTokens().catch(console.error);
+    }
+  }, [router.query]);
+  
   return (
     <Styled.Wrapper>
       <SearchBanner />

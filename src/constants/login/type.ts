@@ -57,9 +57,11 @@ const socialType = {
   KAKAO: "KAKAO",
   GOOGLE: "GOOGLE",
   NAVER: "NAVER",
+  NORMAL: "NORMAL",
+  NULL: "NORMAL",
 } as const;
 
-type SocialType = (typeof socialType)[keyof typeof socialType];
+export type SocialType = (typeof socialType)[keyof typeof socialType];
 
 export const socialTypeToKorean = (type: SocialType) => {
   switch (type) {
@@ -69,6 +71,8 @@ export const socialTypeToKorean = (type: SocialType) => {
       return "구글";
     case "NAVER":
       return "네이버";
+    case "NORMAL":
+      return "일반";
   }
 };
 

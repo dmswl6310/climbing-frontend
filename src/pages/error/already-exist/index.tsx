@@ -1,21 +1,22 @@
-import { useRouter } from "next/router";
+import { SocialType, socialTypeToKorean } from "@/constants/login/type";
+import router, { useRouter } from "next/router";
 import { styled } from "styled-components";
 
 const AlreadyExistPage = () => {
   const { query } = useRouter();
+  const email = query.email as string;
+  const socialTypeString = socialTypeToKorean(query.socialType as SocialType);
 
   const handleLoginBtn = () => {
-    alert("카카오로그인");
+    router.push("/login");
   };
 
   return (
     <S.Container>
-      <h1>이미 가입된 카카오 계정입니다.</h1>
-      <h4>{query.nickname}으로 로그인 해주세요.</h4>
+      <h1>이미 가입된 {socialTypeString} 계정입니다.</h1>
+      <h4>{email}으로 로그인 해주세요.</h4>
       <S.ButtonContainer>
-        <S.LoginButton onClick={handleLoginBtn}>
-          카카오로 로그인하기
-        </S.LoginButton>
+        <S.LoginButton onClick={handleLoginBtn}>로그인하기</S.LoginButton>
       </S.ButtonContainer>
     </S.Container>
   );

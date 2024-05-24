@@ -25,6 +25,7 @@ export default NextAuth({
           },
           onSuccess: async (response: Response) => {
             const responseHeaders = response.headers;
+            console.log(responseHeaders);
             const responseAccessToken = responseHeaders.get("Authorization");
             const responseRefreshToken = responseHeaders.get(
               "Authorization-refresh"
@@ -53,39 +54,62 @@ export default NextAuth({
         return data as any;
       },
     }),
-    // 다른 경로로 로그인 => 콜백으로 토큰받아서 서버에 넘겨줘야..
-    // GoogleProvider({
-    //   clientId: process.env.GOOGLE_CLIENT_ID!,
-    //   clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    // }),
-    // KakaoProvider({
-    //   clientId: process.env.KAKAO_CLIENT_ID!,
-    //   clientSecret: process.env.KAKAO_CLIENT_SECRET!,
-    // }),
-    // NaverProvider({
-    //   clientId: process.env.NAVER_CLIENT_ID!,
-    //   clientSecret: process.env.NAVER_CLIENT_SECRET!,
-    // }),
+
+    //OAuth 로그인
+    CredentialsProvider({
+      name: "CredentialsForOAuth",
+
+      credentials: {
+        accessToken: { label: "accessToken", type: "string" },
+        refreshToken: { label: "refreshToken", type: "string" },
+      },
+      async authorize(credentials: any) {
+        //토큰
+        const jwt = {
+          accessToken: credentials.accessToken || "tempAccess",
+          refreshToken: credentials.refreshToken || "tempRefresh",
+        };
+
+        // 유저정보
+        const email = "tempEmail";
+        const nickname = "tempNickname";
+
+        return { user: { email, nickname }, jwt } as any;
+      },
+    }),
   ],
 
   // jwt 설정
   session: {
     strategy: "jwt",
-    maxAge: 3 * 24 * 60 * 60, // 로그인 유지 기간 (=3일)
+    // maxAge: 3 * 24 * 60 * 60, // 로그인 유지 기간 (=3일)
   },
 
   //  jwt나 세션 쓸때
   callbacks: {
     // 로그인 시 return한 값이 user로 들어옴
     async jwt({ token, user }) {
+      const expireDate = 3000;
+
+      // 로그인 시
       if (user) {
         return {
           ...token,
           ...user,
           jwt: user.jwt,
         };
+      } else if (Date.now() < Date.now() + expireDate) {
+        // 액세스 토큰 만료 전
+        console.log("토큰 만료 전");
+        return token;
+      } else {
+        console.log("토큰 만료 후");
+        // 만료 후 리프레시 토큰으로 액세스 토큰 업데이트 요청
+        if (!token.jwt.refreshToken) throw new Error("Missing refresh token");
+        // 리프레시 토큰도 만료되었을 시, 데이터삭제 및 로그아웃
+        return token;
+        // return updateAccessToken(token.jwt.refreshToken);
       }
-      return token;
     },
 
     // jwt에서 return한 값이 token으로 들어옴
@@ -103,3 +127,29 @@ export default NextAuth({
     error: "error",
   },
 });
+
+async function updateAccessToken(refreshToken: string) {
+  try {
+    const data = await requestData({
+      option: "POST",
+      url: `/token/update`,
+      token: refreshToken,
+      onSuccess: async (response: Response) => {
+        const responseHeaders = response.headers;
+        const responseAccessToken = responseHeaders.get("Authorization");
+        const responseRefreshToken = responseHeaders.get(
+          "Authorization-refresh"
+        );
+        if (!(responseHeaders && responseAccessToken && responseRefreshToken)) {
+          throw Error("missing header or token");
+        }
+
+        // TODO: 토큰형식으로 리턴
+      },
+      hasBody: false,
+    });
+    return data as any;
+  } catch (error) {
+    // 문제있을시
+  }
+}
