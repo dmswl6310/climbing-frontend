@@ -2,8 +2,36 @@ import styled from "styled-components";
 import GeneralLogin from "../../components/login/GeneralLogin";
 import OtherLogin from "../../components/login/OtherLogin";
 import { COLOR } from "@/styles/global-color";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
+import { signIn } from "next-auth/react";
 
 const Login = () => {
+  const router = useRouter();
+
+  useEffect(() => {
+    if (router.query.accessToken) {
+      const saveTokens = async () => {
+        const accessToken = router.query.accessToken;
+        const refreshToken = router.query.refreshToken;
+        const result = await signIn("credentials", {
+          accessToken: accessToken,
+          refreshToken: refreshToken,
+          type: "oauth",
+          redirect: true,
+          callbackUrl: "/",
+        });
+
+        if (result?.error) {
+          console.log("login fail");
+        } else {
+          console.log("login success");
+        }
+      };
+      saveTokens();
+    }
+  }, [router.query]);
+
   return (
     <S.Wrapper>
       <S.Title>오르리</S.Title>

@@ -15,6 +15,7 @@ const GeneralLogin = () => {
     const result = await signIn("credentials", {
       email: email,
       password: password,
+      type: "normal",
       redirect: true,
       callbackUrl: "/",
     });
