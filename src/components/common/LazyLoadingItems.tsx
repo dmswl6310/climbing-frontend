@@ -4,14 +4,14 @@ import { requestData } from "@/service/api";
 import PreviewCard from "./PreviewCard";
 import { usePathname } from "next/dist/client/components/navigation";
 import { LazyLoadingItemsProps } from "@/constants/search/types";
-import { GymData } from "@/constants/gyms/types";
+import { SimpleGymData } from "@/constants/gyms/types";
 
 const LazyLoadingItems = ({
   searchWord = "",
   sortingType,
 }: LazyLoadingItemsProps) => {
   const pathName = usePathname() as string;
-  const [items, setItems] = useState<GymData[]>([]);
+  const [items, setItems] = useState<SimpleGymData[]>([]);
   const [hasMore, setHasMore] = useState<boolean>(true);
 
   const getMoreData = () => {
@@ -41,7 +41,7 @@ const LazyLoadingItems = ({
       requestData({
         option: "GET",
         url: `/gyms`,
-        // onSuccess: (data) => setItems(data.data),
+        onSuccess: (data) => setItems(data),
       });
     }
 

@@ -1,4 +1,4 @@
-import { GymData } from "../gyms/types";
+import { GymData, SimpleGymData } from "../gyms/types";
 
 // 주소 데이터
 export const sampleAddress = [
@@ -39,5 +39,5 @@ export interface SearchBannerProps {
 export interface CardProps {
   width?: string;
   height?: string;
-  cardInfo: GymData;
+  cardInfo: SimpleGymData;
 }

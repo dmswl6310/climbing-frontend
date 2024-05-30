@@ -14,6 +14,15 @@ export type GymAddress = {
   unitAddress: string;
 };
 
+// /gyms로 받는 썸네일 데이터
+export type SimpleGymData = {
+  id: number;
+  name: string;
+  address: GymAddress;
+  latestSettingDay?: string;
+  likeNumber?: string;
+};
+
 export type GymData = BaseGymData & {
   id?: string;
   latestSettingDay: string | null;

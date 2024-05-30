@@ -3,11 +3,11 @@ import PreviewCard from "../common/PreviewCard";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { requestData } from "@/service/api";
-import { GymData } from "@/constants/gyms/types";
+import { GymData, SimpleGymData } from "@/constants/gyms/types";
 
 const MyBookmark = () => {
   const { data: session, status } = useSession();
-  const [items, setItems] = useState<GymData[]>();
+  const [items, setItems] = useState<SimpleGymData[]>();
 
   useEffect(() => {
     // const fetchBookmarksFromServer = async () => {
