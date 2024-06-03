@@ -10,18 +10,21 @@ const Login = () => {
   const router = useRouter();
 
   useEffect(() => {
-    if (router.query.accessToken) {
+    if (router.query?.accessToken) {
       const saveTokens = async () => {
+        const email = router.query.email;
+        const nickname = router.query.nickname;
         const accessToken = router.query.accessToken;
         const refreshToken = router.query.refreshToken;
         const result = await signIn("credentials", {
+          email: email,
+          nickname: nickname,
           accessToken: accessToken,
           refreshToken: refreshToken,
-          type: "oauth",
+          loginType: "oauth",
           redirect: true,
           callbackUrl: "/",
         });
-
         if (result?.error) {
           console.log("login fail");
         } else {
@@ -31,7 +34,6 @@ const Login = () => {
       saveTokens();
     }
   }, [router.query]);
-
   return (
     <S.Wrapper>
       <S.Title>오르리</S.Title>

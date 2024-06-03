@@ -4,6 +4,7 @@ import { IoPersonOutline } from "react-icons/io5";
 import { IoLockClosedOutline } from "react-icons/io5";
 import Link from "next/link";
 import { COLOR } from "@/styles/global-color";
+import getLoginInfos from "@/service/api/login";
 
 const GeneralLogin = () => {
   const handleSubmit = async (event: any) => {
@@ -12,16 +13,20 @@ const GeneralLogin = () => {
     const email = event.target.email.value;
     const password = event.target.password.value;
 
-    const result = await signIn("credentials", {
-      email: email,
-      password: password,
-      type: "normal",
-      redirect: true,
-      callbackUrl: "/",
-    });
+    const result = await getLoginInfos(email, password).then((user) =>
+      signIn("credentials", {
+        email: email,
+        nickname: user.user.nickname,
+        accessToken: user.jwt.accessToken,
+        refreshToken: user.jwt.refreshToken,
+        loginType: "general",
+        redirect: true,
+        callbackUrl: "/",
+      })
+    );
 
     if (result?.error) {
-      console.log("login fail");
+      console.log("login error");
     } else {
       console.log("login success");
     }
