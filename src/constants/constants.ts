@@ -5,6 +5,6 @@ export const NAVERMAP_GEOCODE_API =
 
 // 서버 주소
 export const SERVER_ADDRESS = "http://3.37.207.190:8080";
-export const SOCKET_ADDRESS = "3.37.207.190:8080";
+export const SOCKET_ADDRESS = "ws://3.37.207.190:8080";
 
 export const TEST_ADDRESS = "http://localhost:8000";

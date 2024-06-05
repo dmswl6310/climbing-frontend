@@ -1,7 +1,9 @@
 import styled from "styled-components";
 import { FaMinus, FaPlus } from "react-icons/fa6";
 import { IoTrash } from "react-icons/io5";
+import ContentContainer from "../ContentContainer";
 import GradeBlock from "./GradeBlock";
+import ReactIcon from "@/components/common/ReactIcon";
 import { DEFAULT_COLOR, NEW_GRADES } from "@/constants/manage/constants";
 import type { GradeEditorProps } from "@/constants/manage/types";
 
@@ -30,14 +32,14 @@ const GradeEditor = ({ gradesList, setNewData }: GradeEditorProps) => {
   };
 
   return (
-    <S.Wrapper>
-      <S.Header>
+    <div className="editor-wrapper">
+      <div className="editor-header editor-removable">
         <span>난이도</span>
-        <S.Icon onClick={handleDelete}>
-          <IoTrash size="1.3rem" />
-        </S.Icon>
-      </S.Header>
-      <S.Content $direction="column">
+        <ReactIcon clickable={true}>
+          <IoTrash onClick={handleDelete} size="1.3rem" />
+        </ReactIcon>
+      </div>
+      <ContentContainer direction="column" gap="6px">
         {gradesList && gradesList.length > 0 ? (
           <>
             <S.Bar>
@@ -59,44 +61,17 @@ const GradeEditor = ({ gradesList, setNewData }: GradeEditorProps) => {
             </button>
           </div>
         )}
-      </S.Content>
-    </S.Wrapper>
+      </ContentContainer>
+    </div>
   );
 };
 
 const S = {
-  Wrapper: styled.div`
-    background: white;
-    border: 1px solid #d0d0d0;
-  `,
-  Header: styled.div`
-    border-bottom: 1px solid #d0d0d0;
-    font-weight: 700;
-    font-size: 24px;
-    padding: 32px 40px;
-    display: flex;
-    justify-content: space-between;
-  `,
-  Icon: styled.div`
-    cursor: pointer;
-  `,
-  Content: styled.div<{ $direction?: string }>`
-    padding: 32px 40px;
-    display: flex;
-    flex-direction: ${(props) => props.$direction};
-    flex-wrap: wrap;
-    gap: 6px;
-
-    span {
-      color: #b7b7b7;
-    }
-  `,
   Bar: styled.div`
     display: flex;
     flex-wrap: wrap;
     gap: 4px;
     align-items: center;
-
     svg {
       margin: 0px 8px;
       cursor: pointer;
@@ -107,6 +82,7 @@ const S = {
     flex-wrap: wrap;
     padding: 0px 37px;
     justify-content: space-between;
+    color: #b7b7b7;
   `,
 };
 

@@ -11,7 +11,6 @@ import { requestData } from "@/service/api";
 import { NavContext, type NavStateProps } from "@/NavContext";
 import type { NextPageWithLayout } from "@/pages/_app";
 import type { Chatroom, ChatroomRef } from "@/constants/manage/types";
-import { TEST_ADDRESS } from "@/constants/constants";
 
 const ChatPage: NextPageWithLayout = () => {
   const { data: session } = useSession();
@@ -23,28 +22,23 @@ const ChatPage: NextPageWithLayout = () => {
   const { selectedGymId } = useContext(NavContext) as NavStateProps;
 
   useEffect(() => {
-    // if (!session) router.push({ pathname: "/login" });
+    if (!session) return;
 
     const fetchRooms = async () => {
       if (!id) return;
-      const data = await (await fetch(`${TEST_ADDRESS}/chatrooms/${id}`)).json();
-      setChatrooms(data.rooms);
+      requestData({
+        option: "GET",
+        url: `/chat/room`,
+        token: session?.jwt.accessToken,
+        onSuccess: (chatrooms: Chatroom[]) => setChatrooms(chatrooms),
+        onError: (e) => console.log(e),
+      });
       setIsLoading(false);
     };
 
-    // const fetchRooms = async () => {
-    //   requestData({
-    //     option: "GET",
-    //     url: "/chat/room",
-    //     token: session?.jwt.accessToken,
-    //     onSuccess: (chatrooms: Chatroom[]) => setChatrooms(chatrooms),
-    //   });
-    //   setIsLoading(false);
-    // };
-
     fetchRooms();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router]);
+  }, [session]);
 
   useEffect(() => {
     if (selectedGymId !== null && selectedGymId !== id) {
@@ -65,7 +59,7 @@ const ChatPage: NextPageWithLayout = () => {
   };
 
   const openNewWindow = (url: string) => {
-    const newWindow = window.open(url, "_blank", "popup=true,left=50,top=50,width=370,height=550");
+    const newWindow = window.open(url, "_blank", "popup=true,left=50,top=50,width=370,height=600");
     setOpenWindows((prev) => [...prev, { url, windowRef: newWindow as Window }]);
     return;
   };
@@ -89,7 +83,7 @@ const ChatPage: NextPageWithLayout = () => {
                     </S.Row>
                   ))
                 ) : (
-                  <div>현재 진행 중인 채팅이 없습니다.</div>
+                  <div>현재 진행 중인 1:1 문의가 없습니다.</div>
                 )}
               </S.Content>
             </>

@@ -1,12 +1,10 @@
-import { COLOR } from "@/styles/global-color";
-import { ChangeEventHandler, FormEventHandler, useState } from "react";
+import { type ChangeEventHandler, type FormEventHandler, useState } from "react";
 import styled from "styled-components";
-
-export type SocketData = string | ArrayBufferLike | Blob | ArrayBufferView;
+import { COLOR } from "@/styles/global-color";
 
 interface ChatFormProps {
   placeholder?: string;
-  handleSend: (message: string) => void;
+  handleSend: (message: string) => boolean;
 }
 
 const ChatForm = ({ placeholder, handleSend }: ChatFormProps) => {
@@ -20,9 +18,8 @@ const ChatForm = ({ placeholder, handleSend }: ChatFormProps) => {
 
   const handleSubmit: FormEventHandler = (e) => {
     e.preventDefault();
-    console.log("서버에 메시지 전송 시도");
-    handleSend(input);
-    setInput("");
+    const isSuccess = handleSend(input);
+    if (isSuccess) setInput("");
   };
 
   return (
@@ -37,13 +34,12 @@ const Wrapper = styled.form`
   display: flex;
   height: 50px;
   gap: 6px;
-
   & > input {
     border: 1px solid #cacaca;
     border-radius: 6px;
+    padding: 0 0.8rem;
     flex-grow: 1;
   }
-
   & > button {
     border: none;
     background: ${COLOR.MAIN};

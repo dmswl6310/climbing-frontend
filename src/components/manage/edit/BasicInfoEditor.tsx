@@ -39,8 +39,8 @@ const BasicInfoEditor = ({
   };
 
   return (
-    <S.Wrapper>
-      <S.Header>기본 정보</S.Header>
+    <div className="editor-wrapper">
+      <div className="editor-header">기본 정보</div>
       <S.Content $direction="column">
         <div>
           <S.Block>
@@ -100,28 +100,17 @@ const BasicInfoEditor = ({
           </S.Block>
         </div>
       </S.Content>
-    </S.Wrapper>
+    </div>
   );
 };
 
 const S = {
-  Wrapper: styled.div`
-    background: white;
-    border: 1px solid #d0d0d0;
-  `,
-  Header: styled.div`
-    border-bottom: 1px solid #d0d0d0;
-    font-weight: 700;
-    font-size: 24px;
-    padding: 32px 40px;
-  `,
   Content: styled.div<{ $direction?: string }>`
     padding: 32px 40px;
     display: flex;
     flex-direction: ${(props) => props.$direction};
     flex-wrap: wrap;
     gap: 30px;
-
     .field__list,
     & > div {
       display: flex;
@@ -144,18 +133,15 @@ const S = {
     border: 1px solid #d0d0d0;
     padding: 12px 18px;
     width: ${({ $width }) => $width || "200px"};
-
     input {
       border: none;
       background: transparent;
       width: 100%;
       padding: 0;
     }
-
     input:nth-child(3) {
       width: 50%;
     }
-
     .field-icon {
       flex-shrink: 0;
       cursor: pointer;

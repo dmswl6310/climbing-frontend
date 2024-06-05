@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import ContentContainer from "../ContentContainer";
 import type { DescriptionEditorProps } from "@/constants/manage/types";
 
 const DescriptionEditor = ({ description, setNewData }: DescriptionEditorProps) => {
@@ -7,37 +8,21 @@ const DescriptionEditor = ({ description, setNewData }: DescriptionEditorProps) 
     setNewData({ description: input });
   };
   return (
-    <S.Wrapper>
-      <S.Header>설명글</S.Header>
-      <S.Content>
+    <div className="editor-wrapper">
+      <div className="editor-header">설명글</div>
+      <ContentContainer direction="row-reverse" gap="20px">
         <S.TextField>
           <textarea value={description ?? ""} onChange={(e) => handleChange(e.target.value)} />
         </S.TextField>
-        <strong>{description?.length || 0}/300</strong>
-      </S.Content>
-    </S.Wrapper>
+        <span style={{ fontWeight: 700, alignSelf: "stretch" }}>
+          {description?.length || 0}/300
+        </span>
+      </ContentContainer>
+    </div>
   );
 };
 
 const S = {
-  Wrapper: styled.div`
-    background: white;
-    border: 1px solid #d0d0d0;
-  `,
-  Header: styled.div`
-    border-bottom: 1px solid #d0d0d0;
-    font-weight: 700;
-    font-size: 24px;
-    padding: 32px 40px;
-  `,
-  Content: styled.div<{ $direction?: string }>`
-    padding: 32px 40px;
-    display: flex;
-    flex-direction: ${(props) => props.$direction};
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    gap: 20px;
-  `,
   TextField: styled.div`
     box-sizing: border-box;
     display: flex;
@@ -49,7 +34,6 @@ const S = {
     padding: 12px 18px;
     width: 100%;
     height: 150px;
-
     textarea {
       border: none;
       background: transparent;

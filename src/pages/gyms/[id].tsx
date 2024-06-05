@@ -1,19 +1,16 @@
-import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import styled from "styled-components";
 import Comments from "@/components/gyms/Comments";
 import DynamicMap from "@/components/gyms/DynamicMap";
 import ErrorPage from "@/components/common/ErrorPage";
-import HelpModal from "@/components/chat/HelpModal";
+import ChatModal from "@/components/chat/ChatModal";
 import ImageCarousel from "@/components/gyms/ImageCarousel";
 import MainContent from "@/components/gyms/MainContent";
 import SideContent from "@/components/gyms/SideContent";
 import useApi from "@/hooks/useApi";
-import { requestData } from "@/service/api";
 import { DEVICE_SIZE } from "@/constants/styles";
 import { IMAGE_SIZE } from "@/constants/gyms/constants";
-import { NAVERMAP_API, SERVER_ADDRESS, TEST_ADDRESS } from "@/constants/constants";
+import { NAVERMAP_API, SERVER_ADDRESS } from "@/constants/constants";
 import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
 
 const GymInfo = ({
@@ -22,21 +19,7 @@ const GymInfo = ({
   statusCode,
 }: InferGetServerSidePropsType<GetServerSideProps>) => {
   const { data: session } = useSession();
-  const router = useRouter();
   const { isLoading } = useApi(NAVERMAP_API);
-  const [isOpen, setIsOpen] = useState(false);
-
-  const toggleModal = () => setIsOpen((prev) => !prev);
-
-  useEffect(() => {
-    const handlePageLeave = () => {
-      if (isOpen) setIsOpen(false);
-    };
-    router.events.on("routeChangeStart", handlePageLeave);
-
-    return () => router.events.off("routeChangeStart", handlePageLeave);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   if (error) return <ErrorPage statusCode={statusCode} />;
   return (
@@ -50,9 +33,7 @@ const GymInfo = ({
         <S.InfoContainer>
           <S.Main>
             <MainContent gymData={gymData} />
-            {isLoading ? null : (
-              <DynamicMap name={gymData.name} coordinates={gymData.coordinates} />
-            )}
+            {!isLoading && <DynamicMap name={gymData.name} coordinates={gymData.coordinates} />}
           </S.Main>
           <SideContent gymData={gymData} />
         </S.InfoContainer>
@@ -63,12 +44,7 @@ const GymInfo = ({
           session={session}
         />
       </S.Wrapper>
-      <HelpModal
-        gymId={gymData.id}
-        gymName={gymData.name}
-        isOpen={isOpen}
-        setIsOpen={toggleModal}
-      />
+      <ChatModal gymId={gymData.id} gymName={gymData.name} />
     </S.Page>
   );
 };
@@ -173,13 +149,16 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const controller = new AbortController();
   setTimeout(() => controller.abort(), 3000);
   try {
-    const response = await fetch(`${TEST_ADDRESS}/gyms/${gymId}`, { signal: controller.signal });
+    const response = await fetch(`${SERVER_ADDRESS}/gyms/${gymId}`, { signal: controller.signal });
     if (response.status === 200) {
       const gymData = await response.json();
       return { props: { gymData } };
     } else throw response.status;
-  } catch (statusCode) {
-    return { props: { error: true, statusCode } };
+  } catch (e) {
+    if (typeof e === "object") {
+      return { props: { error: true, statusCode: 500 } };
+    }
+    return { props: { error: true, statusCode: e } };
   }
 };
 

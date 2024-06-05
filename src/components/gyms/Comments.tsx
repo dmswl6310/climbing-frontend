@@ -1,24 +1,27 @@
 import { useState } from "react";
 import Link from "next/link";
 import styled from "styled-components";
+import { IoTrash } from "react-icons/io5";
 import CommentTextarea from "./CommentTextarea";
+import ReactIcon from "../common/ReactIcon";
 import { SERVER_ADDRESS, TEST_ADDRESS } from "@/constants/constants";
 import { DEVICE_SIZE } from "@/constants/styles";
-import type { CommentsProps, UserComments } from "@/constants/gyms/types";
 import { COLOR } from "@/styles/global-color";
+import type { CommentsProps, UserComments } from "@/constants/gyms/types";
 
 const Comments = ({ id, comments, session }: CommentsProps) => {
   const [currentComments, setCurrentComments] = useState<UserComments>(comments || []);
 
   const handleAddComment = async (input: string) => {
-    // if (!session || !session.user) return "login"; // 추후 복원
+    if (!session || !session.user) return "login";
 
     const newComment = {
-      user: (session?.user?.nickname as string) ?? "익명",
+      user: session.user.nickname ?? "익명",
       date: getCurrentDate(),
       text: input,
     };
 
+    // 댓글 API가 준비되면 수정
     try {
       const response = await Promise.race([
         fetch(`${TEST_ADDRESS}/comments`, {
@@ -42,6 +45,8 @@ const Comments = ({ id, comments, session }: CommentsProps) => {
     }
   };
 
+  const handleDeleteComment = async () => {};
+
   const getCurrentDate = () => {
     const currentDate = new Date();
     const year = currentDate.getFullYear().toString().slice(2);
@@ -53,26 +58,32 @@ const Comments = ({ id, comments, session }: CommentsProps) => {
   return (
     <S.Wrapper>
       <S.Container>
-        {/* {session ? (
-        <CommentTextarea handleAddComment={handleAddComment} />
-      ) : (
-        <div className="login-prompt">
-          로그인해서 후기를 남겨주세요!
-          <S.Link href={"/login"}>로그인하기</S.Link>
-        </div>
-      )} */}
-        <CommentTextarea handleAddComment={handleAddComment} />
-        {currentComments && currentComments.length > 0
-          ? currentComments.map(({ user, date, text }, i) => (
-              <S.Comment key={i}>
-                <div>
-                  <span className="comment__user">{user}</span>
-                  <span className="comment__date">{date}</span>
-                </div>
-                <div>{text}</div>
-              </S.Comment>
-            ))
-          : null}
+        {session ? (
+          <>
+            <CommentTextarea handleAddComment={handleAddComment} />
+            {currentComments &&
+              currentComments.length > 0 &&
+              currentComments.map(({ user, date, text }, i) => (
+                <S.Comment key={i}>
+                  <div style={{ display: "flex" }}>
+                    <span className="comment__user">{user}</span>
+                    <span className="comment__date">{date}</span>
+                    {session.user.nickname === user && (
+                      <ReactIcon clickable={true}>
+                        <IoTrash onClick={handleDeleteComment} />
+                      </ReactIcon>
+                    )}
+                  </div>
+                  <div>{text}</div>
+                </S.Comment>
+              ))}
+          </>
+        ) : (
+          <div className="login-prompt">
+            로그인해서 후기를 남겨주세요!
+            <S.Link href={"/login"}>로그인하기</S.Link>
+          </div>
+        )}
       </S.Container>
     </S.Wrapper>
   );
@@ -113,6 +124,7 @@ const S = {
     }
     .comment__date {
       color: #c3c3c3;
+      margin-right: 1.25rem;
     }
   `,
   Link: styled(Link)`

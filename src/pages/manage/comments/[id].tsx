@@ -93,10 +93,10 @@ const CommentsPage: NextPageWithLayout = () => {
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       <ManageLayout>
-        <S.Wrapper>
-          {isLoading ? null : (
+        <div className="editor-wrapper">
+          {!isLoading && (
             <>
-              <S.Header>댓글 관리</S.Header>
+              <div className="editor-header">댓글 관리</div>
               <S.Content $direction="column">
                 {comments.length > 0 ? (
                   comments.map(({ user, date, text }, i) => (
@@ -111,7 +111,7 @@ const CommentsPage: NextPageWithLayout = () => {
               </S.Content>
             </>
           )}
-        </S.Wrapper>
+        </div>
       </ManageLayout>
     </ErrorBoundary>
   );
@@ -122,16 +122,6 @@ export const getServerSideProps = async () => {
 };
 
 const S = {
-  Wrapper: styled.div`
-    background: white;
-    border: 1px solid #d0d0d0;
-  `,
-  Header: styled.div`
-    border-bottom: 1px solid #d0d0d0;
-    font-weight: 700;
-    font-size: 24px;
-    padding: 32px 40px;
-  `,
   Content: styled.div<{ $direction?: string }>`
     padding: 32px 40px;
     display: flex;
@@ -141,7 +131,6 @@ const S = {
   `,
   Link: styled.div`
     cursor: pointer;
-
     &:hover {
       color: #1aabff;
     }

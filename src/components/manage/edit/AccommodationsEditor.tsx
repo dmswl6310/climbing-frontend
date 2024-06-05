@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import ContentContainer from "../ContentContainer";
 import { ACCOMMODATIONS_LIST } from "@/constants/manage/constants";
 import type { AccommodationsEditorProps } from "@/constants/manage/types";
 
@@ -16,9 +17,9 @@ const AccommodationsEditor = ({ accommodationsList, setNewData }: Accommodations
     }
   };
   return (
-    <S.Wrapper>
-      <S.Header>시설 정보</S.Header>
-      <S.Content>
+    <div className="editor-wrapper">
+      <div className="editor-header">시설 정보</div>
+      <ContentContainer gap="20px">
         {ACCOMMODATIONS_LIST.map((text, i) => (
           <S.TextField
             key={i}
@@ -35,29 +36,12 @@ const AccommodationsEditor = ({ accommodationsList, setNewData }: Accommodations
             <span>{text}</span>
           </S.TextField>
         ))}
-      </S.Content>
-    </S.Wrapper>
+      </ContentContainer>
+    </div>
   );
 };
 
 const S = {
-  Wrapper: styled.div`
-    background: white;
-    border: 1px solid #d0d0d0;
-  `,
-  Header: styled.div`
-    border-bottom: 1px solid #d0d0d0;
-    font-weight: 700;
-    font-size: 24px;
-    padding: 32px 40px;
-  `,
-  Content: styled.div<{ $direction?: string }>`
-    padding: 32px 40px;
-    display: flex;
-    flex-direction: ${(props) => props.$direction};
-    flex-wrap: wrap;
-    gap: 20px;
-  `,
   TextField: styled.div`
     box-sizing: border-box;
     display: flex;
@@ -70,7 +54,6 @@ const S = {
     width: 175px;
     gap: 8px;
     cursor: pointer;
-
     input {
       border: none;
       background: transparent;
@@ -78,7 +61,6 @@ const S = {
       flex-shrink: 1;
       pointer-events: none;
     }
-
     span {
       flex: 1 0 0;
       pointer-events: none;

@@ -26,8 +26,8 @@ const PricingEditor = ({ pricingList, setNewData }: PricingEditorProps) => {
   };
 
   return (
-    <S.Wrapper>
-      <S.Header>이용 금액</S.Header>
+    <div className="editor-wrapper">
+      <div className="editor-header">이용 금액</div>
       <S.Content $direction="column">
         {pricingList?.map(({ item, price }, i) => (
           <S.Row key={i}>
@@ -43,21 +43,11 @@ const PricingEditor = ({ pricingList, setNewData }: PricingEditorProps) => {
           </button>
         </div>
       </S.Content>
-    </S.Wrapper>
+    </div>
   );
 };
 
 const S = {
-  Wrapper: styled.div`
-    background: white;
-    border: 1px solid #d0d0d0;
-  `,
-  Header: styled.div`
-    border-bottom: 1px solid #d0d0d0;
-    font-weight: 700;
-    font-size: 24px;
-    padding: 32px 40px;
-  `,
   Content: styled.div<{ $direction?: string }>`
     padding: 32px 40px;
     display: flex;

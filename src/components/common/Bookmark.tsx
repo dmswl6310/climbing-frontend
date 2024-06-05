@@ -3,6 +3,7 @@ import { IoBookmarkOutline, IoBookmark } from "react-icons/io5";
 import { useEffect, useState } from "react";
 import { styled } from "styled-components";
 import router from "next/router";
+import ReactIcon from "./ReactIcon";
 
 // 로그인 상태 => 북마크 클릭시, 서버 수정 요청
 // 미로그인 상태 => 북마크 클릭시, 로그인 페이지로 이동
@@ -56,9 +57,13 @@ const Bookmark = ({ token, gymId, size }: BookmarkProps) => {
   return (
     <S.BookmarkWrapper onClick={handleClick}>
       {isMarked ? (
-        <IoBookmark size={size} />
+        <ReactIcon clickable={true}>
+          <IoBookmark size={size} color="#666666" />
+        </ReactIcon>
       ) : (
-        <IoBookmarkOutline size={size} />
+        <ReactIcon clickable={true}>
+          <IoBookmarkOutline size={size} color="#666666" />
+        </ReactIcon>
       )}
     </S.BookmarkWrapper>
   );

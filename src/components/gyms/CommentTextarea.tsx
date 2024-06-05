@@ -1,8 +1,9 @@
 import { useState } from "react";
 import styled from "styled-components";
+import { PulseLoader } from "react-spinners";
+import { COLOR } from "@/styles/global-color";
 import type { ChangeEvent } from "react";
 import type { CommentTextareaProps } from "@/constants/gyms/types";
-import { COLOR } from "@/styles/global-color";
 
 const CommentTextarea = ({ handleAddComment }: CommentTextareaProps) => {
   const [comment, setComment] = useState("");
@@ -17,6 +18,7 @@ const CommentTextarea = ({ handleAddComment }: CommentTextareaProps) => {
   const handleCancel = () => setComment("");
 
   const handlePost = async () => {
+    if (comment.trim() === "") return;
     setIsLoading(true);
     const response = await handleAddComment(comment);
     setIsLoading(false);
@@ -32,9 +34,7 @@ const CommentTextarea = ({ handleAddComment }: CommentTextareaProps) => {
         return setComment("");
       }
       default: {
-        return alert(
-          "알 수 없는 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."
-        );
+        return alert("알 수 없는 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
       }
     }
   };
@@ -44,21 +44,13 @@ const CommentTextarea = ({ handleAddComment }: CommentTextareaProps) => {
       <S.Header>
         한줄평 <span>{comment.length}</span>
       </S.Header>
-      <S.Textarea
-        placeholder="소중한 후기를 남겨주세요 :)"
-        value={comment}
-        onChange={onChange}
-      />
+      <S.Textarea placeholder="소중한 후기를 남겨주세요 :)" value={comment} onChange={onChange} />
       <S.Buttons>
         <button className="btn-unfilled" onClick={handleCancel}>
           취소
         </button>
-        <button
-          className="btn-filled"
-          onClick={handlePost}
-          disabled={isLoading}
-        >
-          댓글
+        <button className="btn-filled" onClick={handlePost} disabled={isLoading}>
+          {isLoading ? <PulseLoader color="white" size="0.3rem" /> : "댓글"}
         </button>
       </S.Buttons>
     </S.Wrapper>
@@ -75,7 +67,6 @@ const S = {
     display: flex;
     gap: 8px;
     font-weight: 700;
-
     span {
       color: ${COLOR.MAIN};
     }
@@ -89,14 +80,15 @@ const S = {
     border-radius: 8px;
     border: 1px solid #fafafa;
     box-shadow: 0 0 15px rgba(29, 101, 122, 0.15);
-
     & :focus {
       border: 1px solid blue;
     }
   `,
   Buttons: styled.div`
     align-self: flex-end;
-
+    button {
+      width: 3.3rem;
+    }
     .btn-unfilled {
       border: none;
       background: transparent;
@@ -104,7 +96,6 @@ const S = {
       margin-right: 6px;
       cursor: pointer;
     }
-
     .btn-filled {
       border: none;
       background: ${COLOR.MAIN};
@@ -113,7 +104,6 @@ const S = {
       border-radius: 8px;
       cursor: pointer;
     }
-
     button:disabled {
       background: #bbc3cd;
     }

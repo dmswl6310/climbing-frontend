@@ -1,6 +1,7 @@
 import Image from "next/image";
 import styled from "styled-components";
 import { RiDeleteBin6Fill } from "react-icons/ri";
+import ContentContainer from "../ContentContainer";
 import ImageList from "./ImageList";
 import ImageUploader from "./ImageUploader";
 import useS3, { FOLDER_NAME, THUMBNAIL_PREFIX } from "../../../hooks/useS3";
@@ -69,9 +70,9 @@ const ImageEditor = ({
   const { handleS3Upload, handleS3Delete } = useS3(uploadImage, deleteImage);
 
   return (
-    <S.Wrapper>
-      <S.Header>암장 이미지</S.Header>
-      <S.Content $direction="column">
+    <div className="editor-wrapper">
+      <div className="editor-header">암장 이미지</div>
+      <ContentContainer direction="column" gap="20px">
         <S.Row>
           <strong>대표 이미지</strong>
           {defaultImage ? (
@@ -106,29 +107,12 @@ const ImageEditor = ({
             <ImageUploader dataKey="display" handleS3Upload={handleS3Upload} />
           )}
         </S.Row>
-      </S.Content>
-    </S.Wrapper>
+      </ContentContainer>
+    </div>
   );
 };
 
 const S = {
-  Wrapper: styled.div`
-    background: white;
-    border: 1px solid #d0d0d0;
-  `,
-  Header: styled.div`
-    border-bottom: 1px solid #d0d0d0;
-    font-weight: 700;
-    font-size: 24px;
-    padding: 32px 40px;
-  `,
-  Content: styled.div<{ $direction?: string }>`
-    padding: 32px 40px;
-    display: flex;
-    flex-direction: ${(props) => props.$direction};
-    flex-wrap: wrap;
-    gap: 20px;
-  `,
   Row: styled.div`
     display: flex;
     gap: 12px;

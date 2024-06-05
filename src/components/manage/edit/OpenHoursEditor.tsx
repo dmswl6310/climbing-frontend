@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { IoTrash } from "react-icons/io5";
+import ContentContainer from "../ContentContainer";
 import OpenHoursField from "./OpenHoursField";
 import type { OpenHoursEditorProps } from "@/constants/manage/types";
 
@@ -27,9 +28,9 @@ const OpenHoursEditor = ({ openHoursList, setNewData }: OpenHoursEditorProps) =>
   };
 
   return (
-    <S.Wrapper>
-      <S.Header>영업 시간</S.Header>
-      <S.Content $direction="column">
+    <div className="editor-wrapper">
+      <div className="editor-header">영업 시간</div>
+      <ContentContainer direction="column" gap="30px">
         {openHoursList?.map(({ days, openTime, closeTime }, i) => (
           <S.Row key={i}>
             <OpenHoursField
@@ -49,29 +50,12 @@ const OpenHoursEditor = ({ openHoursList, setNewData }: OpenHoursEditorProps) =>
             + 옵션 추가
           </button>
         </div>
-      </S.Content>
-    </S.Wrapper>
+      </ContentContainer>
+    </div>
   );
 };
 
 const S = {
-  Wrapper: styled.div`
-    background: white;
-    border: 1px solid #d0d0d0;
-  `,
-  Header: styled.div`
-    border-bottom: 1px solid #d0d0d0;
-    font-weight: 700;
-    font-size: 24px;
-    padding: 32px 40px;
-  `,
-  Content: styled.div<{ $direction?: string }>`
-    padding: 32px 40px;
-    display: flex;
-    flex-direction: ${(props) => props.$direction};
-    flex-wrap: wrap;
-    gap: 30px;
-  `,
   Row: styled.div`
     display: flex;
     gap: 20px;

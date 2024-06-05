@@ -85,42 +85,35 @@ const MainContent = ({ gymData }: { gymData: GymData }) => {
         </div>
         <div className="header">
           <span className="header__text">{gymData.name}</span>&nbsp;
-          {session ? (
-            <div className="icons">
-              <StyledIcon $clickable={true} onClick={handleLike}>
-                {isLiked ? <IoHeart size="1.3rem" /> : <IoHeartOutline size="1.3rem" />}
-                {currentLikes}
-              </StyledIcon>{" "}
-              <StyledIcon $clickable={true}>
-                <Bookmark
-                  token={session.jwt.accessToken}
-                  gymId={gymData.id as string}
-                  size="1.3rem"
-                />
-              </StyledIcon>{" "}
-              {gymData.homepage ? (
+          <div className="icons">
+              {session ? (
+                <>
+                  {/* <StyledIcon $clickable={true} onClick={handleLike}>
+                    {isLiked ? <IoHeart size="1.3rem" /> : <IoHeartOutline size="1.3rem" />}
+                    {currentLikes}
+                  </StyledIcon> */}
+                  <StyledIcon $clickable={true}>
+                    <Bookmark
+                      token={session.jwt.accessToken}
+                      gymId={gymData.id as string}
+                      size="1.3rem"
+                    />
+                  </StyledIcon>
+                </>
+              ) : (
+                <StyledIcon $clickable={false}>
+                  <IoHeartOutline size="1.3rem" />
+                  {currentLikes}
+                </StyledIcon>
+              )}
+              {gymData.homepage && (
                 <StyledIcon $clickable={true}>
                   <StyledLink href={gymData.homepage} target="_blank">
                     <IoShareSocialOutline size="1.3rem" />
                   </StyledLink>
                 </StyledIcon>
-              ) : null}
+              )}
             </div>
-          ) : (
-            <div className="icons">
-              <StyledIcon $clickable={false}>
-                <IoHeartOutline size="1.3rem" />
-                {currentLikes}
-              </StyledIcon>{" "}
-              {gymData.homepage ? (
-                <StyledIcon $clickable={true}>
-                  <StyledLink href={gymData.homepage} target="_blank">
-                    <IoShareSocialOutline size="1.3rem" />
-                  </StyledLink>
-                </StyledIcon>
-              ) : null}
-            </div>
-          )}
         </div>
       </div>
       {gymData.description && <div className="description">{gymData.description}</div>}

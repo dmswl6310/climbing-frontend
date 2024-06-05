@@ -63,6 +63,23 @@ ${normalize}
   ::placeholder {
     color: #979797;
   }
+
+  .editor-wrapper {
+    background: white;
+    border: 1px solid #d0d0d0;
+  }
+
+  .editor-header {
+    border-bottom: 1px solid #d0d0d0;
+    font-weight: 700;
+    font-size: 24px;
+    padding: 32px 40px;
+  }
+
+  .editor-removable {
+    display: flex;
+    justify-content: space-between;
+  }
 `;
 
 export default GlobalStyle;

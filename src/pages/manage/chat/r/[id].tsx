@@ -42,7 +42,7 @@ const ChatPopup: NextPageWithLayout = ({
     if (!session || clientRef.current) return;
 
     clientRef.current = new Client({
-      brokerURL: `ws://${SOCKET_ADDRESS}/ws/chat`,
+      brokerURL: `${SOCKET_ADDRESS}/ws/chat`,
       connectHeaders: { Authorization: "Bearer " + session.jwt.accessToken },
     });
     const client = clientRef.current;
@@ -74,25 +74,14 @@ const ChatPopup: NextPageWithLayout = ({
     client.onConnect = onClientConnect;
     client.onStompError = onClientError;
     client.activate();
-
-    return () => {
-      client.publish({
-        destination: "/app/chat/message",
-        body: JSON.stringify({
-          type: "LEAVE",
-          roomId,
-        }),
-      });
-      client.deactivate();
-    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
 
   const handleSend = (message: string) => {
-    if (message === "" || !clientRef.current) return;
-    if (!clientRef.current.connected) {
+    if (message === "") return false;
+    if (!clientRef.current || !clientRef.current.connected) {
       console.log("소켓 연결 안됨");
-      return;
+      return false;
     }
     clientRef.current.publish({
       destination: "/app/chat/message",
@@ -103,6 +92,7 @@ const ChatPopup: NextPageWithLayout = ({
         message,
       }),
     });
+    return true;
   };
 
   if (status === "loading")
