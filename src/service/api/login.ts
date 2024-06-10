@@ -21,7 +21,7 @@ const getLoginInfos = async (email: string, password: string) => {
       if (!(responseHeaders && responseAccessToken && responseRefreshToken)) {
         throw Error("missing header or token");
       }
-
+      // console.log(responseHeaders);
       // 받은 토큰
       const jwt = {
         accessToken: responseAccessToken || "tempAccess",
@@ -32,8 +32,10 @@ const getLoginInfos = async (email: string, password: string) => {
 
       const email = body.email || "tempEmail";
       const nickname = body.nickname || "tempNickname";
+
       return { user: { email, nickname }, jwt };
     });
+  // console.log(userInfo);
   return userInfo;
 };
 

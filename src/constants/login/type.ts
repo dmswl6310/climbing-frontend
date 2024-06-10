@@ -41,6 +41,8 @@ export interface InputProps {
   buttonText?: string;
   onClick?: any;
   onDisabled?: any;
+  defaultValue?: string;
+  isDisabled?: boolean;
 }
 
 export interface EmailVerificationProps {

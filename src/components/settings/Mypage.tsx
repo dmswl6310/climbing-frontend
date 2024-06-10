@@ -1,80 +1,65 @@
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { styled } from "styled-components";
-import { useRouter } from "next/router";
 import React from "react";
 import { requestData } from "@/service/api";
+import InputWithTitle from "@/components/common/InputWithTitle";
 import {
   CONFIRM_MESSAGE,
   NICKNAME_REGREX,
   PASSWORD_REGREX,
 } from "@/constants/login/constants";
+import handleSignOut from "@/service/api/logout";
 
 const Mypage = () => {
-  // 현재는 세션이 있을때 메이페이지가 보이지만 추후 백엔드 요청시 정보가 있을때만 표시
+  // 현재 정보업데이트시 비밀번호 미사용
+
   const { data: session, status } = useSession();
   const [isPasswordValid, setIsPasswordValid] = useState(false);
-  const [passwordMessage, setPasswordMessage] = useState("");
-
-  const [isReEnterPasswordValid, setIsReEnterPasswordValid] = useState(false);
-  const [reEnterPasswordMessage, setReEnterPasswordMessage] = useState("");
+  // const [passwordMessage, setPasswordMessage] = useState("");
 
   const [isNicknameValid, setIsNicknameValid] = useState(true);
   const [nicknameMessage, setNicknameMessage] = useState("");
 
-  const [password, setPassword] = useState("");
+  // const [password, setPassword] = useState("");
   const [nickname, setNickname] = useState("");
 
   const [infoFromServer, setInfoFromServer] = useState({
-    email: "temp@naver.com",
-    nickname: "tempNickname",
+    email: "",
+    nickname: "",
   });
 
-  const router = useRouter();
   useEffect(() => {
-    const onSuccess = (data: any) => {
+    const onSuccess = (data: { email: string; nickname: string }) => {
       setInfoFromServer({ email: data.email, nickname: data.nickname });
     };
     requestData({
       option: "GET",
       url: "/members/myInfo",
       token: `${session?.jwt.accessToken}`,
+      hasBody: true,
       onSuccess,
     });
   }, [session]);
-  const handlePasswordChange = (event: {
-    target: {
-      value: string;
-    };
-  }) => {
-    const currentPassword = event.target.value;
 
-    if (!PASSWORD_REGREX.test(currentPassword)) {
-      setPasswordMessage(
-        "숫자+영문자+특수문자 조합으로 8자리 이상 입력해주세요."
-      );
-      setIsPasswordValid(false);
-    } else {
-      setPasswordMessage("");
-      setIsPasswordValid(true);
-      setPassword(currentPassword);
-    }
-  };
+  // const handlePasswordChange = (event: {
+  //   target: {
+  //     value: string;
+  //   };
+  // }) => {
+  //   const currentPassword = event.target.value;
 
-  const handleReEnterPasswordChange = (event: {
-    target: {
-      value: string;
-    };
-  }) => {
-    const currentReEnterpassword = event.target.value;
-    if (currentReEnterpassword !== password) {
-      setReEnterPasswordMessage("비밀번호가 같지 않습니다.");
-      setIsReEnterPasswordValid(false);
-    } else {
-      setReEnterPasswordMessage("");
-      setIsReEnterPasswordValid(true);
-    }
-  };
+  //   if (!PASSWORD_REGREX.test(currentPassword)) {
+  //     setPasswordMessage(
+  //       "숫자+영문자+특수문자 조합으로 8자리 이상 입력해주세요."
+  //     );
+  //     setIsPasswordValid(false);
+  //   } else {
+  //     setPasswordMessage("");
+  //     setIsPasswordValid(true);
+  //     setPassword(currentPassword);
+  //   }
+  // };
 
   const handleNicknameChange = async (event: {
     target: {
@@ -87,7 +72,7 @@ const Mypage = () => {
       setNicknameMessage("닉네임은 2자이상이어야 합니다.");
       setIsNicknameValid(false);
     } else if (currentNickname === infoFromServer.nickname) {
-      setNicknameMessage("기존 닉네임(" + CONFIRM_MESSAGE + ")");
+      setNicknameMessage("기존 닉네임(변경 풀필요)");
       setIsNicknameValid(true);
       setNickname(currentNickname);
     } else {
@@ -106,43 +91,34 @@ const Mypage = () => {
         url: `/members/nickname-check/${currentNickname}`,
         onSuccess,
       });
-      // setNicknameMessage("");
-      // setIsNicknameValid(true);
-      // setNickname(currentNickname);
     }
   };
 
-  const handleSubmit = async (event: any) => {
+  const handleSubmit = (event: any) => {
     event.preventDefault();
-
-    const credentials = {
-      // username: { label: session!.user!.email, type: "email" },
-      // password: { label: password, type: "password" },
-      nickname: nickname,
+    const onSuccess = () => {
+      handleSignOut();
+      // .then(() => getLoginInfos(infoFromServer.email, password))
+      // .then((user) => {
+      //   signIn("credentials", {
+      //     email: infoFromServer.email,
+      //     nickname: user.user.nickname,
+      //     accessToken: user.jwt.accessToken,
+      //     refreshToken: user.jwt.refreshToken,
+      //     loginType: "general",
+      //     redirect: true,
+      //     callbackUrl: "/settings",
+      //   });
+      // });
     };
-
-    requestData({
+    return requestData({
       option: "PUT",
       url: "/members/update",
-      onSuccess: () => router.reload(),
+      token: session!.jwt.accessToken,
+      data: { nickname: nickname },
+      hasBody: false,
+      onSuccess,
     });
-
-    // const response = await fetch("http://localhost:3000/members/update", {
-    //   method: "UPDATE",
-    //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify(credentials),
-    // });
-
-    // const data = await response.json();
-
-    // router.reload();
-
-    // if (data.ok) {
-    //   //정상적 업데이트 => 현재페이지 재표시
-    //   router.reload();
-    // } else {
-    //   return null as any;
-    // }
   };
 
   if (status !== "authenticated") {
@@ -150,96 +126,57 @@ const Mypage = () => {
   }
 
   return (
-    <S.TableContainer onSubmit={handleSubmit}>
-      <table>
-        <thead></thead>
-        <tbody>
-          <tr>
-            <td width="150px">아이디(이메일)</td>
-            <td>{infoFromServer.email}</td>
-          </tr>
-          <tr>
-            <td>비밀번호</td>
-            <td>
-              <S.Input
-                name="password"
-                type="password"
-                $hasMessage={passwordMessage !== ""}
-                onChange={handlePasswordChange}
-              ></S.Input>
-              <S.Warning>{passwordMessage}</S.Warning>
-            </td>
-          </tr>
-          <tr>
-            <td>비밀번호 재확인</td>
-            <td>
-              <S.Input
-                name="reEnterPassword"
-                type="password"
-                $hasMessage={reEnterPasswordMessage !== ""}
-                onChange={handleReEnterPasswordChange}
-              ></S.Input>
-              <S.Warning>{reEnterPasswordMessage}</S.Warning>
-            </td>
-          </tr>
-          <tr>
-            <td>닉네임</td>
-            <td>
-              <S.Input
-                name="nickname"
-                type="text"
-                $hasMessage={nicknameMessage !== ""}
-                onChange={handleNicknameChange}
-                defaultValue={infoFromServer.nickname}
-              ></S.Input>
-              <S.Warning>{nicknameMessage}</S.Warning>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <S.ButtonBox
-        type="submit"
-        disabled={
-          isNicknameValid && isPasswordValid && isReEnterPasswordValid
-            ? false
-            : true
-        }
-      >
-        저장하기
-      </S.ButtonBox>
-    </S.TableContainer>
+    <S.Wrapper>
+      <S.JoinForm className="container" onSubmit={handleSubmit}>
+        <InputWithTitle
+          name="email"
+          type="email"
+          title="아이디(이메일)"
+          isDisabled={true}
+          defaultValue={infoFromServer.email}
+        />
+        {/* <InputWithTitle
+          name="password"
+          type="password"
+          title="비밀번호"
+          onChange={handlePasswordChange}
+          message={passwordMessage}
+        /> */}
+        <InputWithTitle
+          name="nickname"
+          title="닉네임"
+          onChange={handleNicknameChange}
+          message={nicknameMessage}
+          defaultValue={infoFromServer.nickname}
+        />
+        <S.ButtonBox type="submit" disabled={!isNicknameValid}>
+          저장 후 로그아웃
+        </S.ButtonBox>
+      </S.JoinForm>
+    </S.Wrapper>
   );
 };
 
 const S = {
-  TableContainer: styled.form`
-    table {
-      width: 600px;
-      border-collapse: collapse;
-      table-layout: fixed;
-    }
-
-    td {
-      padding: 5px;
-      border: 1px solid black;
-      height: 40px;
-      padding-left: 10px;
-    }
+  Wrapper: styled.div`
+    height: 700px;
+    width: 600px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 0 auto;
+  `,
+  JoinForm: styled.form`
+    display: flex;
+    flex-direction: column;
+    height: 500px;
+    padding: 50px;
+    margin-bottom: 30px;
   `,
   ButtonBox: styled.button`
     height: 40px;
     background-color: #f9f2f2;
     border: none;
-    margin-top: 10px;
-  `,
-  Input: styled.input<{ $hasMessage: boolean }>`
-    height: 30px;
-    outline-color: ${(props) => (props.$hasMessage ? "red" : "green")};
-  `,
-  Warning: styled.div`
-    height: 10px;
-    font-size: 12px;
-    color: red;
   `,
 };
 export default Mypage;

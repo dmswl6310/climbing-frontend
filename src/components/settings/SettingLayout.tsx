@@ -8,17 +8,31 @@ const SettingLayout = ({ children }: React.PropsWithChildren<{}>) => {
         <h3>설정</h3>
         <Link
           className="link-plain"
-          href={{ pathname: "/settings", query: { page: "myPage" } }}
-          as="/settings/myPage"
-        >
-          내 정보
-        </Link>
-        <Link
-          className="link-plain"
           href={{ pathname: "/settings", query: { page: "myBookmark" } }}
           as="/settings/myBookmark"
         >
-          내 북마크
+          내 북마크 관리
+        </Link>
+        <Link
+          className="link-plain"
+          href={{ pathname: "/settings", query: { page: "myPage" } }}
+          as="/settings/myPage"
+        >
+          내 정보 수정
+        </Link>
+        <Link
+          className="link-plain"
+          href={{ pathname: "/settings", query: { page: "changePassword" } }}
+          as="/settings/changePassword"
+        >
+          비밀번호 변경
+        </Link>
+        <Link
+          className="link-plain"
+          href={{ pathname: "/settings", query: { page: "deleteAccount" } }}
+          as="/settings/deleteAccount"
+        >
+          계정 탈퇴
         </Link>
       </S.Sidebar>
       <S.Main>{children}</S.Main>

@@ -12,27 +12,33 @@ const InputWithTitle = ({
   buttonText,
   onClick,
   onDisabled,
+  defaultValue,
+  isDisabled = false,
 }: InputProps) => {
   return (
     <Styled.Wrapper>
       <Styled.Title>{title}</Styled.Title>
-      <Styled.InputContainer>
-        <Styled.Input
-          $isWarning={message !== "" && message !== CONFIRM_MESSAGE}
-          placeholder={placeholder}
-          name={name}
-          type={type}
-          onChange={onChange}
-        />
-        {buttonText ? (
-          <Styled.Button onClick={onClick} disabled={onDisabled}>
-            {buttonText}
-          </Styled.Button>
-        ) : null}
-      </Styled.InputContainer>
-      <Styled.Result $isWarning={message !== CONFIRM_MESSAGE}>
-        {message}
-      </Styled.Result>
+      <Styled.Container>
+        <Styled.InputContainer>
+          <Styled.Input
+            $isWarning={message !== "" && message !== CONFIRM_MESSAGE}
+            placeholder={placeholder}
+            name={name}
+            type={type}
+            onChange={onChange}
+            defaultValue={defaultValue}
+            disabled={isDisabled}
+          />
+          {buttonText ? (
+            <Styled.Button onClick={onClick} disabled={onDisabled}>
+              {buttonText}
+            </Styled.Button>
+          ) : null}
+        </Styled.InputContainer>
+        <Styled.Result $isWarning={message !== CONFIRM_MESSAGE}>
+          {message}
+        </Styled.Result>
+      </Styled.Container>
     </Styled.Wrapper>
   );
 };
@@ -40,10 +46,15 @@ const InputWithTitle = ({
 const Styled = {
   Wrapper: styled.div`
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     margin-bottom: 15px;
   `,
-  Title: styled.div``,
+  Title: styled.div`
+    width: 200px;
+  `,
+  Container: styled.div`
+    width: 100%;
+  `,
   Input: styled.input<{ $isWarning: boolean }>`
     height: 30px;
     outline-color: ${(props) => (props.$isWarning ? "red" : "green")};

@@ -1,4 +1,6 @@
 import { requestData } from "@/service/api";
+import getUpdatedToken from "@/service/api/updateToken";
+import { jwtVerify } from "jose";
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
@@ -102,16 +104,26 @@ export default NextAuth({
           ...user,
           jwt: user.jwt,
         };
-      } else if (Date.now() < Date.now() + expireDate) {
-        // 액세스 토큰 만료 전
-        console.log("토큰 만료 전");
-        return token;
       } else {
-        console.log("토큰 만료 후");
-        // 만료 후 리프레시 토큰으로 액세스 토큰 업데이트 요청
-        if (!token.jwt.refreshToken) throw new Error("Missing refresh token");
-        // 리프레시 토큰도 만료되었을 시, 데이터삭제 및 로그아웃
-        return token;
+        // const textEncoder = new TextEncoder();
+        // const secret = textEncoder.encode(process.env.JWT_SECRET);
+        // const { payload } = await jwtVerify(token.jwt.accessToken, secret);
+        // const expireDate = payload.exp! * 1000;
+
+        if (Date.now() < expireDate) {
+          // 액세스 토큰 만료 전
+          // console.log("토큰 만료 전");
+          return token;
+        } else {
+          // console.log("토큰 만료 후");
+          // 만료 후 리프레시 토큰으로 액세스 토큰 업데이트 요청
+          if (!token.jwt.refreshToken) throw new Error("Missing refresh token");
+          // 리프레시 토큰도 만료되었을 시, 데이터삭제 및 로그아웃
+
+          // const hello = await getUpdatedToken(token.jwt.refreshToken);
+          // console.log(hello);
+          return token;
+        }
       }
       // return updateAccessToken(token.jwt.refreshToken);
     },
@@ -131,29 +143,3 @@ export default NextAuth({
     error: "/error/login",
   },
 });
-
-async function updateAccessToken(refreshToken: string) {
-  try {
-    const data = await requestData({
-      option: "POST",
-      url: `/token/update`,
-      token: refreshToken,
-      onSuccess: async (response: Response) => {
-        const responseHeaders = response.headers;
-        const responseAccessToken = responseHeaders.get("Authorization");
-        const responseRefreshToken = responseHeaders.get(
-          "Authorization-refresh"
-        );
-        if (!(responseHeaders && responseAccessToken && responseRefreshToken)) {
-          throw Error("missing header or token");
-        }
-
-        // TODO: 토큰형식으로 리턴
-      },
-      hasBody: false,
-    });
-    return data as any;
-  } catch (error) {
-    // 문제있을시
-  }
-}

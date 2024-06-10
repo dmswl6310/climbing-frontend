@@ -69,7 +69,7 @@ const getData = ({
     .then((response) => {
       if (!response.ok) {
         // 404, 500...등의 에러
-        throw new Error(`${response.status} 에러`);
+        throw new Error(`${response.status}`);
       }
       if (hasBody) return response.json();
       return response;
@@ -127,7 +127,7 @@ const postData = ({
     .then((response) => {
       if (!response.ok) {
         // 404, 500...등의 에러
-        throw new Error(`${response.status} 에러`);
+        throw new Error(`${response.status}`);
       }
       if (hasBody) return response.json();
       return response;
