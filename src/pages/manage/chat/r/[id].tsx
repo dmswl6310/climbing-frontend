@@ -9,6 +9,7 @@ import GlobalStyle from "@/styles/global-styles";
 import LoadContainer from "@/components/manage/LoadContainer";
 import LoginPrompt from "@/components/common/LoginPrompt";
 import { requestData } from "@/service/api";
+import { getFormattedChatHistory } from "@/ChatHistoryContext";
 import { SOCKET_ADDRESS } from "@/constants/constants";
 import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import type { NextPageWithLayout } from "@/pages/_app";
@@ -20,32 +21,28 @@ const ChatPopup: NextPageWithLayout = ({
   const { data: session, status } = useSession();
   const [roomName, setRoomName] = useState<null | string>(null);
   const [messages, setMessages] = useState<MessageFormat[] | undefined>(undefined);
-  const clientRef = useRef<Client | null>(null);
+  const [client, setClient] = useState<Client | null>(null);
 
-  const onServerMessage = (res: Message) => {
+  const onServerMessage = (response: Message) => {
     if (!session) return;
-    const messageBody = JSON.parse(res.body);
-    const { type, message, sender } = messageBody;
-    console.log(messageBody);
+    const messageBody = JSON.parse(response.body);
+    const { message, sender, createdAt } = messageBody;
 
-    if (type === "TALK") {
-      const newMessage = {
-        userType: sender === session.user.email ? "manager" : "customer",
-        message,
-        time: Date.now(),
-      };
-      setMessages((prev) => [...(prev ?? []), newMessage]);
-    }
+    const newMessage = {
+      userType: sender === session.user.nickname ? "manager" : "customer",
+      message,
+      createdAt,
+    };
+    setMessages((prev) => [...(prev ?? []), newMessage]);
   };
 
   useEffect(() => {
-    if (!session || clientRef.current) return;
+    if (!session || client) return;
 
-    clientRef.current = new Client({
+    const clientInstance = new Client({
       brokerURL: `${SOCKET_ADDRESS}/ws/chat`,
       connectHeaders: { Authorization: "Bearer " + session.jwt.accessToken },
     });
-    const client = clientRef.current;
 
     requestData({
       option: "GET",
@@ -54,41 +51,53 @@ const ChatPopup: NextPageWithLayout = ({
       onSuccess: (roomData: Chatroom) => setRoomName(roomData.roomName),
     });
 
-    const onClientConnect = () => {
-      client.subscribe(`/queue/chat/room/${roomId}`, onServerMessage);
-      client.publish({
-        destination: "/app/chat/message",
-        body: JSON.stringify({
-          type: "ENTER",
-          roomId,
-          sender: session.user.email,
-        }),
+    const fetchHistory = async () =>
+      requestData({
+        option: "GET",
+        url: `/chat/find/message/${roomId}`,
+        token: session.jwt.accessToken,
+        onSuccess: (data) => {
+          const loadedHistory = getFormattedChatHistory(
+            data,
+            session.user.nickname,
+            "customer",
+            "manager",
+          );
+          setMessages(loadedHistory);
+        },
+        onError: () => {
+          console.log("에러 발생");
+        },
       });
+
+    clientInstance.activate();
+
+    clientInstance.onConnect = () => {
+      clientInstance.subscribe(`/queue/chat/room/${roomId}`, onServerMessage);
+      setClient(clientInstance);
     };
 
-    const onClientError = (frame: IFrame) => {
+    clientInstance.onStompError = (frame: IFrame) => {
       console.log("에러 발생");
       console.log(frame); // 에러 확인
     };
 
-    client.onConnect = onClientConnect;
-    client.onStompError = onClientError;
-    client.activate();
+    fetchHistory();
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
 
   const handleSend = (message: string) => {
-    if (message === "") return false;
-    if (!clientRef.current || !clientRef.current.connected) {
+    if (message === "" || !session) return false;
+    if (!client || !client.connected) {
       console.log("소켓 연결 안됨");
       return false;
     }
-    clientRef.current.publish({
+    client.publish({
       destination: "/app/chat/message",
       body: JSON.stringify({
-        type: "TALK",
         roomId,
-        sender: session?.user.email,
+        sender: session.user.nickname,
         message,
       }),
     });
@@ -146,7 +155,6 @@ ChatPopup.getLayout = (page: ReactElement) => (
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const roomId = context.query.id;
-  // 채팅기록 fetch해서 props로 전달, 컴포넌트 내에 상태를 갖고 초기값을 fetch한 기록으로 설정
   return { props: { roomId } };
 };
 

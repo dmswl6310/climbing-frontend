@@ -44,7 +44,7 @@ const GymInfo = ({
           session={session}
         />
       </S.Wrapper>
-      <ChatModal gymId={gymData.id} gymName={gymData.name} />
+      <ChatModal key={crypto.randomUUID()} gymId={gymData.id} gymName={gymData.name} />
     </S.Page>
   );
 };
@@ -152,6 +152,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const response = await fetch(`${SERVER_ADDRESS}/gyms/${gymId}`, { signal: controller.signal });
     if (response.status === 200) {
       const gymData = await response.json();
+      gymData.id = gymId;
       return { props: { gymData } };
     } else throw response.status;
   } catch (e) {

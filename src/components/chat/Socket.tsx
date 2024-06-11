@@ -7,33 +7,43 @@ import ChatForm from "./ChatForm";
 import ChatHistory from "./ChatHistory";
 import ErrorFallback from "../common/ErrorFallback";
 import LoginPrompt from "../common/LoginPrompt";
-import { type ChatHistoryProps, ChatHistoryContext } from "@/ChatHistoryContext";
+import {
+  type ChatHistoryProps,
+  ChatHistoryContext,
+  getFormattedChatHistory,
+} from "@/ChatHistoryContext";
+import { requestData } from "@/service/api";
 
 interface SocketProps {
   gymName: string;
   client: Client | null;
   roomId: string | null;
+  isRoomFetchError: boolean;
+  isSocketError: boolean;
 }
 
-const Socket = ({ gymName, client, roomId }: SocketProps) => {
+const Socket = ({ gymName, client, roomId, isRoomFetchError, isSocketError }: SocketProps) => {
   const { data: session } = useSession();
   const [isLoading, setIsLoading] = useState(true);
-  const [isError, setIsError] = useState(false);
   const subscriptionRef = useRef<null | StompSubscription>(null);
   const { history, updateHistory } = useContext(ChatHistoryContext);
   const currentHistory = useRef(history);
 
-  const onServerMessage = (res: Message) => {
-    if (!roomId) return;
-    const messageBody = JSON.parse(res.body);
-    const { type, message, sender } = messageBody;
-    console.log(messageBody);
+  // session값은 page visibility가 바뀔 때마다 갱신되기 때문에 사이드이펙트를 줄이기 위해 session dependency를 분리
+  useEffect(() => {
+    if (!session) setIsLoading(false);
+  }, [session]);
 
-    if (type === "TALK") {
+  useEffect(() => {
+    if (!session || !isLoading || !client || !roomId) return;
+
+    const onServerMessage = (response: Message) => {
+      const messageBody = JSON.parse(response.body);
+      const { message, sender, createdAt } = messageBody;
       const newMessage = {
-        userType: sender === session?.user.email ? "customer" : "manager",
+        userType: sender === session.user.nickname ? "customer" : "manager",
         message,
-        time: Date.now(),
+        createdAt,
       };
       const newHistory: ChatHistoryProps = { ...currentHistory.current };
       newHistory[roomId as keyof typeof newHistory] = [
@@ -42,35 +52,37 @@ const Socket = ({ gymName, client, roomId }: SocketProps) => {
       ];
       currentHistory.current = { ...currentHistory.current, ...newHistory };
       updateHistory((prev) => ({ ...prev, ...newHistory }));
-    }
-  };
-
-  useEffect(() => {
-    if (!isLoading) return;
-    if ((!session && !client && !isLoading) || (client && !client.connected)) {
-      setIsLoading(false);
-      setIsError(true);
-      return;
-    }
-    if (client?.connected && !subscriptionRef.current) {
-      console.log("roomId: " + roomId);
-      subscriptionRef.current = client.subscribe(`/queue/chat/room/${roomId}`, onServerMessage);
-      setIsLoading(false);
-    }
-
-    // const loadedHistory: ChatHistoryProps = {};
-
-    // 해당 room의 이전 채팅기록 fetch하고 context에 업데이트
-    // fetch()
-    // loadedHistory[roomId as keyof typeof loadedHistory] = "fetch한 값"
-    // updateHistory((prev) => ({ ...prev, ...loadedHistory }));
-    // currentHistory.current = {...loadedHistory}
-
-    return () => {
-      subscriptionRef.current?.unsubscribe();
     };
+
+    const fetchHistory = async () =>
+      requestData({
+        option: "GET",
+        url: `/chat/find/message/${roomId}`,
+        token: session.jwt.accessToken,
+        onSuccess: (data) => {
+          const loadedHistory: ChatHistoryProps = {};
+          loadedHistory[roomId as keyof ChatHistoryProps] = getFormattedChatHistory(
+            data,
+            session.user.nickname,
+            "manager",
+            "customer",
+          );
+          updateHistory((prev) => ({ ...prev, ...loadedHistory }));
+          currentHistory.current = { ...loadedHistory };
+        },
+        onError: () => {
+          console.log("에러 발생");
+        },
+      });
+
+    subscriptionRef.current = client.subscribe(`/queue/chat/room/${roomId}`, onServerMessage);
+    setIsLoading(false);
+    // 이전 채팅 기록을 fetch하고 context에 저장
+    if (!currentHistory.current || !currentHistory.current[roomId]) fetchHistory();
+
+    return () => subscriptionRef.current?.unsubscribe();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session, client]);
+  }, []);
 
   const handleSend = (message: string) => {
     if (message === "") return false;
@@ -89,9 +101,8 @@ const Socket = ({ gymName, client, roomId }: SocketProps) => {
     client.publish({
       destination: "/app/chat/message",
       body: JSON.stringify({
-        type: "TALK",
         roomId: roomId,
-        sender: session.user.email,
+        sender: session.user.nickname,
         message,
       }),
     });
@@ -101,7 +112,7 @@ const Socket = ({ gymName, client, roomId }: SocketProps) => {
   return (
     <S.Wrapper>
       <S.Container>
-        {isError ? (
+        {isSocketError || isRoomFetchError ? (
           <ErrorFallback error={"Server error"} resetErrorBoundary={() => {}} />
         ) : (
           <>

@@ -7,7 +7,7 @@ type ValuePiece = Date | null;
 type GymDataStateAction = Dispatch<SetStateAction<GymData | null>>;
 type SetNewData = (obj: GymDataObject) => void;
 export type Value = ValuePiece | Range<ValuePiece>;
-export type Chatroom = { roomId: number; roomName: string };
+export type Chatroom = { id: number; roomName: string };
 export type ChatroomRef = {
   url: string;
   windowRef: Window;

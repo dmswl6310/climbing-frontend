@@ -35,16 +35,17 @@ const GymRegistration = () => {
   };
 
   const createData = async (input: BaseGymData) => {
+    if (!session) throw new Error("로그인한 유저가 아닙니다.")
     const response = await fetch(`${SERVER_ADDRESS}/gyms`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
-        Authorization: `Bearer ${session!.jwt.accessToken}`,
+        Authorization: `Bearer ${session.jwt.accessToken}`,
       },
       body: JSON.stringify(input),
     });
-    if (!response.ok) throw new Error();
+    if (!response.ok) throw new Error("문제가 발생했습니다.");
     const newGym = await response.json();
     return newGym.id;
   };

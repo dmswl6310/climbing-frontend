@@ -11,11 +11,18 @@ interface ChatModalProps {
   gymName: string;
 }
 
+type FetchedChatroom = {
+  exists: boolean;
+  roomId: string | null;
+};
+
 const ChatModal = ({ gymId, gymName }: ChatModalProps) => {
   const { data: session } = useSession();
   const [isOpen, setIsOpen] = useState(false);
   const [client, setClient] = useState<null | Client>(null);
   const [roomId, setRoomId] = useState<null | string>(null);
+  const [isRoomFetchError, setIsRoomFetchError] = useState(false);
+  const [isSocketError, setIsSocketError] = useState(false);
 
   useEffect(() => {
     if (!session || client) return;
@@ -25,62 +32,66 @@ const ChatModal = ({ gymId, gymName }: ChatModalProps) => {
       connectHeaders: { Authorization: "Bearer " + session.jwt.accessToken },
     });
 
-    const joinRoom = async () => {
-      // 추후 existing room fetch 로직 추가 (성공 시 fetch한 roomId 사용)
-      // ↓ 신규 room 생성
+    const fetchChatroom = async (nickname: string): Promise<FetchedChatroom> => {
       try {
-        const res = await fetch(`${SERVER_ADDRESS}/chat/room/${gymId}`, {
-          method: "POST",
-          headers: { Authorization: "Bearer " + session.jwt.accessToken },
+        const response = await fetch(`${SERVER_ADDRESS}/chat/room-check/${nickname}/${gymId}`, {
+          headers: {
+            Authorization: "Bearer " + session.jwt.accessToken,
+          },
         });
-        if (res.redirected) throw new Error("로그인이 필요한 서비스입니다.");
-        const { roomId } = await res.json();
-        setRoomId(roomId);
+        if (!response.ok) throw new Error("roomId를 불러올 수 없습니다.");
+        const data = await response.json();
+        return data;
       } catch (e) {
         console.log(e);
       }
+      return { exists: false, roomId: null };
+    };
+
+    const createRoom = async (nickname: string) => {
+      try {
+        const response = await fetch(`${SERVER_ADDRESS}/chat/room/${nickname}/${gymId}`, {
+          method: "POST",
+          headers: { Authorization: "Bearer " + session.jwt.accessToken },
+        });
+        if (response.redirected) throw new Error("로그인이 필요한 서비스입니다.");
+        const { id } = await response.json();
+        return id;
+      } catch (e) {
+        console.log(e);
+        // 에러 로깅
+      }
+      return null;
+    };
+
+    const enterRoom = async () => {
+      let roomId;
+      const nickname = session.user.nickname;
+      const chatroomData = await fetchChatroom(nickname);
+
+      if (chatroomData.exists) roomId = chatroomData.roomId;
+      else roomId = await createRoom(nickname);
+      if (!roomId) return setIsRoomFetchError(true);
+
+      setRoomId(roomId);
     };
 
     clientInstance.activate();
 
     clientInstance.onConnect = () => {
-      joinRoom();
       setClient(clientInstance);
+      enterRoom();
     };
 
     clientInstance.onStompError = (frame: IFrame) => {
       console.log("에러 발생");
       console.log(frame); // 에러 확인
+      setIsSocketError(true)
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
 
-  const toggleModal = () => {
-    if (isOpen) {
-      setIsOpen(false);
-      if (client && client.connected) {
-        client.publish({
-          destination: "/app/chat/message",
-          body: JSON.stringify({
-            type: "LEAVE",
-            roomId: roomId,
-          }),
-        });
-      }
-    } else if (!isOpen) {
-      setIsOpen(true);
-      if (client && client.connected) {
-        client.publish({
-          destination: "/app/chat/message",
-          body: JSON.stringify({
-            type: "ENTER",
-            roomId: roomId,
-            sender: session?.user.email,
-          }),
-        });
-      }
-    }
-  };
+  const toggleModal = () => setIsOpen(!isOpen);
 
   return (
     <S.Wrapper>
@@ -88,7 +99,15 @@ const ChatModal = ({ gymId, gymName }: ChatModalProps) => {
         <S.Button $isOpen={isOpen} onClick={toggleModal}>
           {isOpen ? <MdOutlineClose size="2.2rem" /> : <MdOutlineSupportAgent size="2.2rem" />}
         </S.Button>
-        {isOpen && <Socket gymName={gymName} client={client} roomId={roomId} />}
+        {isOpen && (
+          <Socket
+            gymName={gymName}
+            client={client}
+            roomId={roomId}
+            isRoomFetchError={isRoomFetchError}
+            isSocketError={isSocketError}
+          />
+        )}
       </S.Modal>
     </S.Wrapper>
   );
