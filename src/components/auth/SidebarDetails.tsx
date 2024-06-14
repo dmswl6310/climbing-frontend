@@ -1,30 +1,28 @@
-import { Dispatch, SetStateAction } from "react";
 import { styled } from "styled-components";
 import { CgProfile } from "react-icons/cg";
 import { MdNavigateNext } from "react-icons/md";
 import Link from "next/link";
 import { IoClose } from "react-icons/io5";
-import { signOut } from "next-auth/react";
-import { requestData } from "@/service/api";
 import handleSignOut from "@/service/api/logout";
-
-interface SidebarDetailProps {
-  showSidebar: boolean;
-  setShowSidebar: Dispatch<SetStateAction<boolean>>;
-  account: String;
-}
+import { COLOR } from "@/styles/global-color";
+import { SidebarDetailProps } from "@/constants/sideBar/type";
 
 const SidebarDetails = ({
   showSidebar,
   setShowSidebar,
   account,
 }: SidebarDetailProps) => {
+  console.log(showSidebar);
   return (
-    showSidebar && (
-      <S.SidebarWrapper>
-        <S.CloseButton onClick={() => setShowSidebar(false)}>
-          <IoClose size="20" />
-        </S.CloseButton>
+    <S.SidebarWrapper
+      className={`container sliding ${showSidebar ? "sideOpen" : "sideClose"}`}
+    >
+      <S.BarContainer>
+        {showSidebar && (
+          <S.CloseButton onClick={() => setShowSidebar(!showSidebar)}>
+            <IoClose size="20" />
+          </S.CloseButton>
+        )}
         <S.ProfileContainer
           href={"/settings"}
           onClick={() => setShowSidebar(false)}
@@ -47,21 +45,31 @@ const SidebarDetails = ({
           </S.ItemWrapper>
         </S.CategoryContainer>
         <S.ButtonBox onClick={handleSignOut}>로그아웃</S.ButtonBox>
-      </S.SidebarWrapper>
-    )
+      </S.BarContainer>
+    </S.SidebarWrapper>
   );
 };
 
 const S = {
   SidebarWrapper: styled.div`
-    border: 3px solid #f9f2f2;
+    &.sliding {
+      transition: 0.8s ease-in-out;
+    }
+    &.sideOpen {
+      width: 400px;
+    }
+    &.sideClose {
+      width: 0px;
+    }
+    border-top-right-radius: 0px;
     background-color: white;
     position: fixed;
     top: 0;
     right: 0;
-    width: 400px;
-    height: 500px;
-    padding: 50px;
+    height: 450px;
+  `,
+  BarContainer: styled.div`
+    padding: 40px;
   `,
   ProfileContainer: styled(Link)`
     display: flex;
@@ -78,7 +86,8 @@ const S = {
   `,
   CategoryContainer: styled.ul`
     padding: 10px;
-    background-color: #f9f2f2;
+    border: 3px solid ${COLOR.LIGHT_MAIN};
+    background-color: white;
     border-radius: 5px;
   `,
   ItemWrapper: styled.li`
@@ -90,10 +99,13 @@ const S = {
   `,
   ButtonBox: styled.div`
     border-radius: 5px;
-    background-color: #f9f2f2;
+    background-color: ${COLOR.MAIN};
+    color: white;
+    font-weight: bold;
     border: none;
     padding: 10px;
     text-align: center;
+    margin-top: 50px;
 
     cursor: pointer;
   `,
@@ -101,6 +113,7 @@ const S = {
     position: fixed;
     top: 20px;
     right: 20px;
+    cursor: pointer;
   `,
 };
 

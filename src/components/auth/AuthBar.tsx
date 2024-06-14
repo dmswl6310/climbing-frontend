@@ -3,16 +3,11 @@ import Link from "next/link";
 import React, { MouseEventHandler } from "react";
 import { styled } from "styled-components";
 import Sidebar from "./Sidebar";
+import { useRouter } from "next/router";
+import { COLOR } from "@/styles/global-color";
 
-interface AuthButtonProps {
-  // onLogin: MouseEventHandler<HTMLButtonElement>; // TODO: 함수 작성 후, type 재정의 필요
-  // onLogout: MouseEventHandler<HTMLButtonElement>;
-  // onSignup: MouseEventHandler<HTMLButtonElement>;
-}
-
-const AuthBar = ({}: // onLogin,
-// onSignup,
-AuthButtonProps) => {
+const AuthBar = () => {
+  const router = useRouter();
   const { data: session, status } = useSession();
 
   // 로그인된 상태
@@ -26,21 +21,37 @@ AuthButtonProps) => {
 
   // 로그인되지 않은 상태
   return (
-    <div>
-      <S.Link className="link-plain" href={"/login"}>
-        로그인
-      </S.Link>
-      <S.Link className="link-plain" href={"/join"}>
-        회원가입
-      </S.Link>
-    </div>
+    <S.ButtonContainer>
+      <S.Button1 onClick={() => router.push("/login")}>로그인</S.Button1>
+      <S.Button2 onClick={() => router.push("/join")}>회원가입</S.Button2>
+    </S.ButtonContainer>
   );
 };
 
 const S = {
-  Link: styled.a`
-    margin-left: 30px;
-    font-weight: bold;
+  ButtonContainer: styled.div`
+    margin: 0;
+  `,
+  Button1: styled.button`
+    border: 1px solid ${COLOR.MAIN};
+    border-radius: 5px;
+    margin-left: 10px;
+    background-color: white;
+    font-size: 15px;
+    // font-weight: bold;
+    cursor: pointer;
+    padding: 5px 10px;
+  `,
+  Button2: styled.button`
+    border: 1px solid ${COLOR.MAIN};
+    border-radius: 5px;
+    margin-left: 10px;
+    background-color: ${COLOR.MAIN};
+    font-size: 15px;
+    color: white;
+    // font-weight: bold;
+    cursor: pointer;
+    padding: 5px 10px;
   `,
 };
 

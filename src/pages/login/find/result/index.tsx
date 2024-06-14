@@ -19,10 +19,12 @@ const ChangeReseult = () => {
       <S.IconWrapper>
         <FaCircleCheck size="50" color={COLOR.MAIN} />
       </S.IconWrapper>
-      <h1>
+      <S.Title>
         임시 비밀번호로 변경이 <S.CompleteText>완료</S.CompleteText> 되었습니다.
-      </h1>
-      <h4>{router.query.email} 계정으로 로그인하시기 바랍니다.</h4>
+      </S.Title>
+      <S.SubTitle>
+        {router.query.email} 계정으로 로그인하시기 바랍니다.
+      </S.SubTitle>
 
       <S.ButtonContainer>
         <S.HomeButton onClick={handleHomeBtn}>홈으로</S.HomeButton>
@@ -34,7 +36,7 @@ const ChangeReseult = () => {
 
 const S = {
   Container: styled.div`
-    height: 700px;
+    height: 500px;
     width: 500px;
     display: flex;
     flex-direction: column;
@@ -42,22 +44,39 @@ const S = {
     margin: 0 auto;
     text-align: center;
   `,
+  Title: styled.h2``,
+  SubTitle: styled.div`
+    margin-bottom: 5px;
+  `,
   IconWrapper: styled.div``,
   CompleteText: styled.span`
     color: ${COLOR.MAIN};
   `,
   ButtonContainer: styled.div`
+    width: 400px;
     display: flex;
     flex-direction: row;
+    margin: 0 auto;
     margin-top: 30px;
   `,
   HomeButton: styled.button`
+    background-color: white;
+    border: 1px solid ${COLOR.MAIN};
     flex-grow: 1;
-    margin: 0 10px;
+    border-radius: 5px;
+    padding: 10px;
+    font-weight: bold;
   `,
   LoginButton: styled.button`
+    background-color: ${COLOR.MAIN};
+    border: 1px solid ${COLOR.MAIN};
+    color: white;
+    font-weight: bold;
     flex-grow: 3;
-    margin: 0 10px;
+    margin-left: 30px;
+    padding: 10px;
+    font-weight: bold;
+    border-radius: 5px;
   `,
 };
 

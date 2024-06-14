@@ -7,15 +7,21 @@ import { styled } from "styled-components";
 
 const VerifyPassword = () => {
   const router = useRouter();
-  const [emailMessage, setEmailMessage] = useState("");
+  const [passwordMessage, setPasswordMessage] = useState("");
+  const [password, setPassword] = useState("");
 
   const email = router.query.email as string;
 
+  const handlePasswordChange = (event: { target: { value: any } }) => {
+    const currentPassword = event?.target.value;
+    setPassword(currentPassword);
+  };
   const handleSubmit = (event: any) => {
     // input 비활성화
-    const passwordField = event.target.parentElement.querySelector(
-      'input[name="password"]'
-    );
+    const passwordField =
+      event.target.parentElement.parentElement.querySelector(
+        'input[name="password"]'
+      );
     const passwordValue = passwordField.value;
     passwordField.disabled = true;
 
@@ -27,7 +33,7 @@ const VerifyPassword = () => {
           query: { email: email },
         });
       } else {
-        setEmailMessage("만료되었거나 잘못된 비밀번호 입니다.");
+        setPasswordMessage("만료되었거나 잘못된 비밀번호입니다.");
         passwordField.disabled = false;
       }
     };
@@ -42,51 +48,64 @@ const VerifyPassword = () => {
 
   return (
     <S.Container>
-      <S.SubTitle>임시 비밀번호로 변경</S.SubTitle>
-      <S.Title>
-        {email} 메일로 받은 <S.HighlightText>임시 비밀번호</S.HighlightText>를
-        입력해주세요.
-      </S.Title>
+      <S.Title>비밀번호 찾기</S.Title>
+      <S.SubTitle>이메일({email})로 받은</S.SubTitle>
+      <S.SubTitle>
+        <S.HighlightText>임시 비밀번호</S.HighlightText>를 입력해주세요.
+      </S.SubTitle>
       <S.InputWrapper>
         <InputWithTitle
           name="password"
           type="password"
-          title=""
-          message={emailMessage}
+          message={passwordMessage}
+          onChange={handlePasswordChange}
           placeholder="임시 비밀번호"
         />
       </S.InputWrapper>
-      <S.SubmitButton onClick={handleSubmit}>임시 비밀번호 확인</S.SubmitButton>
+      <S.ButtonWrapper>
+        <S.SubmitButton disabled={password.length == 0} onClick={handleSubmit}>
+          임시 비밀번호로 변경
+        </S.SubmitButton>
+      </S.ButtonWrapper>
     </S.Container>
   );
 };
 
 const S = {
   Container: styled.div`
-    height: 700px;
-    width: 500px;
+    height: 500px;
+    width: 400px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     margin: 0 auto;
     text-align: center;
   `,
-  SubTitle: styled.h4`
-    margin: 0;
-  `,
-  Title: styled.h3`
-    margin: 5px 0 40px 0;
+  Title: styled.h2``,
+  SubTitle: styled.div`
+    margin-bottom: 5px;
   `,
   InputWrapper: styled.div`
-    width: 300px;
-    margin: 0 auto;
-    justify-content: center;
+    width: 350px;
+    margin: 30px auto;
+    margin-bottom: 5px;
   `,
   HighlightText: styled.span`
     color: ${COLOR.MAIN};
   `,
+  ButtonWrapper: styled.div``,
   SubmitButton: styled.button`
-    margin-top: 30px;
+    &:disabled {
+      opacity: 0.3;
+    }
+    width: 350px;
+    background-color: ${COLOR.MAIN};
+    border: 1px solid ${COLOR.MAIN};
+    border: none;
+    color: white;
+    border-radius: 5px;
+    padding: 10px;
+    font-weight: bold;
   `,
 };
 

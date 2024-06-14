@@ -33,7 +33,7 @@ declare module "next-auth/jwt" {
 
 export interface InputProps {
   name: string;
-  title: string;
+  title?: string;
   type?: string;
   placeholder?: string;
   onChange?: (event: { target: { value: string } }) => Promise<void> | void;
@@ -43,6 +43,8 @@ export interface InputProps {
   onDisabled?: any;
   defaultValue?: string;
   isDisabled?: boolean;
+  inputHeight?: string;
+  inputPadding?: string;
 }
 
 export interface EmailVerificationProps {

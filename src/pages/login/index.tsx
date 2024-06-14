@@ -47,7 +47,7 @@ const Login = () => {
 const S = {
   Wrapper: styled.div`
     height: 600px;
-    width: 500px;
+    width: 400px;
     display: flex;
     flex-direction: column;
     justify-content: center;

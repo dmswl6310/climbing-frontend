@@ -29,14 +29,15 @@ const FindPassword = () => {
           setIsEmailValid(true);
           setEmail(currentEmail);
         } else {
-          setEmailMessage(`가입되어 있지 않은 계정입니다.`);
+          setEmailMessage(`존재하지 않는 계정입니다.`);
           setIsEmailValid(false);
         }
       };
 
-      requestData({
+      return requestData({
         option: "GET",
         url: `/members/email-check/${currentEmail}`,
+        hasBody: true,
         onSuccess,
       });
     }
@@ -63,54 +64,64 @@ const FindPassword = () => {
 
   return (
     <S.Container>
-      <S.SubTitle>비밀번호 찾기</S.SubTitle>
-      <S.Title>
-        해당 계정의 <S.HighlightText>아이디(이메일)</S.HighlightText>를
-        입력해주세요.
-      </S.Title>
+      <S.Title>비밀번호 찾기</S.Title>
+      <S.SubTitle>
+        가입한 <S.HighlightText>아이디(이메일)</S.HighlightText>를 입력해주세요.
+      </S.SubTitle>
+      <S.SubTitle>이메일을 통해 임시 비밀번호가 전송됩니다.</S.SubTitle>
       <S.InputWrapper>
         <InputWithTitle
           name="email"
           type="email"
-          title=""
           placeholder="아이디(이메일)"
           onChange={handleEmailChange}
           message={emailMessage}
         />
       </S.InputWrapper>
-      <S.SubmitButton disabled={!isEmailValid} onClick={handleSubmit}>
-        임시 비밀번호 전송
-      </S.SubmitButton>
+      <S.ButtonWrapper>
+        <S.SubmitButton disabled={!isEmailValid} onClick={handleSubmit}>
+          임시 비밀번호 전송하기
+        </S.SubmitButton>
+      </S.ButtonWrapper>
     </S.Container>
   );
 };
 
 const S = {
   Container: styled.div`
-    height: 700px;
-    width: 500px;
+    height: 500px;
+    width: 400px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     margin: 0 auto;
     text-align: center;
   `,
-  SubTitle: styled.h4`
-    margin: 0;
-  `,
-  Title: styled.h3`
-    margin: 5px 0 40px 0;
+  Title: styled.h2``,
+  SubTitle: styled.div`
+    margin-bottom: 5px;
   `,
   InputWrapper: styled.div`
-    width: 300px;
-    margin: 0 auto;
-    justify-content: center;
+    width: 350px;
+    margin: 30px auto;
+    margin-bottom: 5px;
   `,
   HighlightText: styled.span`
     color: ${COLOR.MAIN};
   `,
+  ButtonWrapper: styled.div``,
   SubmitButton: styled.button`
-    margin-top: 30px;
+    &:disabled {
+      opacity: 0.3;
+    }
+    width: 350px;
+    background-color: ${COLOR.MAIN};
+    border: 1px solid ${COLOR.MAIN};
+    border: none;
+    color: white;
+    border-radius: 5px;
+    padding: 10px;
+    font-weight: bold;
   `,
 };
 
