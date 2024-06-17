@@ -11,6 +11,7 @@ import {
   PASSWORD_REGREX,
 } from "@/constants/login/constants";
 import { EmailCheckResponse, socialTypeToKorean } from "@/constants/login/type";
+import { COLOR } from "@/styles/global-color";
 
 const Join = () => {
   const [isEmailValid, setIsEmailValid] = useState(false);
@@ -51,7 +52,9 @@ const Join = () => {
           setEmail(currentEmail);
         } else {
           const socialTypeString = socialTypeToKorean(socialType);
-          setEmailMessage(`이미 ${socialTypeString}로 가입된 메일입니다.`);
+          setEmailMessage(
+            `이미 ${socialTypeString} 계정(으)로 가입된 메일입니다.`
+          );
           setIsEmailValid(false);
         }
       };
@@ -61,9 +64,6 @@ const Join = () => {
         url: `/members/email-check/${currentEmail}`,
         onSuccess,
       });
-      // setEmailMessage("");
-      // setIsEmailValid(true);
-      // setEmail(currentEmail);
     }
   };
 
@@ -127,9 +127,6 @@ const Join = () => {
         url: `/members/nickname-check/${currentNickname}`,
         onSuccess,
       });
-      // setNicknameMessage("");
-      // setIsNicknameValid(true);
-      // setNickname(currentNickname);
     }
   };
 
@@ -193,12 +190,13 @@ const Join = () => {
 
   return (
     <S.Wrapper>
-      <S.JoinForm className="container" onSubmit={handleSubmit}>
+      <S.Title>회원가입</S.Title>
+      <S.JoinForm onSubmit={handleSubmit}>
         <InputWithTitle
           name="email"
           type="email"
           title="아이디(이메일)"
-          placeholder="사용하실 ID를 입력해주세요.(수신 가능 E-mail)"
+          placeholder="수신 가능한 이메일을 입력해주세요."
           onChange={handleEmailChange}
           message={emailMessage}
           buttonText="인증번호 받기"
@@ -256,23 +254,30 @@ const Join = () => {
 const S = {
   Wrapper: styled.div`
     height: 700px;
-    width: 600px;
+    width: 400px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     margin: 0 auto;
   `,
+  Title: styled.h2`
+    text-align: center;
+  `,
   JoinForm: styled.form`
-    display: flex;
-    flex-direction: column;
-    height: 500px;
-    padding: 50px;
-    margin-bottom: 30px;
+    margin-top: 15px;
   `,
   ButtonBox: styled.button`
-    height: 40px;
-    background-color: #f9f2f2;
-    border: none;
+    &:disabled {
+      opacity: 0.3;
+    }
+    background-color: ${COLOR.MAIN};
+    border: 1px solid ${COLOR.MAIN};
+    color: white;
+    border-radius: 5px;
+    padding: 10px;
+    font-weight: bold;
+    margin-top: 15px;
+    width: 100%;
   `,
 };
 

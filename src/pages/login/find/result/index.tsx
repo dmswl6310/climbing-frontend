@@ -53,7 +53,7 @@ const S = {
     color: ${COLOR.MAIN};
   `,
   ButtonContainer: styled.div`
-    width: 400px;
+    width: 380px;
     display: flex;
     flex-direction: row;
     margin: 0 auto;

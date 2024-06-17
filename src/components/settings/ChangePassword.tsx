@@ -5,6 +5,7 @@ import { PASSWORD_REGREX } from "@/constants/login/constants";
 import { styled } from "styled-components";
 import { requestData } from "@/service/api";
 import handleSignOut from "@/service/api/logout";
+import { COLOR } from "@/styles/global-color";
 
 const ChangePassword = () => {
   const { status, data: session } = useSession();
@@ -95,7 +96,8 @@ const ChangePassword = () => {
   }
   return (
     <S.Wrapper>
-      <S.JoinForm className="container" onSubmit={handleSubmit}>
+      <S.Title>비밀번호 변경</S.Title>
+      <S.JoinForm onSubmit={handleSubmit}>
         <InputWithTitle
           name="currentPassword"
           type="password"
@@ -123,7 +125,7 @@ const ChangePassword = () => {
             !(isCurrentValid && isNewPasswordValid && isReEnterPasswordValid)
           }
         >
-          비밀번호 변경하기
+          저장하기
         </S.ButtonBox>
       </S.JoinForm>
     </S.Wrapper>
@@ -131,18 +133,37 @@ const ChangePassword = () => {
 };
 
 const S = {
-  Wrapper: styled.div``,
+  Wrapper: styled.div`
+    height: 500px;
+    width: 500px;
+    background-color: white;
+    padding: 30px;
+    border-radius: 5px;
+    border: 1px solid ${COLOR.BORDER_UNFOCUSED};
+    margin-bottom: 20px;
+  `,
+  Title: styled.h2`
+    text-align: left;
+  `,
   JoinForm: styled.form`
     display: flex;
     flex-direction: column;
-    height: 500px;
-    padding: 50px;
+    height: 350px;
+    padding: 30px;
     margin-bottom: 30px;
   `,
   ButtonBox: styled.button`
-    height: 40px;
-    background-color: #f9f2f2;
-    border: none;
+    &:disabled {
+      opacity: 0.3;
+    }
+    background-color: ${COLOR.MAIN};
+    border: 1px solid ${COLOR.MAIN};
+    color: white;
+    border-radius: 5px;
+    padding: 10px;
+    font-weight: bold;
+    margin-top: 15px;
+    width: 100%;
   `,
 };
 export default ChangePassword;

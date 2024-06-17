@@ -63,7 +63,7 @@ const S = {
   `,
   Divider: styled.hr`
     margin-top: 40px;
-    width: 100%;
+    width: 370px;
     border: none;
     border-top: 1px solid lightgray;
     text-align: center;

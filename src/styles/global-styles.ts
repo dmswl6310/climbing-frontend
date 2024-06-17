@@ -4,6 +4,16 @@ import { COLOR } from "./global-color";
 
 const GlobalStyle = createGlobalStyle`
 ${normalize}
+    @font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-style: normal;
+  }
+
+  * {
+  font-family: 'Pretendard-Regular', sans-serif;
+  }
+
   .container {
     border-radius: 5px;
     overflow: hidden;

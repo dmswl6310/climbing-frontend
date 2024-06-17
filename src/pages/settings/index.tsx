@@ -18,12 +18,10 @@ const SettingPage: NextPageWithLayout = () => {
       return <MyBookmark />;
     case "myPage":
       return <Mypage />;
-    case "changePassword":
-      return <ChangePassword />;
     case "deleteAccount":
       return <DeleteAccount />;
     default:
-      return <Mypage />;
+      return <MyBookmark />;
   }
 };
 

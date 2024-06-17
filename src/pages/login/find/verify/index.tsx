@@ -101,7 +101,6 @@ const S = {
     width: 350px;
     background-color: ${COLOR.MAIN};
     border: 1px solid ${COLOR.MAIN};
-    border: none;
     color: white;
     border-radius: 5px;
     padding: 10px;

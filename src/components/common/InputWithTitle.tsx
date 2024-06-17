@@ -1,6 +1,7 @@
 import { InputProps } from "@/constants/login/type";
 import { styled } from "styled-components";
 import { CONFIRM_MESSAGE } from "@/constants/login/constants";
+import { COLOR } from "@/styles/global-color";
 
 const InputWithTitle = ({
   name,
@@ -51,11 +52,12 @@ const InputWithTitle = ({
 const Styled = {
   Wrapper: styled.div`
     display: flex;
-    flex-direction: row;
-    margin-bottom: 15px;
+    flex-direction: column;
+    margin-bottom: 18px;
   `,
   Title: styled.div`
     width: 200px;
+    padding-bottom: 5px;
   `,
   Container: styled.div`
     width: 100%;
@@ -65,10 +67,12 @@ const Styled = {
     $inputHeight: string;
     $inputPadding: string;
   }>`
+    &:focus {
+    }
     height: ${(props) => props.$inputHeight};
-    outline-color: ${(props) => (props.$isWarning ? "red" : "green")};
+    outline-color: ${(props) => (props.$isWarning ? COLOR.WARNING : "green")};
     border-radius: 5px;
-    border: 1px solid black;
+    border: 1px solid ${COLOR.BORDER_UNFOCUSED};
     padding: 0 ${(props) => props.$inputPadding};
     flex: 1 1 auto;
     &::placeholder {
@@ -79,8 +83,16 @@ const Styled = {
     display: flex;
   `,
   Button: styled.button`
-    margin: 0;
-    padding: 0;
+    &:disabled {
+      opacity: 0.3;
+    }
+    background-color: ${COLOR.MAIN};
+    border: 1px solid ${COLOR.MAIN};
+    border-radius: 5px;
+    color: white;
+    margin-left: 10px;
+    padding: 0 8px;
+    min-width: 40px;
   `,
   Result: styled.div<{ $isWarning: boolean }>`
     margin: 5px 2px;

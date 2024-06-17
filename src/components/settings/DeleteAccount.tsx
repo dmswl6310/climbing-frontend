@@ -58,34 +58,36 @@ const DeleteAccount = () => {
   return (
     // 체크박스 추가 필요
     <S.Wrapper>
-      <S.IconWrapper>
-        <IoWarning size="50" color={COLOR.WARNING} />
-      </S.IconWrapper>
-      <h1>오르리 탈퇴</h1>
-      <h4>
+      <S.TitleContainer>
+        <S.IconWrapper>
+          <IoWarning size="50" color={COLOR.WARNING} />
+        </S.IconWrapper>
+        <S.Title>오르리 탈퇴</S.Title>
+      </S.TitleContainer>
+      <S.SubTitle>
         본 서비스를 탈퇴하시면, 암장 등록 및 관리, 채팅, 북마크 기능을 사용하실
         수 없습니다.
-        <br />
-        <br />
+      </S.SubTitle>
+      <S.SubTitle>
         탈퇴 신청 즉시, 저장된 모든 정보가 삭제되며, 삭제한 정보는 다시 복구할
         수 없습니다.
-      </h4>
-      <S.CheckContainer>
+      </S.SubTitle>
+      <S.CheckContainer onClick={handleCheckClick} $isChecked={isChecked}>
         <FaCircleCheck
-          size="50"
-          color={isChecked ? COLOR.LIGHT_MAIN : COLOR.DISABLED}
-          onClick={handleCheckClick}
+          size="20"
+          color={isChecked ? COLOR.WARNING : COLOR.BORDER_UNFOCUSED}
         />
         <div>안내사항을 확인하였으며, 이에 동의합니다.</div>
       </S.CheckContainer>
-      <InputWithTitle
-        name="password"
-        title=""
-        type="password"
-        placeholder="비밀번호 입력"
-        onChange={handlePasswordChange}
-        message={passwordMessage}
-      />
+      <S.InputWrapper>
+        <InputWithTitle
+          name="password"
+          type="password"
+          placeholder="비밀번호를 입력하세요."
+          onChange={handlePasswordChange}
+          message={passwordMessage}
+        />
+      </S.InputWrapper>
       <S.ButtonBox
         onClick={handleDeleteAccount}
         disabled={!isChecked || password === ""}
@@ -98,23 +100,61 @@ const DeleteAccount = () => {
 
 const S = {
   Wrapper: styled.div`
-    height: 700px;
-    width: 500px;
+    height: 500px;
+    width: 700px;
+    background-color: white;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
     margin: 0 auto;
+    padding: 30px;
+    border-radius: 5px;
+    border: 1px solid ${COLOR.BORDER_UNFOCUSED};
+  `,
+  TitleContainer: styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+  `,
+  Title: styled.h1``,
+  SubTitle: styled.h4`
+    padding: 0;
+    margin: 10px 0;
   `,
   IconWrapper: styled.div``,
-  CheckContainer: styled.div`
+  CheckContainer: styled.div<{ $isChecked: boolean }>`
+    border-radius: 5px;
+    border: 1px solid
+      ${({ $isChecked }) =>
+        $isChecked ? COLOR.WARNING : COLOR.BORDER_UNFOCUSED};
+    border-width: ${({ $isChecked }) => ($isChecked ? "2px" : "1px")};
+    padding: 8px;
     display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    gap: 5px;
+  `,
+  InputWrapper: styled.div`
+    width: 250px;
+    margin: 10px;
     justify-content: center;
     align-items: center;
   `,
   ButtonBox: styled.button`
-    height: 40px;
-    background-color: #f9f2f2;
-    border: none;
+    &:disabled {
+      opacity: 0.3;
+    }
+    width: 320px;
+    background-color: ${COLOR.WARNING};
+    border: 1px solid ${COLOR.WARNING};
+    color: white;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 20px;
+    // font-weight: bold;
   `,
 };
 export default DeleteAccount;

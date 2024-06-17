@@ -87,10 +87,13 @@ const S = {
     flex-direction: column;
   `,
   Container: styled.div`
+    & :focus {
+      border: 1px solid ${COLOR.BORDER_UNFOCUSED};
+      border-radius: 3px;
+    }
     display: flex;
-    /* height: 40px; */
     border-radius: 5px;
-    border: 3px solid ${COLOR.LIGHT_MAIN};
+    border: 1px solid ${COLOR.LIGHT_MAIN};
     padding: 10px;
     margin-bottom: 10px;
   `,
@@ -101,8 +104,6 @@ const S = {
     border: none;
     outline: none;
     width: 100%;
-    /* height: 40px; */
-    /* margin-bottom: 20px; */
   `,
   ButtonBox: styled.button`
     border-radius: 5px;
