@@ -26,7 +26,7 @@ const PricingField = ({ index, item, price, handleChange }: PricingFieldProps) =
       </S.Block>
       <S.Block>
         <strong>가격</strong>
-        <S.TextField $width={140}>
+        <S.TextField $width={145}>
           <input
             className="currency"
             value={Number(price).toLocaleString()}
@@ -55,6 +55,7 @@ const S = {
     display: flex;
     align-items: center;
     background: #fafafa;
+    color: #666666;
     border-radius: 8px;
     border: 1px solid #d0d0d0;
     padding: 12px 18px;
@@ -68,6 +69,10 @@ const S = {
       background: transparent;
       width: 100%;
       padding: 0px;
+      color: #666666;
+    }
+    input:focus {
+      color: black;
     }
   `,
 };

@@ -73,6 +73,7 @@ const S = {
   TextField: styled.div`
     text-align: center;
     background: #fafafa;
+    color: #666666;
     border-radius: 8px;
     border: 1px solid #d0d0d0;
     padding: 12px 18px;

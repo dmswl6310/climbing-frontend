@@ -140,6 +140,11 @@ const S = {
       border: none;
       background: transparent;
       padding: 0px;
+      color: #666666;
+    }
+    select:active,
+    select:focus {
+      color: black;
     }
   `,
 };

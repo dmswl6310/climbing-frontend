@@ -1,14 +1,48 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import styled from "styled-components";
+import { BarLoader } from "react-spinners";
+import FilterBar from "@/components/admin/FilterBar";
 import MemberTable from "@/components/admin/MemberTable";
 import Modal from "@/components/admin/Modal";
+import PageNavigator from "@/components/admin/PageNavigator";
+import { SERVER_ADDRESS, TEST_ADDRESS } from "@/constants/constants";
+import { DEVICE_SIZE } from "@/constants/styles";
 import type { Member } from "@/components/admin/MemberTable";
 
+const fetchMembers = (page = 1, filter = "all") => {
+  switch (filter) {
+    case "all": {
+      return fetch(`${TEST_ADDRESS}/adminusers?_page=${page}_per_page=10`).then((res) =>
+        res.json(),
+      );
+    }
+    default: {
+      return fetch(`${TEST_ADDRESS}/adminusers?role=${filter}&_page=${page}_per_page=10`).then(
+        (res) => res.json(),
+      );
+    }
+  }
+};
+
 const AdminPage = () => {
+  const { data: session } = useSession();
+  const [page, setPage] = useState(1);
+  const [filter, setFilter] = useState("all");
   const [selectedMember, setSelectedMember] = useState<Member | null>(null);
   const [isOpen, setIsOpen] = useState(false);
+  const { data, error, isFetching } = useQuery({
+    queryKey: ["users", page, filter],
+    queryFn: () => fetchMembers(page, filter),
+    placeholderData: keepPreviousData,
+    select: (data) => {
+      if (filter === "all") return data;
+      return { ...data, data: data.data.filter((member: Member) => member.role === filter) };
+    },
+  });
 
-  // fetch 로직 추가
+  useEffect(() => setPage(1), [filter]);
 
   const openModal = (member: Member) => {
     setSelectedMember(member);
@@ -23,9 +57,28 @@ const AdminPage = () => {
     // PUT 작업
   };
 
+  const handleFilterSelect = (value: string) => setFilter(value);
+
+  const handlePageSelect = (value: number) => setPage(value);
+
   return (
     <Wrapper>
-      <MemberTable members={testData} openModal={openModal} />
+      <h1>멤버 관리</h1>
+      <FilterBar handleFilterSelect={handleFilterSelect} />
+      {isFetching ? (
+        <Placeholder>
+          <BarLoader />
+        </Placeholder>
+      ) : (
+        data && <MemberTable members={data.data} openModal={openModal} />
+      )}
+      {data && (
+        <PageNavigator
+          currentPage={data.prev + 1}
+          pages={data.pages}
+          handlePageSelect={handlePageSelect}
+        />
+      )}
       {isOpen && (
         <Modal closeModal={closeModal} selectedMember={selectedMember} updateRole={updateRole} />
       )}
@@ -55,33 +108,33 @@ const Wrapper = styled.div`
   }
   .nickname {
     width: 300px;
+    @media ${DEVICE_SIZE.tablet} {
+      width: 180px;
+    }
+    @media ${DEVICE_SIZE.mobileLarge} {
+      width: 140px;
+    }
   }
   .email {
     width: 430px;
     line-height: 1.5rem;
+    @media ${DEVICE_SIZE.tablet} {
+      width: 250px;
+    }
+    @media ${DEVICE_SIZE.mobileLarge} {
+      width: 180px;
+    }
   }
   .button {
     width: 40px;
   }
 `;
 
-const testData = [
-  { nickname: "스피커", role: "admin", email: "sdfklj@gmail.com" },
-  { nickname: "모니터", role: "manager", email: "635s4ef@gmail.com" },
-  { nickname: "마우스", role: "manager", email: "383__dflskdj@gmail.com" },
-  { nickname: "키보드", role: "user", email: "dfe5fe82@gmail.com" },
-  { nickname: "데스크탑", role: "user", email: "sd6f8eg__@gmail.com" },
-  {
-    nickname: "케이블케이블케이블케이블케이블케이블케이블케이블케이블케이블케이블케이블",
-    role: "user",
-    email: "fsle_ef5@gmail.com",
-  },
-  {
-    nickname:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsum et consectetur neque totam cum sed, fugiat est suscipit, itaque saepe officiis adipisci eligendi? Quasi eius repellat, dolorem temporibus fugit delectus, mollitia reiciendis quaerat numquam itaque labore suscipit odit eveniet expedita, corrupti deserunt! Quod eos sequi ipsam molestiae explicabo at quas!",
-    role: "user",
-    email: "fsle_ef5@gmail.com",
-  },
-];
+const Placeholder = styled.div`
+  display: grid;
+  place-content: center center;
+  width: 866px;
+  height: 528px;
+`;
 
 export default AdminPage;

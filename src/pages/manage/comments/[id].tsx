@@ -137,7 +137,7 @@ const S = {
   `,
   Row: styled.div`
     border: 1px solid #d0d0d0;
-    background: #fafaf8;
+    background: #fafafa;
     border-radius: 12px;
     padding: 16px;
     display: flex;

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
@@ -15,11 +15,6 @@ const GymRegistration = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isRegistered, setIsRegistered] = useState(false);
 
-  useEffect(() => {
-    if (!session) router.push("/login");
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const handleSubmit = async (formData: BaseGymData) => {
     setIsLoading(true);
     try {
@@ -35,7 +30,7 @@ const GymRegistration = () => {
   };
 
   const createData = async (input: BaseGymData) => {
-    if (!session) throw new Error("로그인한 유저가 아닙니다.")
+    if (!session) throw new Error("로그인한 유저가 아닙니다.");
     const response = await fetch(`${SERVER_ADDRESS}/gyms`, {
       method: "POST",
       headers: {

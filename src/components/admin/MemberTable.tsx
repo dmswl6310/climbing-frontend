@@ -14,7 +14,7 @@ export interface MemberList {
   openModal: (member: Member) => void;
 }
 
-export default function MemberTable({ members, openModal }: MemberList) {
+const MemberTable = ({ members, openModal }: MemberList) => {
   const hoverElem = useRef<null | HTMLDivElement>(null);
 
   const handleMouseEnter = (e: MouseEvent) => {
@@ -56,16 +56,12 @@ export default function MemberTable({ members, openModal }: MemberList) {
             <tr key={i}>
               <td className="nickname">
                 <TdText>
-                  <span onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-                    {member.nickname}
-                  </span>
+                  <span title={member.nickname}>{member.nickname}</span>
                 </TdText>
               </td>
               <td className="email">
                 <TdText>
-                  <span onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-                    {member.email}
-                  </span>
+                  <span title={member.email}>{member.email}</span>
                 </TdText>
               </td>
               <td className="role">
@@ -83,7 +79,7 @@ export default function MemberTable({ members, openModal }: MemberList) {
       <HoverText ref={hoverElem} />
     </>
   );
-}
+};
 
 const TdText = styled.div`
   width: inherit;
@@ -128,3 +124,5 @@ const Tag = styled.div`
     color: rgb(73, 161, 73);
   }
 `;
+
+export default MemberTable;

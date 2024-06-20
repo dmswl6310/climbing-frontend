@@ -84,7 +84,7 @@ const S = {
     flex-direction: column;
     flex: 1 0 0;
     gap: 10px;
-    background: #fafaf8;
+    background: #fafafa;
     padding: 36px;
   `,
 };

@@ -147,7 +147,7 @@ const S = {
     display: flex;
     flex-direction: column;
     gap: 36px;
-    background: #fafaf8;
+    background: #fafafa;
     padding: 36px 63px;
     & input:focus,
     textarea:focus,

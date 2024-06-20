@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import ContentContainer from "../ContentContainer";
 import { ACCOMMODATIONS_LIST } from "@/constants/manage/constants";
 import type { AccommodationsEditorProps } from "@/constants/manage/types";
 
@@ -19,7 +18,7 @@ const AccommodationsEditor = ({ accommodationsList, setNewData }: Accommodations
   return (
     <div className="editor-wrapper">
       <div className="editor-header">시설 정보</div>
-      <ContentContainer gap="20px">
+      <S.Wrapper>
         {ACCOMMODATIONS_LIST.map((text, i) => (
           <S.TextField
             key={i}
@@ -36,23 +35,37 @@ const AccommodationsEditor = ({ accommodationsList, setNewData }: Accommodations
             <span>{text}</span>
           </S.TextField>
         ))}
-      </ContentContainer>
+      </S.Wrapper>
     </div>
   );
 };
 
 const S = {
+  Wrapper: styled.div`
+    padding: 32px 40px;
+    display: grid;
+    gap: 1.75rem;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  `,
   TextField: styled.div`
     box-sizing: border-box;
     display: flex;
     justify-content: center;
     align-items: center;
     background: #fafafa;
+    color: #666666;
     border-radius: 8px;
     border: 1px solid #d0d0d0;
     padding: 12px 18px;
-    width: 175px;
+    height: 56px;
     gap: 8px;
+    &:hover {
+      box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+    }
+    &:active {
+      box-shadow: none;
+      transform: translate(0, 4px);
+    }
     cursor: pointer;
     input {
       border: none;
@@ -60,6 +73,7 @@ const S = {
       padding: 0px;
       flex-shrink: 1;
       pointer-events: none;
+      accent-color: #666666;
     }
     span {
       flex: 1 0 0;

@@ -154,7 +154,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       const gymData = await response.json();
       gymData.id = gymId;
       return { props: { gymData } };
-    } else throw response.status;
+    }
+    if (response.status === 404) return { notFound: true };
+    throw response.status;
   } catch (e) {
     if (typeof e === "object") {
       return { props: { error: true, statusCode: 500 } };

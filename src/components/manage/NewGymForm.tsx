@@ -44,8 +44,10 @@ const NewGymForm = ({ handleSubmit, disableForm }: NewGymFormProps) => {
         }}
       >
         <div>
-          <h4>암장명</h4>
-          <S.TextField $focused={focusedElem === "name"}>
+          <h4>
+            암장명 <span>*</span>
+          </h4>
+          <S.TextField $focused={focusedElem === "name"} $width="270px">
             <input
               value={formData.name}
               onChange={(e) => handleNameInput(e.target.value)}
@@ -56,7 +58,9 @@ const NewGymForm = ({ handleSubmit, disableForm }: NewGymFormProps) => {
           </S.TextField>
         </div>
         <div>
-          <h4>암장 주소</h4>
+          <h4>
+            암장 주소 <span>*</span>
+          </h4>
           <S.TextField $width="450px" $focused={focusedElem === "address"}>
             <AddressField
               address={formData.address}
@@ -66,7 +70,9 @@ const NewGymForm = ({ handleSubmit, disableForm }: NewGymFormProps) => {
           </S.TextField>
         </div>
         <div>
-          <h4>연락처</h4>
+          <h4>
+            연락처 <span>*</span>
+          </h4>
           <S.TextField $focused={focusedElem === "contact"}>
             <input
               value={formData.contact}
@@ -77,6 +83,9 @@ const NewGymForm = ({ handleSubmit, disableForm }: NewGymFormProps) => {
               required
             />
           </S.TextField>
+        </div>
+        <div>
+          <span>*</span> 필수 입력
         </div>
         <input
           type="submit"
@@ -94,6 +103,9 @@ const S = {
     h4 {
       margin-top: 0;
       margin-bottom: 4px;
+    }
+    span {
+      color: red;
     }
   `,
   Form: styled.form`

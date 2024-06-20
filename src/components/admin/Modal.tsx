@@ -8,7 +8,7 @@ interface ModalProps {
   updateRole: (role: string) => void;
 }
 
-export default function Modal({ closeModal, selectedMember, updateRole }: ModalProps) {
+const Modal = ({ closeModal, selectedMember, updateRole }: ModalProps) => {
   const [role, setRole] = useState(selectedMember?.role || "");
   const warning = useRef<HTMLDivElement | null>(null);
 
@@ -63,7 +63,7 @@ export default function Modal({ closeModal, selectedMember, updateRole }: ModalP
       </S.Foreground>
     </S.Wrapper>
   );
-}
+};
 
 const M = {
   Container: styled.div`
@@ -131,3 +131,5 @@ const S = {
     background: rgba(0, 0, 0, 0.5);
   `,
 };
+
+export default Modal;

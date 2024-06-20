@@ -12,6 +12,7 @@ import ErrorFallback from "@/components/common/ErrorFallback";
 import ImageEditor from "@/components/manage/edit/ImageEditor";
 import LoadContainer from "@/components/manage/LoadContainer";
 import { NavContext, type NavStateProps } from "@/NavContext";
+import { requestData } from "@/service/api";
 import { SERVER_ADDRESS } from "@/constants/constants";
 import type { GymData, GymDataObject } from "@/constants/gyms/types";
 
@@ -34,12 +35,10 @@ const EditPage = () => {
   const { selectedGymId, setSelectedGymId } = useContext(NavContext) as NavStateProps;
 
   useEffect(() => {
-    // if (!session) router.push({ pathname: "/login" });
-    // const id = "1"; // 테스트 후 사용자 정보를 통해 가져오도록 변경
+    if (!session || !isLoading) return;
     let data: GymData;
 
     const fetchData = async () => {
-      // if (!session || !isLoading) return;
       try {
         const response = await fetch(`http://localhost:8000/gyms/${id}`, {
           method: "GET",
@@ -52,47 +51,13 @@ const EditPage = () => {
         }
       } catch (e) {
         console.log(e);
+        setIsError(true);
       }
       setIsLoading(false);
     };
 
-    // const fetchData = async () => {
-    //   // if (!session || !isLoading) return;
-    //   try {
-    //     const response = await Promise.race([
-    //       fetch(`${SERVER_ADDRESS}/gyms/${id}`, {
-    //         method: "GET",
-    //         headers: {
-    //           Authorization: session.jwt.accessToken,
-    //         },
-    //       }),
-    //       new Promise<Response>((_, reject) =>
-    //         setTimeout(() => reject(new Response(null, { status: 503 })), 3000),
-    //       ),
-    //     ]);
-    //     if (!response.ok) throw new Error(`${response.status}`);
-    //     else {
-    //       data = await response.json();
-    //       setLoadedData(JSON.parse(JSON.stringify(data)));
-    //       setCurrentData(JSON.parse(JSON.stringify(data)));
-    //     }
-    //   } catch (e) {
-    //     // 테스트전용
-    //     const res = await fetch(`http://localhost:8000/gyms/${id}`);
-    //     data = await res.json();
-    //     setCurrentData(JSON.parse(JSON.stringify(data)));
-    //     setLoadedData(JSON.parse(JSON.stringify(data)));
-
-    //     // 테스트 후 복원
-    //     // 에러 핸들링
-    //     // console.log(e);
-    //     // setIsError(true);
-    //   }
-    //   setIsLoading(false);
-    // };
-
     const handlePageLeave = () => {
-      const dataChanged = tracker.current === "edited" ? true : false;
+      const dataChanged = tracker.current === "edited";
       if (!dataChanged) return setIsLoading(true);
       const response = confirm("수정 중인 데이터가 있습니다. 이동할까요?");
       if (!response) {
@@ -131,47 +96,12 @@ const EditPage = () => {
     return JSON.stringify(oldData) !== JSON.stringify(newData);
   };
 
-  // if (!session) return null;
   if (isError)
     return (
       <ManageLayout>
         <ErrorFallback error={"Server error"} resetErrorBoundary={() => {}} />
       </ManageLayout>
     );
-
-  // const updateData = async (data: string) => {
-  //   try {
-  //     const response = await Promise.race([
-  //       fetch(`${SERVER_ADDRESS}/gyms/${loadedData.id}`, {
-  //         method: "PUT",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //           Authorization: session?.jwt.accessToken as string,
-  //         },
-  //         body: data,
-  //       }),
-  //       new Promise<Response>((_, reject) =>
-  //         setTimeout(() => reject(new Response(null, { status: 503 })), 3000),
-  //       ),
-  //     ]);
-  //     if (!response.ok) throw new Error(`${response.status}`);
-  //   } catch (e) {
-  //     //임시 *******************************************************************
-  //     await fetch(`http://localhost:8000/gyms/${loadedData.id}`, {
-  //       method: "PUT",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         // Authorization: session.jwt,
-  //       },
-  //       body: data,
-  //     });
-  //     //임시 *******************************************************************
-
-  //     // 테스트 끝나고 복원
-  //     // return false;
-  //   }
-  //   return true;
-  // };
 
   const updateData = async (data: string) => {
     try {
@@ -197,8 +127,29 @@ const EditPage = () => {
   };
 
   const handleSave = async () => {
-    if (tracker.current !== "edited") return;
+    if (tracker.current !== "edited" || !session) return;
     setIsUpdating(true);
+    const token = session.jwt.accessToken;
+
+    // ▼ 백엔드 준비될 시 사용
+    // requestData({
+    //   option: "PUT",
+    //   url: `/gyms/${id}`,
+    //   token,
+    //   data: currentData,
+    //   onSuccess: () => {
+    //     setLoadedData(JSON.parse(JSON.stringify(currentData)));
+    //     tracker.current = null;
+    //     setIsUpdating(false);
+    //   },
+    //   onError: (error) => {
+    //     // 에러 핸들링
+    //     console.log(error);
+    //     setIsUpdating(false);
+    //     return alert("오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
+    //   },
+    // });
+
     const isSuccess = await updateData(JSON.stringify(currentData));
     if (!isSuccess) {
       // 에러 핸들링
@@ -217,7 +168,23 @@ const EditPage = () => {
           <LoadContainer>
             <BarLoader />
           </LoadContainer>
-        ) : p === "1" || !p ? (
+        ) : p === "2" ? (
+          <>
+            <PricingEditor pricingList={currentData?.pricing} setNewData={setNewData} />
+            <OpenHoursEditor openHoursList={currentData?.openHours} setNewData={setNewData} />
+            <AccommodationsEditor
+              accommodationsList={currentData?.accommodations}
+              setNewData={setNewData}
+            />
+            <GradeEditor gradesList={currentData?.grades} setNewData={setNewData} />
+            <SettingDayEditor date={currentData?.latestSettingDay} setNewData={setNewData} />
+            <Button>
+              <button className="btn-primary" onClick={handleSave} disabled={isUpdating}>
+                {isUpdating ? "저장중..." : "저장하기"}
+              </button>
+            </Button>
+          </>
+        ) : (
           <>
             <ImageEditor
               images={currentData?.images}
@@ -241,23 +208,7 @@ const EditPage = () => {
               </button>
             </Button>
           </>
-        ) : p === "2" ? (
-          <>
-            <PricingEditor pricingList={currentData?.pricing} setNewData={setNewData} />
-            <OpenHoursEditor openHoursList={currentData?.openHours} setNewData={setNewData} />
-            <AccommodationsEditor
-              accommodationsList={currentData?.accommodations}
-              setNewData={setNewData}
-            />
-            <GradeEditor gradesList={currentData?.grades} setNewData={setNewData} />
-            <SettingDayEditor date={currentData?.latestSettingDay} setNewData={setNewData} />
-            <Button>
-              <button className="btn-primary" onClick={handleSave} disabled={isUpdating}>
-                {isUpdating ? "저장중..." : "저장하기"}
-              </button>
-            </Button>
-          </>
-        ) : null}
+        )}
       </ManageLayout>
     </ErrorBoundary>
   );
