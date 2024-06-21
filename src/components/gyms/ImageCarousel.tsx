@@ -30,7 +30,7 @@ const ImageCarousel = ({ defaultImage, imageList }: ImageCarouselProps) => {
           </S.Button>
         </S.OverlayButtons>
         <S.OverlayText>
-          {currentIndex + 1}/{images.length} | 전체사진
+          {currentIndex + 1}/{images.length}
         </S.OverlayText>
       </S.Overlay>
       <S.Container $shiftIndex={currentIndex}>

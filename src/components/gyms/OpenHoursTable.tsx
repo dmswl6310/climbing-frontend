@@ -2,7 +2,6 @@ import styled from "styled-components";
 import NoData from "./NoData";
 import type { OpenHours, OpenHoursTableProps } from "@/constants/gyms/types";
 
-// 상수
 const DAYS_TEXT = {
   weekdays: "평일",
   weekends: "주말",

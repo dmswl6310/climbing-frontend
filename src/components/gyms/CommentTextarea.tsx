@@ -25,7 +25,7 @@ const CommentTextarea = ({ handleAddComment }: CommentTextareaProps) => {
 
     switch (response) {
       case "login": {
-        return alert("로그인한 유저가 아닙니다. 로그인 후 후기를 남겨주세요.");
+        return alert("로그인 후 후기를 남겨주세요.");
       }
       case "server": {
         return alert("서버 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
