@@ -21,7 +21,6 @@ export default withAuth({
         } catch (error) {
           console.log(error);
         }
-        // 배포버전 테스트, 해결 후 복구
         return false;
       }
 
