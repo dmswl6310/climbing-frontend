@@ -65,7 +65,7 @@ export interface ImageEditorProps {
   defaultImage: string | null | undefined;
   setCurrentData: GymDataStateAction;
   setLoadedData: GymDataStateAction;
-  updateData: (data: string) => Promise<boolean>;
+  updateImageData: (data: string) => Promise<void>;
 }
 
 export interface ImageListProps {
@@ -126,10 +126,4 @@ export interface SettingDayEditorProps {
 export interface TextFieldProps {
   formName?: string | undefined;
   characterLimit: number;
-}
-
-export interface UserCommentProps {
-  user: string;
-  date: string;
-  text: string;
 }

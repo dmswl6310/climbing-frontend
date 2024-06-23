@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { MdOutlineClose, MdOutlineSupportAgent } from "react-icons/md";
 import Socket from "./Socket";
 import { SERVER_ADDRESS, SOCKET_ADDRESS } from "@/constants/constants";
+import { COLOR } from "@/styles/global-color";
 
 interface ChatModalProps {
   gymId: string;
@@ -33,14 +34,17 @@ const ChatModal = ({ gymId, gymName }: ChatModalProps) => {
     });
 
     const fetchChatroom = async (nickname: string): Promise<FetchedChatroom> => {
+      console.log("fetching chatroom")
       try {
         const response = await fetch(`${SERVER_ADDRESS}/chat/room-check/${nickname}/${gymId}`, {
           headers: {
             Authorization: "Bearer " + session.jwt.accessToken,
           },
         });
+        console.log(response)
         if (!response.ok) throw new Error("roomId를 불러올 수 없습니다.");
         const data = await response.json();
+        console.log(data)
         return data;
       } catch (e) {
         console.log(e);
@@ -49,13 +53,16 @@ const ChatModal = ({ gymId, gymName }: ChatModalProps) => {
     };
 
     const createRoom = async (nickname: string) => {
+      console.log("creating room")
       try {
         const response = await fetch(`${SERVER_ADDRESS}/chat/room/${nickname}/${gymId}`, {
           method: "POST",
           headers: { Authorization: "Bearer " + session.jwt.accessToken },
         });
+        console.log(response)
         if (response.redirected) throw new Error("로그인이 필요한 서비스입니다.");
         const { id } = await response.json();
+        console.log(id)
         return id;
       } catch (e) {
         console.log(e);
@@ -86,7 +93,7 @@ const ChatModal = ({ gymId, gymName }: ChatModalProps) => {
     clientInstance.onStompError = (frame: IFrame) => {
       console.log("에러 발생");
       console.log(frame); // 에러 확인
-      setIsSocketError(true)
+      setIsSocketError(true);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
@@ -97,7 +104,7 @@ const ChatModal = ({ gymId, gymName }: ChatModalProps) => {
     <S.Wrapper>
       <S.Modal>
         <S.Button $isOpen={isOpen} onClick={toggleModal}>
-          {isOpen ? <MdOutlineClose size="2.2rem" /> : <MdOutlineSupportAgent size="2.2rem" />}
+          {isOpen ? <MdOutlineClose size="2.2rem" /> : <S.ModalIcon size="2.2rem" />}
         </S.Button>
         {isOpen && (
           <Socket
@@ -129,13 +136,42 @@ const S = {
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    background: ${({ $isOpen }) => ($isOpen ? "coral" : "black")};
+    background: ${({ $isOpen }) => ($isOpen ? "#666666" : COLOR.MAIN)};
     color: white;
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 1.5rem;
     cursor: pointer;
+    transition: 100ms;
+    &:active {
+      scale: 0.9;
+    }
+  `,
+  ModalIcon: styled(MdOutlineSupportAgent)`
+    &:hover {
+      animation: bounce 2s infinite;
+    }
+    @keyframes bounce {
+      0% {
+        transform: translateY(0);
+      }
+      3% {
+        transform: translateY(-4px);
+      }
+      10% {
+        transform: translateY(0);
+      }
+      13% {
+        transform: translateY(-4px);
+      }
+      20% {
+        transform: translateY(0);
+      }
+      100% {
+        transform: translateY(0);
+      }
+    }
   `,
 };
 

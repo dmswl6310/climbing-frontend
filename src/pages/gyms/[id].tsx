@@ -20,7 +20,7 @@ const GymInfo = ({
 }: InferGetServerSidePropsType<GetServerSideProps>) => {
   const { data: session } = useSession();
   const { isLoading } = useApi(NAVERMAP_API);
-
+console.log(gymData)
   if (error) return <ErrorPage statusCode={statusCode} />;
   return (
     <S.Page>

@@ -81,7 +81,7 @@ const MainContent = ({ gymData }: { gymData: GymData }) => {
     <>
       <div>
         <div className="address">
-          <FaLocationDot /> {gymData.address.roadAddress}
+          <FaLocationDot /> {gymData.address.roadAddress} {gymData.address.unitAddress}
         </div>
         <div className="header">
           <span className="header__text">{gymData.name}</span>&nbsp;

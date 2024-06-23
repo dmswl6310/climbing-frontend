@@ -7,17 +7,17 @@ import ReactIcon from "../common/ReactIcon";
 import { SERVER_ADDRESS, TEST_ADDRESS } from "@/constants/constants";
 import { DEVICE_SIZE } from "@/constants/styles";
 import { COLOR } from "@/styles/global-color";
-import type { CommentsProps, UserComments } from "@/constants/gyms/types";
+import type { CommentsProps, UserComment } from "@/constants/gyms/types";
 
 const Comments = ({ id, comments, session }: CommentsProps) => {
-  const [currentComments, setCurrentComments] = useState<UserComments>(comments || []);
+  const [currentComments, setCurrentComments] = useState<UserComment[]>(comments || []);
 
   const handleAddComment = async (input: string) => {
     if (!session || !session.user) return "login";
 
     const newComment = {
       user: session.user.nickname ?? "익명",
-      date: getCurrentDate(),
+      createdAt: getCurrentDate(),
       text: input,
     };
 
@@ -63,11 +63,11 @@ const Comments = ({ id, comments, session }: CommentsProps) => {
             <CommentTextarea handleAddComment={handleAddComment} />
             {currentComments &&
               currentComments.length > 0 &&
-              currentComments.map(({ user, date, text }, i) => (
+              currentComments.map(({ user, createdAt, text }, i) => (
                 <S.Comment key={i}>
                   <div style={{ display: "flex" }}>
                     <span className="comment__user">{user}</span>
-                    <span className="comment__date">{date}</span>
+                    <span className="comment__date">{createdAt}</span>
                     {session.user.nickname === user && (
                       <ReactIcon clickable={true}>
                         <IoTrash onClick={handleDeleteComment} />

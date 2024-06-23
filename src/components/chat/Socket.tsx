@@ -35,6 +35,10 @@ const Socket = ({ gymName, client, roomId, isRoomFetchError, isSocketError }: So
   }, [session]);
 
   useEffect(() => {
+    console.log(session)
+    console.log(isLoading)
+    console.log(client)
+    console.log(roomId)
     if (!session || !isLoading || !client || !roomId) return;
 
     const onServerMessage = (response: Message) => {
@@ -55,11 +59,13 @@ const Socket = ({ gymName, client, roomId, isRoomFetchError, isSocketError }: So
     };
 
     const fetchHistory = async () =>
+      console.log("fetching chat history")
       requestData({
         option: "GET",
         url: `/chat/find/message/${roomId}`,
         token: session.jwt.accessToken,
         onSuccess: (data) => {
+          console.log(data)
           const loadedHistory: ChatHistoryProps = {};
           loadedHistory[roomId as keyof ChatHistoryProps] = getFormattedChatHistory(
             data,

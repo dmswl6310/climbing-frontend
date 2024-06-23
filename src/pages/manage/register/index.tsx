@@ -1,68 +1,54 @@
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import styled from "styled-components";
 import { FaBuildingCircleCheck } from "react-icons/fa6";
 import NewGymForm from "@/components/manage/NewGymForm";
-import { SERVER_ADDRESS } from "@/constants/constants";
+import { requestData } from "@/service/api";
 import { COLOR } from "@/styles/global-color";
 import type { BaseGymData } from "@/constants/gyms/types";
 
 const GymRegistration = () => {
   const { data: session } = useSession();
-  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [isRegistered, setIsRegistered] = useState(false);
+  const [newGymId, setNewGymId] = useState();
 
   const handleSubmit = async (formData: BaseGymData) => {
+    if (!session) return;
     setIsLoading(true);
-    try {
-      const id = await createData(formData);
-      setIsRegistered(true);
-      setIsLoading(false);
-      router.push(`/manage/register?id=${id}`);
-    } catch (e) {
-      // 필요 시 응답 유형에 따른 에러 핸들링
-      setIsLoading(false);
-      return alert("암장 생성에 실패했습니다. 잠시 후 다시 시도해 주세요.");
-    }
-  };
-
-  const createData = async (input: BaseGymData) => {
-    if (!session) throw new Error("로그인한 유저가 아닙니다.");
-    const response = await fetch(`${SERVER_ADDRESS}/gyms`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${session.jwt.accessToken}`,
+    const token = session.jwt.accessToken;
+    requestData({
+      option: "POST",
+      url: "/gyms",
+      token,
+      data: formData,
+      onSuccess: (response) => {
+        setIsRegistered(true);
+        setIsLoading(false);
+        setNewGymId(response.id);
       },
-      body: JSON.stringify(input),
+      onError: () => {
+        setIsLoading(false);
+        return alert("암장 생성에 실패했습니다. 잠시 후 다시 시도해 주세요.");
+      },
     });
-    if (!response.ok) throw new Error("문제가 발생했습니다.");
-    const newGym = await response.json();
-    return newGym.id;
   };
 
   if (!session) return null;
-  return isRegistered ? (
+  return isRegistered && newGymId ? (
     <S.Wrapper $isRegistered={isRegistered}>
       <div>
         <FaBuildingCircleCheck size="5rem" />
         <p>암장을 생성했습니다!</p>
       </div>
       <S.Container>
-        <S.Button>
-          <Link href={`/manage`} replace>
-            홈으로 돌아가기
-          </Link>
-        </S.Button>
-        <S.Button>
-          <Link href={`/gyms/${router.query.id}`} rel="noopener noreferrer" target="_blank">
-            내 암장 페이지 보기
-          </Link>
-        </S.Button>
+        <Link href={`/manage`} replace>
+          <S.Button>홈으로 돌아가기</S.Button>
+        </Link>
+        <Link href={`/gyms/${newGymId}`} rel="noopener noreferrer" target="_blank">
+          <S.Button>내 암장 페이지 보기</S.Button>
+        </Link>
       </S.Container>
     </S.Wrapper>
   ) : (
@@ -88,6 +74,9 @@ const S = {
     & p {
       font-size: 1.2rem;
       font-weight: 700;
+    }
+    a {
+      text-decoration: none;
     }
   `,
   Container: styled.div`

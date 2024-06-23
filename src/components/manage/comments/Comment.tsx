@@ -1,8 +1,8 @@
 import styled from "styled-components";
 import { MdAccessTime, MdPerson } from "react-icons/md";
-import type { UserCommentProps } from "@/constants/manage/types";
+import type { UserComment } from "@/constants/gyms/types";
 
-const UserComment = ({ user, date, text }: UserCommentProps) => {
+const Comment = ({ user, createdAt, text }: UserComment) => {
   return (
     <S.Wrapper>
       <S.Row>
@@ -11,7 +11,7 @@ const UserComment = ({ user, date, text }: UserCommentProps) => {
       </S.Row>
       <S.Row>
         <MdAccessTime />
-        {date}
+        {createdAt}
       </S.Row>
       <S.TextField>{text}</S.TextField>
     </S.Wrapper>
@@ -39,4 +39,4 @@ const S = {
   `,
 };
 
-export default UserComment;
+export default Comment;

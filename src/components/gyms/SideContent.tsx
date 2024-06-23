@@ -13,7 +13,7 @@ const SideContent = ({ gymData }: { gymData: GymData }) => {
     <Wrapper>
       <div className="container">
         <h4>관련 태그</h4>
-        {!gymData.tags ? (
+        {!gymData.tags || gymData.tags.length < 1 ? (
           <NoData />
         ) : (
           <TagList>

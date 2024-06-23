@@ -36,7 +36,7 @@ export type GymData = BaseGymData & {
   description: string | null;
   grades: string[] | null;
   accommodations: string[] | null;
-  comments: UserComments | null;
+  comments: UserComment[] | null;
   likeNumber: number | null;
 };
 
@@ -47,7 +47,7 @@ export type GymDataObject = {
     | SnsList
     | OpenHours[]
     | Pricing[]
-    | UserComments
+    | UserComment[]
     | number
     | MapCoordinates
     | GymAddress;
@@ -75,12 +75,12 @@ export type SnsList = {
   instagram?: string;
 };
 
-export type UserComments = Array<{ user: string; date: string; text: string }>;
+export type UserComment = { user: string; createdAt: string; text: string };
 
 // 컴포넌트 props 타입 정의
 export interface CommentsProps {
   id: string;
-  comments?: UserComments;
+  comments?: UserComment[];
   session: Session | null;
 }
 

@@ -14,6 +14,10 @@ ${normalize}
   font-family: 'Pretendard-Regular', sans-serif;
   }
 
+  a {
+    color: black;
+  }
+
   .container {
     border-radius: 5px;
     overflow: hidden;

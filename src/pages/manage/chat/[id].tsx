@@ -67,28 +67,26 @@ const ChatPage: NextPageWithLayout = () => {
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       <ManageLayout>
-        <S.Wrapper>
-          {isLoading ? (
-            <LoadContainer>
-              <BarLoader />
-            </LoadContainer>
-          ) : (
-            <>
-              <S.Header>1:1 문의</S.Header>
-              <S.Content $direction="column">
-                {chatrooms.length > 0 ? (
-                  chatrooms.map(({ id, roomName }) => (
-                    <S.Row key={id} onClick={() => handleChatroomClick(id)}>
-                      {roomName}님의 문의
-                    </S.Row>
-                  ))
-                ) : (
-                  <div>현재 진행 중인 1:1 문의가 없습니다.</div>
-                )}
-              </S.Content>
-            </>
-          )}
-        </S.Wrapper>
+        <h1 style={{ margin: 0 }}>1:1 문의</h1>
+        {isLoading ? (
+          <LoadContainer>
+            <BarLoader />
+          </LoadContainer>
+        ) : (
+          <div className="editor-wrapper">
+            <S.Content $direction="column">
+              {chatrooms.length > 0 ? (
+                chatrooms.map(({ id, roomName }) => (
+                  <S.Row key={id} onClick={() => handleChatroomClick(id)}>
+                    {roomName}님의 문의
+                  </S.Row>
+                ))
+              ) : (
+                <div>현재 진행 중인 1:1 문의가 없습니다.</div>
+              )}
+            </S.Content>
+          </div>
+        )}
       </ManageLayout>
     </ErrorBoundary>
   );
@@ -99,16 +97,6 @@ export const getServerSideProps = async () => {
 };
 
 const S = {
-  Wrapper: styled.div`
-    background: white;
-    border: 1px solid #d0d0d0;
-  `,
-  Header: styled.div`
-    border-bottom: 1px solid #d0d0d0;
-    font-weight: 700;
-    font-size: 24px;
-    padding: 32px 40px;
-  `,
   Content: styled.div<{ $direction?: string }>`
     padding: 32px 40px;
     display: flex;

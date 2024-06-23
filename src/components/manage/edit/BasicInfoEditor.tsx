@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { BsTwitterX, BsFacebook, BsInstagram, BsTelephoneFill, BsGlobe2 } from "react-icons/bs";
 import AddressField from "../AddressField";
-import { PHONE_REGEX, SNS_REGEX } from "@/constants/manage/constants";
+import { PHONE_REGEX } from "@/constants/manage/constants";
 import type { BasicInfoProps } from "@/constants/manage/types";
 
 const BasicInfoEditor = ({
@@ -32,7 +32,7 @@ const BasicInfoEditor = ({
   };
 
   const handleSnsChange = (input: string, key: string) => {
-    if (input.includes(" ") || input.length > 30 || !SNS_REGEX.test(input)) return;
+    if (input.length > 30) return;
     const newList = snsList ? { ...snsList } : {};
     newList[key as keyof typeof newList] = input;
     setNewData({ sns: { ...newList } });

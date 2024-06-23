@@ -2,10 +2,16 @@ import { ChangeEvent, useContext, useEffect } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import styled from "styled-components";
-import { HiOutlineChat, HiOutlineCog, HiOutlineHome } from "react-icons/hi";
+import {
+  HiOutlineChat,
+  HiOutlineDocumentText,
+  HiOutlineHome,
+  HiOutlinePencil,
+} from "react-icons/hi";
 import { MdOutlineComment } from "react-icons/md";
 import { requestData } from "@/service/api";
 import { NavContext, type NavStateProps } from "@/NavContext";
+import { COLOR } from "@/styles/global-color";
 
 const ManageLayout = ({ children }: React.PropsWithChildren<{}>) => {
   const router = useRouter();
@@ -39,7 +45,7 @@ const ManageLayout = ({ children }: React.PropsWithChildren<{}>) => {
         else if (selectedGymId) setSelectedGymId(selectedGymId);
         else setSelectedGymId(data[0].gyms[0].id);
       };
-      fetch("http://localhost:8000/gymids?user=hopp")
+      fetch("http://localhost:8000/gymids?user=jim")
         .then((res) => res.json())
         .then(onFetch)
         .catch((e) => console.log(e));
@@ -63,37 +69,31 @@ const ManageLayout = ({ children }: React.PropsWithChildren<{}>) => {
             ))}
           </select>
         )}
-        <S.Header>
+        <S.Header $visiting={router.route === "/manage"}>
           <HiOutlineHome size="1.3rem" />
           <Link href="/manage">
-            <strong>메인 화면</strong>
+            <strong>내 암장</strong>
           </Link>
         </S.Header>
-        <div>
-          <S.Header>
-            <HiOutlineCog size="1.3rem" />
-            <strong>암장 정보 관리</strong>
-          </S.Header>
-          <S.Links>
-            <li>
-              <Link href={{ pathname: `/manage/edit/${selectedGymId}`, query: { p: "1" } }}>
-                기본 정보
-              </Link>
-            </li>
-            <li>
-              <Link href={{ pathname: `/manage/edit/${selectedGymId}`, query: { p: "2" } }}>
-                상세 정보
-              </Link>
-            </li>
-          </S.Links>
-        </div>
-        <S.Header>
+        <S.Header $visiting={router.route.includes("edit") && router.query.p === "1"}>
+          <HiOutlinePencil size="1.3rem" />
+          <Link href={{ pathname: `/manage/edit/${selectedGymId}`, query: { p: "1" } }}>
+            <strong>기본 정보 수정</strong>
+          </Link>
+        </S.Header>
+        <S.Header $visiting={router.route.includes("edit") && router.query.p === "2"}>
+          <HiOutlineDocumentText size="1.3rem" />
+          <Link href={{ pathname: `/manage/edit/${selectedGymId}`, query: { p: "2" } }}>
+            <strong>상세 정보 수정</strong>
+          </Link>
+        </S.Header>
+        <S.Header $visiting={router.route.includes("comments")}>
           <MdOutlineComment size="1.3rem" />
           <Link href={`/manage/comments/${selectedGymId}`}>
             <strong>댓글 관리</strong>
           </Link>
         </S.Header>
-        <S.Header>
+        <S.Header $visiting={router.route.includes("chat")}>
           <HiOutlineChat size="1.3rem" />
           <Link href={`/manage/chat/${selectedGymId}`}>
             <strong>1:1 문의</strong>
@@ -137,10 +137,18 @@ const S = {
       }
     }
   `,
-  Header: styled.div`
+  Header: styled.div<{ $visiting: boolean }>`
     display: flex;
     align-items: center;
+    border-radius: 50px;
+    width: 100%;
     gap: 6px;
+    padding: 0.3rem 0.75rem;
+    background: ${({ $visiting }) => ($visiting ? COLOR.LIGHT_MAIN : "transparent")};
+    transition: 100ms;
+    &:hover {
+      background-color: ${({ $visiting }) => !$visiting && "#f3f3f3"};
+    }
   `,
   Content: styled.div`
     flex: 1 0 0;

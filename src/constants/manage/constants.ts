@@ -1,6 +1,6 @@
 export const PRICE_REGEX = /^[0-9]*$/;
 export const PHONE_REGEX = /^[0-9-]*$/;
-export const SNS_REGEX = /^[a-zA-Z0-9_.@-]*$/;
+export const IMG_URL_REGEX = /^https?:\/\/.*\.(png|jpg|jpeg|gif|webp|avif)$/;
 
 export const DAYS_TEXT = [
   { value: "weekdays", text: "평일" },
@@ -49,3 +49,5 @@ export const NEW_GRADES = ["#d9d9d9", "#d9d9d9"];
 export const DEFAULT_COLOR = "#d9d9d9";
 
 export const CURRENT_CENTURY = "20";
+
+export const UNKNOWN_ERROR = "오류가 발생했습니다. 잠시 후 다시 시도해 주세요.";
