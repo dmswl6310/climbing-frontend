@@ -5,6 +5,7 @@ import ContentContainer from "../ContentContainer";
 import GradeBlock from "./GradeBlock";
 import ReactIcon from "@/components/common/ReactIcon";
 import { DEFAULT_COLOR, NEW_GRADES } from "@/constants/manage/constants";
+import { DEVICE_SIZE } from "@/constants/styles";
 import type { GradeEditorProps } from "@/constants/manage/types";
 
 const GradeEditor = ({ gradesList, setNewData }: GradeEditorProps) => {
@@ -45,7 +46,13 @@ const GradeEditor = ({ gradesList, setNewData }: GradeEditorProps) => {
             <S.Bar>
               <FaMinus onClick={() => handleCountChange("minus")} />
               {gradesList.map((grade, i) => (
-                <GradeBlock key={i} index={i} color={grade} handleColorChange={handleColorChange} />
+                <GradeBlock
+                  key={i}
+                  index={i}
+                  size={gradesList.length}
+                  color={grade}
+                  handleColorChange={handleColorChange}
+                />
               ))}
               <FaPlus onClick={() => handleCountChange("plus")} />
             </S.Bar>
@@ -75,6 +82,9 @@ const S = {
     svg {
       margin: 0px 8px;
       cursor: pointer;
+      @media ${DEVICE_SIZE.laptop} {
+        margin: 0 0.2rem;
+      }
     }
   `,
   Label: styled.div`
@@ -83,6 +93,9 @@ const S = {
     padding: 0px 37px;
     justify-content: space-between;
     color: #b7b7b7;
+    @media ${DEVICE_SIZE.laptop} {
+      padding: 0 1.5rem;
+    }
   `,
 };
 

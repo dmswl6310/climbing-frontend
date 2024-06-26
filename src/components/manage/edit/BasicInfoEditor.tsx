@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { BsTwitterX, BsFacebook, BsInstagram, BsTelephoneFill, BsGlobe2 } from "react-icons/bs";
 import AddressField from "../AddressField";
 import { PHONE_REGEX } from "@/constants/manage/constants";
+import { DEVICE_SIZE } from "@/constants/styles";
 import type { BasicInfoProps } from "@/constants/manage/types";
 
 const BasicInfoEditor = ({
@@ -117,11 +118,17 @@ const S = {
       gap: 20px;
       flex-wrap: wrap;
     }
+    @media ${DEVICE_SIZE.laptop} {
+      padding: 1.3rem 1rem;
+    }
   `,
   Block: styled.div`
     display: flex;
     flex-direction: column;
     gap: 8px;
+    @media ${DEVICE_SIZE.mobileLarge} {
+      width: 100%;
+    }
   `,
   TextField: styled.div<{ $width?: string }>`
     box-sizing: border-box;
@@ -150,6 +157,10 @@ const S = {
     .field-icon {
       flex-shrink: 0;
       cursor: pointer;
+    }
+    @media ${DEVICE_SIZE.mobileLarge} {
+      width: 100%;
+      padding: 0.6rem;
     }
   `,
 };

@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { PRICE_REGEX } from "@/constants/manage/constants";
+import { DEVICE_SIZE } from "@/constants/styles";
 import type { PricingFieldProps } from "@/constants/manage/types";
 
 const PricingField = ({ index, item, price, handleChange }: PricingFieldProps) => {
@@ -44,11 +45,19 @@ const S = {
   Wrapper: styled.div`
     display: flex;
     gap: 20px;
+    @media ${DEVICE_SIZE.laptop} {
+      flex-direction: column;
+      gap: 0.75rem;
+      width: 100%;
+    }
   `,
   Block: styled.div`
     display: flex;
     flex-direction: column;
     gap: 8px;
+    @media ${DEVICE_SIZE.laptop} {
+      gap: 0.3rem;
+    }
   `,
   TextField: styled.div<{ $width?: number }>`
     box-sizing: border-box;
@@ -73,6 +82,9 @@ const S = {
     }
     input:focus {
       color: black;
+    }
+    @media ${DEVICE_SIZE.laptop} {
+      width: inherit;
     }
   `,
 };

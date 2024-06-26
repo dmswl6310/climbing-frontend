@@ -40,7 +40,7 @@ const EditPage = () => {
   const { selectedGymId, setSelectedGymId } = useContext(NavContext) as NavStateProps;
 
   useEffect(() => {
-    if (!session || !isLoading) return;
+    if (!isLoading) return;
 
     requestData({
       option: "GET",
@@ -150,7 +150,12 @@ const EditPage = () => {
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       <ManageLayout>
-        <h1 style={{ margin: 0 }}>{p === "2" ? "상세 정보 수정" : "기본 정보 수정"}</h1>
+        <h1 className="desktop-view" style={{ margin: 0 }}>
+          {p === "2" ? "상세 정보 수정" : "기본 정보 수정"}
+        </h1>
+        <h2 className="mobile-view" style={{ margin: 0 }}>
+          {p === "2" ? "상세 정보 수정" : "기본 정보 수정"}
+        </h2>
         {isLoading ? (
           <LoadContainer>
             <BarLoader />

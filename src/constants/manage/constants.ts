@@ -21,7 +21,31 @@ export const THUMBNAIL_HEIGHT = 140;
 export const HOURS = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"];
 export const MINUTES = ["00", "10", "20", "30", "40", "50"];
 
-export const GRADE_COLORS = [
+export const GRADE_COLORS_VERTICAL = [
+  "#f39897",
+  "#f8cea6",
+  "#fbf3b3",
+  "#d1ebac",
+  "#b6d3f1",
+  "#b7ade9",
+  "#fdfdfd",
+  "#ff6355",
+  "#fba949",
+  "#fae442",
+  "#8bd448",
+  "#2aa8f2",
+  "#9c4f96",
+  "#a5a5a5",
+  "#9b4244",
+  "#a66a40",
+  "#b7aa5e",
+  "#569556",
+  "#4c709a",
+  "#664980",
+  "#1e1e1e",
+];
+
+export const GRADE_COLORS_HORIZONTAL = [
   "#f39897",
   "#f8cea6",
   "#fbf3b3",

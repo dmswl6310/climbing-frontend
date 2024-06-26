@@ -1,5 +1,8 @@
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import styled from "styled-components";
+import { BarLoader } from "react-spinners";
 import Comments from "@/components/gyms/Comments";
 import DynamicMap from "@/components/gyms/DynamicMap";
 import ErrorPage from "@/components/common/ErrorPage";
@@ -8,43 +11,70 @@ import ImageCarousel from "@/components/gyms/ImageCarousel";
 import MainContent from "@/components/gyms/MainContent";
 import SideContent from "@/components/gyms/SideContent";
 import useApi from "@/hooks/useApi";
-import { DEVICE_SIZE } from "@/constants/styles";
+import { requestData } from "@/service/api";
 import { IMAGE_SIZE } from "@/constants/gyms/constants";
-import { NAVERMAP_API, SERVER_ADDRESS } from "@/constants/constants";
-import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import { NAVERMAP_API } from "@/constants/constants";
+import { DEVICE_SIZE } from "@/constants/styles";
+import type { GymData } from "@/constants/gyms/types";
 
-const GymInfo = ({
-  gymData,
-  error,
-  statusCode,
-}: InferGetServerSidePropsType<GetServerSideProps>) => {
+const GymInfo = () => {
   const { data: session } = useSession();
-  const { isLoading } = useApi(NAVERMAP_API);
-console.log(gymData)
-  if (error) return <ErrorPage statusCode={statusCode} />;
+  const router = useRouter();
+  const [gymData, setGymData] = useState<null | GymData>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
+  const { isLoading: isLoadingMap } = useApi(NAVERMAP_API);
+
+  useEffect(() => {
+    if (!isLoading || !router.query.id) return;
+    requestData({
+      option: "GET",
+      url: `/gyms/${router.query.id}`,
+      onSuccess: (data) => {
+        const gymData = { ...data, id: router.query.id };
+        setGymData(gymData);
+      },
+      onError: (e) => {
+        console.log(e);
+        setIsError(true);
+      },
+    });
+    setIsLoading(false);
+  }, [isLoading, router]);
+
   return (
     <S.Page>
-      <S.Wrapper>
-        <ImageCarousel
-          key={crypto.randomUUID()}
-          defaultImage={gymData.defaultImage}
-          imageList={gymData.images}
-        />
-        <S.InfoContainer>
-          <S.Main>
-            <MainContent gymData={gymData} />
-            {!isLoading && <DynamicMap name={gymData.name} coordinates={gymData.coordinates} />}
-          </S.Main>
-          <SideContent gymData={gymData} />
-        </S.InfoContainer>
-        <Comments
-          key={crypto.randomUUID()}
-          id={gymData.id}
-          comments={gymData.comments}
-          session={session}
-        />
-      </S.Wrapper>
-      <ChatModal key={crypto.randomUUID()} gymId={gymData.id} gymName={gymData.name} />
+      {isLoading ? (
+        <BarLoader />
+      ) : isError || !gymData ? (
+        <ErrorPage statusCode={500} />
+      ) : (
+        <>
+          <S.Wrapper>
+            <ImageCarousel
+              key={crypto.randomUUID()}
+              defaultImage={gymData.defaultImage ?? ""}
+              imageList={gymData.images ?? []}
+            />
+            <S.InfoContainer>
+              <S.Main>
+                <MainContent gymData={gymData} />
+                {!isLoadingMap && (
+                  <DynamicMap name={gymData.name} coordinates={gymData.coordinates} />
+                )}
+              </S.Main>
+              <SideContent gymData={gymData} />
+            </S.InfoContainer>
+            <Comments
+              key={crypto.randomUUID()}
+              id={gymData.id ?? ""}
+              comments={gymData.comments ?? []}
+              session={session}
+            />
+          </S.Wrapper>
+          <ChatModal key={crypto.randomUUID()} gymId={gymData.id ?? ""} gymName={gymData.name} />
+        </>
+      )}
     </S.Page>
   );
 };
@@ -61,7 +91,6 @@ const S = {
     width: ${IMAGE_SIZE.desktop.width + "px"};
     .address {
       display: flex;
-      align-items: center;
       gap: 6px;
       color: gray;
       margin-bottom: 18px;
@@ -142,27 +171,6 @@ const S = {
       width: ${IMAGE_SIZE.mobileSmall.width + "px"};
     }
   `,
-};
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const gymId = context.query.id;
-  const controller = new AbortController();
-  setTimeout(() => controller.abort(), 3000);
-  try {
-    const response = await fetch(`${SERVER_ADDRESS}/gyms/${gymId}`, { signal: controller.signal });
-    if (response.status === 200) {
-      const gymData = await response.json();
-      gymData.id = gymId;
-      return { props: { gymData } };
-    }
-    if (response.status === 404) return { notFound: true };
-    throw response.status;
-  } catch (e) {
-    if (typeof e === "object") {
-      return { props: { error: true, statusCode: 500 } };
-    }
-    return { props: { error: true, statusCode: e } };
-  }
 };
 
 export default GymInfo;

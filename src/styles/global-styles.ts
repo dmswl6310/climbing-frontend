@@ -1,6 +1,7 @@
 import { createGlobalStyle } from "styled-components";
 import { normalize } from "styled-normalize";
 import { COLOR } from "./global-color";
+import { DEVICE_SIZE } from "@/constants/styles";
 
 const GlobalStyle = createGlobalStyle`
 ${normalize}
@@ -84,15 +85,35 @@ ${normalize}
   }
 
   .editor-header {
-    border-bottom: 1px solid #d0d0d0;
-    font-weight: 700;
-    font-size: 24px;
-    padding: 32px 40px;
+    @media ${DEVICE_SIZE.desktop} {
+      border-bottom: 1px solid #d0d0d0;
+      font-weight: 700;
+      font-size: 24px;
+      padding: 32px 40px;
+    }
+    @media ${DEVICE_SIZE.laptop} {
+      font-size: 19px;
+      padding: 1rem;
+    }
   }
 
   .editor-removable {
     display: flex;
     justify-content: space-between;
+  }
+
+  .mobile-view {
+    display: none;
+    @media ${DEVICE_SIZE.laptop} {
+      display: block;
+    }
+  }
+
+  .desktop-view {
+    display: block;
+    @media ${DEVICE_SIZE.laptop} {
+      display: none;
+    } 
   }
 `;
 

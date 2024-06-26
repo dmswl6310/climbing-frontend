@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { FaCalendarDay } from "react-icons/fa";
 import { getDateObject } from "./SettingDayEditor";
 import { COLOR } from "@/styles/global-color";
+import { DEVICE_SIZE } from "@/constants/styles";
 import type { SettingDayCalendarProps, Value } from "@/constants/manage/types";
 import "react-calendar/dist/Calendar.css";
 
@@ -77,6 +78,9 @@ const Background = styled.div`
   bottom: 0;
   left: 0;
   right: 0;
+  @media ${DEVICE_SIZE.mobileLarge} {
+    background: rgba(0, 0, 0, 0.5);
+  }
 `;
 
 const CalendarContainer = styled.div`
@@ -96,6 +100,21 @@ const CalendarContainer = styled.div`
     background: ${COLOR.LIGHT_MAIN};
     &:hover {
       background: #c8dfff;
+    }
+  }
+  @media ${DEVICE_SIZE.mobileLarge} {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 30;
+    background: white;
+    padding: 1.5rem 0;
+    border-radius: 1rem 1rem 0 0;
+    display: flex;
+    justify-content: center;
+    .react-calendar {
+      box-shadow: none;
     }
   }
 `;

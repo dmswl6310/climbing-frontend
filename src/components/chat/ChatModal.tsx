@@ -26,7 +26,7 @@ const ChatModal = ({ gymId, gymName }: ChatModalProps) => {
   const [isSocketError, setIsSocketError] = useState(false);
 
   useEffect(() => {
-    if (!session || client) return;
+    if (!session || !gymId || client) return;
 
     const clientInstance = new Client({
       brokerURL: `${SOCKET_ADDRESS}/ws/chat`,
@@ -34,17 +34,17 @@ const ChatModal = ({ gymId, gymName }: ChatModalProps) => {
     });
 
     const fetchChatroom = async (nickname: string): Promise<FetchedChatroom> => {
-      console.log("fetching chatroom")
+      console.log("fetching chatroom");
       try {
         const response = await fetch(`${SERVER_ADDRESS}/chat/room-check/${nickname}/${gymId}`, {
           headers: {
+            "Content-Type": "application/json",
             Authorization: "Bearer " + session.jwt.accessToken,
           },
         });
-        console.log(response)
         if (!response.ok) throw new Error("roomId를 불러올 수 없습니다.");
         const data = await response.json();
-        console.log(data)
+        console.log(data);
         return data;
       } catch (e) {
         console.log(e);
@@ -53,16 +53,16 @@ const ChatModal = ({ gymId, gymName }: ChatModalProps) => {
     };
 
     const createRoom = async (nickname: string) => {
-      console.log("creating room")
+      console.log("creating room");
       try {
         const response = await fetch(`${SERVER_ADDRESS}/chat/room/${nickname}/${gymId}`, {
           method: "POST",
           headers: { Authorization: "Bearer " + session.jwt.accessToken },
         });
-        console.log(response)
+        console.log(response);
         if (response.redirected) throw new Error("로그인이 필요한 서비스입니다.");
         const { id } = await response.json();
-        console.log(id)
+        console.log(id);
         return id;
       } catch (e) {
         console.log(e);
@@ -96,7 +96,7 @@ const ChatModal = ({ gymId, gymName }: ChatModalProps) => {
       setIsSocketError(true);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session]);
+  }, [session, gymId]);
 
   const toggleModal = () => setIsOpen(!isOpen);
 

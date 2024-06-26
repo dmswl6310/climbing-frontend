@@ -100,6 +100,7 @@ const S = {
     @media ${DEVICE_SIZE.laptop} {
       margin-top: 40px;
       width: inherit;
+      padding: 0;
     }
   `,
   Container: styled.div`

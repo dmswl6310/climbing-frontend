@@ -11,3 +11,7 @@ export interface ReactIconProps {
   clickable: boolean;
   children: ReactNode;
 }
+
+export interface EllipsisButtonProps {
+  options: Array<{ text: string; action: () => void }>;
+}

@@ -14,14 +14,14 @@ const MainContent = ({ gymData }: { gymData: GymData }) => {
   const [currentLikes, setCurrentLikes] = useState<number>(gymData.likeNumber || 0);
   const { data: session } = useSession();
 
-  useEffect(() => {
-    if (!session || !session.user) return;
-    requestData({
-      option: "GET",
-      url: `/${session.user.email}/like?gym=${gymData.id}`,
-      onSuccess: (data) => setIsLiked(data),
-    });
-  }, [gymData.id, session]);
+  // useEffect(() => {
+  //   if (!session || !session.user) return;
+  //   requestData({
+  //     option: "GET",
+  //     url: `/${session.user.email}/like?gym=${gymData.id}`,
+  //     onSuccess: (data) => setIsLiked(data),
+  //   });
+  // }, [gymData.id, session]);
 
   const handleLike = async () => {
     if (!session || !session.user) return;

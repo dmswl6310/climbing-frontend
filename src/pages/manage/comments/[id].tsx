@@ -9,46 +9,34 @@ import Comment from "@/components/manage/comments/Comment";
 import LoadContainer from "@/components/manage/LoadContainer";
 import ManageLayout from "@/components/manage/ManageLayout";
 import ErrorFallback from "@/components/common/ErrorFallback";
+import { requestData } from "@/service/api";
 import { NavContext, type NavStateProps } from "@/NavContext";
-import { SERVER_ADDRESS, TEST_ADDRESS } from "@/constants/constants";
-import type { NextPageWithLayout } from "@/pages/_app";
+import { SERVER_ADDRESS } from "@/constants/constants";
+import { DEVICE_SIZE } from "@/constants/styles";
+import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import type { UserComment } from "@/constants/gyms/types";
 
-const CommentsPage: NextPageWithLayout = () => {
+const CommentsPage = ({ id }: InferGetServerSidePropsType<GetServerSideProps>) => {
   const { data: session } = useSession();
   const router = useRouter();
-  const { id } = router.query;
   const [comments, setComments] = useState<UserComment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { selectedGymId } = useContext(NavContext) as NavStateProps;
 
   useEffect(() => {
-    let comments: UserComment[];
-
-    const fetchData = async () => {
-      try {
-        const response = await Promise.race([
-          fetch(`${TEST_ADDRESS}/gyms/${id}`),
-          new Promise<Response>((_, reject) =>
-            setTimeout(() => reject(new Response(null, { status: 503 })), 3000),
-          ),
-        ]);
-        if (!response.ok) throw new Error(`${response.status}`);
-        else {
-          const data = await response.json();
-          comments = data.comments ?? [];
-        }
+    requestData({
+      option: "GET",
+      url: `/gyms/${id}`, // 백엔드 확정 시 수정 필요
+      onSuccess: (data) => {
+        const comments = data.comments ?? [];
         setComments(comments);
-      } catch (e) {
-        // 에러 핸들링
+      },
+      onError: (e) => {
         console.log(e);
-        comments = [];
-        setComments(comments);
-      }
-      setIsLoading(false);
-    };
-
-    fetchData();
+        setComments([]);
+      },
+    });
+    setIsLoading(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
 
@@ -92,7 +80,12 @@ const CommentsPage: NextPageWithLayout = () => {
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       <ManageLayout>
-        <h1 style={{ margin: 0 }}>댓글 관리</h1>
+        <h1 className="desktop-view" style={{ margin: 0 }}>
+          댓글 관리
+        </h1>
+        <h2 className="mobile-view" style={{ margin: 0 }}>
+          댓글 관리
+        </h2>
         {isLoading ? (
           <LoadContainer>
             <BarLoader />
@@ -118,8 +111,9 @@ const CommentsPage: NextPageWithLayout = () => {
   );
 };
 
-export const getServerSideProps = async () => {
-  return { props: {} };
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const id = context.query.id;
+  return { props: { id } };
 };
 
 const S = {
@@ -129,6 +123,9 @@ const S = {
     flex-direction: ${(props) => props.$direction};
     flex-wrap: wrap;
     gap: 20px;
+    @media ${DEVICE_SIZE.laptop} {
+      padding: 1.3rem 1rem;
+    }
   `,
   Link: styled.div`
     cursor: pointer;
@@ -143,6 +140,9 @@ const S = {
     padding: 16px;
     display: flex;
     gap: 36px;
+    @media ${DEVICE_SIZE.laptop} {
+      gap: 0;
+    }
   `,
   Icon: styled(IoTrash)`
     cursor: pointer;

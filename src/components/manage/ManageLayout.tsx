@@ -12,6 +12,7 @@ import { MdOutlineComment } from "react-icons/md";
 import { requestData } from "@/service/api";
 import { NavContext, type NavStateProps } from "@/NavContext";
 import { COLOR } from "@/styles/global-color";
+import { DEVICE_SIZE } from "@/constants/styles";
 
 const ManageLayout = ({ children }: React.PropsWithChildren<{}>) => {
   const router = useRouter();
@@ -20,35 +21,24 @@ const ManageLayout = ({ children }: React.PropsWithChildren<{}>) => {
   ) as NavStateProps;
 
   useEffect(() => {
-    // const onSuccess = (data: any) => {
-    //   if (data.length < 1) return setGymList([]);
-    //   setGymList(data[0].gyms);
-    //   if (router.query.id) {
-    //     setSelectedGymId(router.query.id as string);
-    //   } else {
-    //     setSelectedGymId(data[0].gyms[0].id);
-    //   }
-    // };
-    // const onError = (e: Error) => {};
-    // requestData({
-    //   option: "GET",
-    //   url: `/gymids?user=${"userid"}`,
-    //   onSuccess,
-    //   onError,
-    // });
     if (!selectedGymId) {
-      // 백엔드 준비되면 수정
       const onFetch = (data: any) => {
-        const init = data[0].gyms ?? [];
-        setGymList(init);
+        console.log(data);
+        const gymList = data && data.length >= 1 ? data : [];
+        setGymList(gymList);
         if (router.query.id) setSelectedGymId(router.query.id as string);
         else if (selectedGymId) setSelectedGymId(selectedGymId);
-        else setSelectedGymId(data[0].gyms[0].id);
+        else setSelectedGymId(data[0].id);
       };
-      fetch("http://localhost:8000/gymids?user=jim")
-        .then((res) => res.json())
-        .then(onFetch)
-        .catch((e) => console.log(e));
+      requestData({
+        option: "GET",
+        url: "/gyms", // 백엔드 준비되면 수정
+        onSuccess: onFetch,
+        onError: (e) => {
+          console.log(e);
+          setGymList([]);
+        },
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -61,7 +51,12 @@ const ManageLayout = ({ children }: React.PropsWithChildren<{}>) => {
     <S.Wrapper>
       <S.Menu>
         {!gymList || gymList.length < 1 ? null : (
-          <select value={selectedGymId ?? ""} onChange={handleSelectChange}>
+          <select
+            className="desktop-view"
+            value={selectedGymId ?? ""}
+            onChange={handleSelectChange}
+            style={{ width: "224px" }}
+          >
             {gymList.map(({ id, name }, i) => (
               <option key={i} value={id}>
                 {name}
@@ -69,37 +64,64 @@ const ManageLayout = ({ children }: React.PropsWithChildren<{}>) => {
             ))}
           </select>
         )}
-        <S.Header $visiting={router.route === "/manage"}>
-          <HiOutlineHome size="1.3rem" />
+        <S.Links>
           <Link href="/manage">
-            <strong>내 암장</strong>
+            <S.Header $visiting={router.route === "/manage"}>
+              <HiOutlineHome className="desktop-view" size="1.3rem" />
+              <HiOutlineHome className="mobile-view" size="2rem" />
+              <strong className="desktop-view">내 암장</strong>
+              <span className="mobile-view">내 암장</span>
+            </S.Header>
           </Link>
-        </S.Header>
-        <S.Header $visiting={router.route.includes("edit") && router.query.p === "1"}>
-          <HiOutlinePencil size="1.3rem" />
           <Link href={{ pathname: `/manage/edit/${selectedGymId}`, query: { p: "1" } }}>
-            <strong>기본 정보 수정</strong>
+            <S.Header $visiting={router.route.includes("edit") && router.query.p === "1"}>
+              <HiOutlinePencil className="desktop-view" size="1.3rem" />
+              <HiOutlinePencil className="mobile-view" size="2rem" />
+              <strong className="desktop-view">기본 정보 수정</strong>
+              <span className="mobile-view">기본 정보</span>
+            </S.Header>
           </Link>
-        </S.Header>
-        <S.Header $visiting={router.route.includes("edit") && router.query.p === "2"}>
-          <HiOutlineDocumentText size="1.3rem" />
           <Link href={{ pathname: `/manage/edit/${selectedGymId}`, query: { p: "2" } }}>
-            <strong>상세 정보 수정</strong>
+            <S.Header $visiting={router.route.includes("edit") && router.query.p === "2"}>
+              <HiOutlineDocumentText className="desktop-view" size="1.3rem" />
+              <HiOutlineDocumentText className="mobile-view" size="2rem" />
+              <strong className="desktop-view">상세 정보 수정</strong>
+              <span className="mobile-view">상세 정보</span>
+            </S.Header>
           </Link>
-        </S.Header>
-        <S.Header $visiting={router.route.includes("comments")}>
-          <MdOutlineComment size="1.3rem" />
           <Link href={`/manage/comments/${selectedGymId}`}>
-            <strong>댓글 관리</strong>
+            <S.Header $visiting={router.route.includes("comments")}>
+              <MdOutlineComment className="desktop-view" size="1.3rem" />
+              <MdOutlineComment className="mobile-view" size="2rem" />
+              <strong className="desktop-view">댓글 관리</strong>
+              <span className="mobile-view">댓글 관리</span>
+            </S.Header>
           </Link>
-        </S.Header>
-        <S.Header $visiting={router.route.includes("chat")}>
-          <HiOutlineChat size="1.3rem" />
           <Link href={`/manage/chat/${selectedGymId}`}>
-            <strong>1:1 문의</strong>
+            <S.Header $visiting={router.route.includes("chat")}>
+              <HiOutlineChat className="desktop-view" size="1.3rem" />
+              <HiOutlineChat className="mobile-view" size="2rem" />
+              <strong className="desktop-view">1:1 문의</strong>
+              <span className="mobile-view">1:1 문의</span>
+            </S.Header>
           </Link>
-        </S.Header>
+        </S.Links>
       </S.Menu>
+      <S.MobileSelect className="mobile-view">
+        {!gymList || gymList.length < 1 ? null : (
+          <select
+            value={selectedGymId ?? ""}
+            onChange={handleSelectChange}
+            style={{ width: "100%" }}
+          >
+            {gymList.map(({ id, name }, i) => (
+              <option key={i} value={id}>
+                {name}
+              </option>
+            ))}
+          </select>
+        )}
+      </S.MobileSelect>
       <S.Content>{children}</S.Content>
     </S.Wrapper>
   );
@@ -107,47 +129,81 @@ const ManageLayout = ({ children }: React.PropsWithChildren<{}>) => {
 
 const S = {
   Wrapper: styled.div`
+    position: fixed;
+    top: 82px;
+    bottom: 0;
+    left: 0;
+    right: 0;
     display: flex;
-    width: 100%;
-    min-height: calc(100vh - 82px);
     border-top: 1px solid #d0d0d0;
-    border-bottom: 1px solid #d0d0d0;
     a {
       text-decoration: none;
     }
-  `,
-  Menu: styled.div`
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 36px 42px;
-    min-width: 230px;
-    max-width: 280px;
-    gap: 1.3rem;
-    border-right: 1px solid #d0d0d0;
+    span.mobile-view {
+      font-size: 0.7rem;
+    }
     select {
       border-radius: 0.4rem;
-      padding: 0 0.4rem;
-      width: 100%;
+      padding: 0.4rem;
+      margin-left: auto;
+      margin-right: auto;
       text-overflow: ellipsis;
       cursor: pointer;
       &:focus {
         outline: none;
       }
     }
+    @media ${DEVICE_SIZE.laptop} {
+      flex-direction: column;
+    }
+  `,
+  Menu: styled.div`
+    display: flex;
+    flex-direction: column;
+    padding-top: 2rem;
+    width: 280px;
+    gap: 2rem;
+    @media ${DEVICE_SIZE.laptop} {
+      padding: 0.5rem 0;
+      gap: 0;
+      width: 100%;
+      border-bottom: 1px solid #d0d0d0;
+    }
+  `,
+  Links: styled.div`
+    width: 100%;
+    @media ${DEVICE_SIZE.desktop} {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+    @media ${DEVICE_SIZE.laptop} {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    }
+  `,
+  MobileSelect: styled.div`
+    background: #fafafa;
+    padding: 0.75rem;
   `,
   Header: styled.div<{ $visiting: boolean }>`
     display: flex;
     align-items: center;
+    text-align: center;
     border-radius: 50px;
-    width: 100%;
+    margin: auto;
+    width: 200px;
     gap: 6px;
     padding: 0.3rem 0.75rem;
-    background: ${({ $visiting }) => ($visiting ? COLOR.LIGHT_MAIN : "transparent")};
+    color: ${({ $visiting }) => ($visiting ? COLOR.MAIN : "black")};
     transition: 100ms;
     &:hover {
       background-color: ${({ $visiting }) => !$visiting && "#f3f3f3"};
+    }
+    @media ${DEVICE_SIZE.laptop} {
+      flex-direction: column;
+      width: fit-content;
+      border-radius: 0.5rem;
     }
   `,
   Content: styled.div`
@@ -157,18 +213,19 @@ const S = {
     gap: 36px;
     background: #fafafa;
     padding: 36px 63px;
+    border-left: 1px solid #d0d0d0;
+    overflow: auto;
+    scrollbar-gutter: stable;
     & input:focus,
     textarea:focus,
     select:focus {
       outline: none;
     }
-  `,
-  Links: styled.ul`
-    margin: 0;
-    margin-top: 0.8rem;
-    list-style-type: circle;
-    & li {
-      margin-bottom: 10px;
+    @media ${DEVICE_SIZE.laptop} {
+      padding: 0.75rem;
+      gap: 1rem;
+      scrollbar-gutter: auto;
+      border: none;
     }
   `,
 };

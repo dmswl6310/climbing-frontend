@@ -24,7 +24,7 @@ export type SimpleGymData = {
 };
 
 export type GymData = BaseGymData & {
-  id?: string;
+  id: string;
   latestSettingDay: string | null;
   sns: SnsList | null;
   homepage: string | null;

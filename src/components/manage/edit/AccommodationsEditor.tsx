@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { ACCOMMODATIONS_LIST } from "@/constants/manage/constants";
+import { DEVICE_SIZE } from "@/constants/styles";
 import type { AccommodationsEditorProps } from "@/constants/manage/types";
 
 const AccommodationsEditor = ({ accommodationsList, setNewData }: AccommodationsEditorProps) => {
@@ -30,7 +31,8 @@ const AccommodationsEditor = ({ accommodationsList, setNewData }: Accommodations
             <input
               type="checkbox"
               name={text}
-              defaultChecked={accommodationsList?.includes(text)}
+              checked={accommodationsList?.includes(text)}
+              readOnly
             />
             <span>{text}</span>
           </S.TextField>
@@ -46,6 +48,14 @@ const S = {
     display: grid;
     gap: 1.75rem;
     grid-template-columns: 1fr 1fr 1fr 1fr;
+    @media ${DEVICE_SIZE.laptop} {
+      padding: 1.3rem 1rem;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    @media ${DEVICE_SIZE.mobileSmall} {
+      grid-template-columns: 1fr;
+    }
   `,
   TextField: styled.div`
     box-sizing: border-box;
@@ -61,10 +71,16 @@ const S = {
     gap: 8px;
     &:hover {
       box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+      @media ${DEVICE_SIZE.laptop} {
+        box-shadow: none;
+      }
     }
     &:active {
       box-shadow: none;
       transform: translate(0, 4px);
+      @media ${DEVICE_SIZE.laptop} {
+        transform: none;
+      }
     }
     cursor: pointer;
     input {

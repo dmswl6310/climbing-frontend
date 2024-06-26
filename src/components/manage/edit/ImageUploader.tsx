@@ -10,6 +10,7 @@ import {
   THUMBNAIL_HEIGHT,
   THUMBNAIL_WIDTH,
 } from "@/constants/manage/constants";
+import { DEVICE_SIZE } from "@/constants/styles";
 import type { ImageUploadProps } from "@/constants/manage/types";
 
 const ImageUploader = ({ dataKey, imageCount, handleS3Upload }: ImageUploadProps) => {
@@ -92,7 +93,6 @@ const S = {
     background: #f4f4f4;
     overflow: hidden;
     flex-shrink: 0;
-
     div {
       box-sizing: border-box;
       width: 100%;
@@ -104,8 +104,10 @@ const S = {
       align-items: center;
       gap: 6px;
       padding: 12px;
+      @media ${DEVICE_SIZE.mobileLarge} {
+        font-size: 10pt;
+      }
     }
-
     input {
       width: 100%;
       height: 100%;
@@ -113,6 +115,10 @@ const S = {
       z-index: 1;
       opacity: 0;
       cursor: pointer;
+    }
+    @media ${DEVICE_SIZE.mobileLarge} {
+      width: inherit;
+      height: 80px;
     }
   `,
 };

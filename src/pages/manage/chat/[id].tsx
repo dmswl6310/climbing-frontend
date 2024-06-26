@@ -9,6 +9,7 @@ import ErrorFallback from "@/components/common/ErrorFallback";
 import LoadContainer from "@/components/manage/LoadContainer";
 import { requestData } from "@/service/api";
 import { NavContext, type NavStateProps } from "@/NavContext";
+import { DEVICE_SIZE } from "@/constants/styles";
 import type { NextPageWithLayout } from "@/pages/_app";
 import type { Chatroom, ChatroomRef } from "@/constants/manage/types";
 
@@ -20,25 +21,20 @@ const ChatPage: NextPageWithLayout = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [openWindows, setOpenWindows] = useState<ChatroomRef[]>([]);
   const { selectedGymId } = useContext(NavContext) as NavStateProps;
+  console.log(chatrooms);
 
   useEffect(() => {
-    if (!session) return;
-
-    const fetchRooms = async () => {
-      if (!id) return;
-      requestData({
-        option: "GET",
-        url: `/chat/room/gym/${id}`,
-        token: session.jwt.accessToken,
-        onSuccess: (chatrooms: Chatroom[]) => setChatrooms(chatrooms),
-        onError: (e) => console.log(e),
-      });
-      setIsLoading(false);
-    };
-
-    fetchRooms();
+    if (!session || !isLoading) return;
+    requestData({
+      option: "GET",
+      url: `/chat/room/gym/${id}`,
+      token: session.jwt.accessToken,
+      onSuccess: (data) => setChatrooms(data),
+      onError: (e) => console.log(e),
+    });
+    setIsLoading(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session]);
+  }, [session, router]);
 
   useEffect(() => {
     if (selectedGymId !== null && selectedGymId !== id) {
@@ -67,7 +63,12 @@ const ChatPage: NextPageWithLayout = () => {
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       <ManageLayout>
-        <h1 style={{ margin: 0 }}>1:1 문의</h1>
+        <h1 className="desktop-view" style={{ margin: 0 }}>
+          1:1 문의
+        </h1>
+        <h2 className="mobile-view" style={{ margin: 0 }}>
+          1:1 문의
+        </h2>
         {isLoading ? (
           <LoadContainer>
             <BarLoader />
@@ -103,6 +104,9 @@ const S = {
     flex-direction: ${(props) => props.$direction};
     flex-wrap: wrap;
     gap: 20px;
+    @media ${DEVICE_SIZE.laptop} {
+      padding: 1.3rem 1rem;
+    }
   `,
   Row: styled.div`
     border: 1px solid #d0d0d0;

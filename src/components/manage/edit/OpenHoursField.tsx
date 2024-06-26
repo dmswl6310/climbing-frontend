@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { DAYS_TEXT, HOURS, MINUTES } from "@/constants/manage/constants";
+import { DEVICE_SIZE } from "@/constants/styles";
 import type { OpenHoursFieldProps } from "@/constants/manage/types";
 
 const OpenHoursField = ({
@@ -121,11 +122,19 @@ const S = {
   Wrapper: styled.div`
     display: flex;
     gap: 20px;
+    @media ${DEVICE_SIZE.laptop} {
+      flex-direction: column;
+      gap: 0.75rem;
+      width: 100%;
+    }
   `,
   Block: styled.div`
     display: flex;
     flex-direction: column;
     gap: 8px;
+    @media ${DEVICE_SIZE.laptop} {
+      gap: 0.3rem;
+    }
   `,
   TextField: styled.div`
     box-sizing: border-box;
@@ -141,10 +150,14 @@ const S = {
       background: transparent;
       padding: 0px;
       color: #666666;
+      text-align: center;
     }
     select:active,
     select:focus {
       color: black;
+    }
+    @media ${DEVICE_SIZE.laptop} {
+      max-width: fit-content;
     }
   `,
 };

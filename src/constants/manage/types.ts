@@ -35,6 +35,7 @@ export interface BasicInfoProps {
 }
 
 export interface ColorPickerProps {
+  className: string;
   handleColorSelect: (color: string) => void;
 }
 
@@ -51,6 +52,7 @@ export interface DescriptionEditorProps {
 
 export interface GradeBlockProps {
   index: number;
+  size: number;
   color: string;
   handleColorChange: (index: number, color: string) => void;
 }

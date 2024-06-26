@@ -3,6 +3,7 @@ import { IoTrash } from "react-icons/io5";
 import ReactIcon from "@/components/common/ReactIcon";
 import SettingDayCalendar from "./SettingDayCalendar";
 import { CURRENT_CENTURY } from "@/constants/manage/constants";
+import { DEVICE_SIZE } from "@/constants/styles";
 import type { SettingDayEditorProps } from "@/constants/manage/types";
 
 export const getDateObject = (date: Date) => {
@@ -68,6 +69,9 @@ const S = {
     gap: 20px;
     button {
       flex: 1 0 0;
+    }
+    @media ${DEVICE_SIZE.laptop} {
+      padding: 1.3rem 1rem;
     }
   `,
   TextField: styled.div`
