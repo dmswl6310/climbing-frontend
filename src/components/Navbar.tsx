@@ -6,7 +6,7 @@ import { FaRegHandRock } from "react-icons/fa";
 import { COLOR } from "@/styles/global-color";
 
 // navbar(헤더)를 보여주지 않을 페이지 주소 지정
-const nonNavPage = ["/login", "/join"];
+const nonNavPage = ["/login", "/join", "/error"];
 
 // 마진이 붙어야될 주소 지정
 const marginPage = ["/home", "/search", "/gyms"];

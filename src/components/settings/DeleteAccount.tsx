@@ -147,6 +147,7 @@ const S = {
     &:disabled {
       opacity: 0.3;
     }
+    cursor: pointer;
     width: 320px;
     background-color: ${COLOR.WARNING};
     border: 1px solid ${COLOR.WARNING};

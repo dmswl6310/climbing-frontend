@@ -10,7 +10,7 @@ const getLoginInfos = async (email: string, password: string) => {
   })
     .then((res) => {
       if (!res.ok) {
-        throw new Error(`${res.status} 에러`);
+        throw new Error(`${res.status}`);
       }
       return res;
     })
@@ -34,6 +34,11 @@ const getLoginInfos = async (email: string, password: string) => {
       const nickname = body.nickname || "tempNickname";
 
       return { user: { email, nickname }, jwt };
+    })
+    .catch((error) => {
+      if (error.message === "400") {
+        return null;
+      }
     });
   // console.log(userInfo);
   return userInfo;

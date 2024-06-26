@@ -7,7 +7,8 @@ import SearchLayout from "@/components/search/SearchLayout";
 import { NextPageWithLayout } from "../_app";
 import GymListBanner from "@/components/search/GymListBanner";
 import { useRouter } from "next/router";
-import { sampleAddress } from "@/constants/search/types";
+import { COLOR } from "@/styles/global-color";
+import { DISTRCIT_CITY_DATA } from "@/constants/search/constants";
 
 const SearchPage: NextPageWithLayout = () => {
   const router = useRouter();
@@ -31,12 +32,14 @@ const SearchPage: NextPageWithLayout = () => {
     <Styled.Wrapper>
       <Styled.SearchWrapper>
         <Search
-          dataList={sampleAddress}
-          width="400px"
-          postfixIcon={<IoSearch />}
-          placeholder="주소를 입력하면 실내암벽장을 찾아드려요."
+          dataList={DISTRCIT_CITY_DATA}
+          width="600px"
+          height="40px"
+          postfixIcon={<IoSearch size="23" color={COLOR.MAIN} />}
+          placeholder="주소 또는 암벽장을 입력하면 실내암벽장을 찾아드려요."
           onSubmit={handleSubmit}
           useLocation={true}
+          border={"3px solid " + COLOR.LIGHT_MAIN}
           searchWord={searchWord}
         />
       </Styled.SearchWrapper>
@@ -56,10 +59,11 @@ SearchPage.getLayout = (page: ReactElement) => {
 const Styled = {
   Wrapper: styled.div``,
   SearchWrapper: styled.div`
-    margin-top: 10px;
+    margin-top: 5px;
+    margin-left: 100px;
     top: 0;
     position: fixed;
-    z-index: 101;
+    z-index: 201;
   `,
 };
 

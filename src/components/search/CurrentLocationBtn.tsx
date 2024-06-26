@@ -1,6 +1,8 @@
 import styled from "styled-components";
-import { IoLocationOutline } from "react-icons/io5";
 import { useState } from "react";
+import { CurrentLocationBtnProps } from "@/constants/search/types";
+import { MdOutlineMyLocation } from "react-icons/md";
+import { COLOR } from "@/styles/global-color";
 
 const GEOToAddress = async (longitude: number, latitude: number) => {
   const response = await (
@@ -17,8 +19,8 @@ const GEOToAddress = async (longitude: number, latitude: number) => {
   return response["documents"][1]["address_name"]; // ~~2동 까지 나옴
 };
 
-const CurrentLocationBtn = () => {
-  const [location, setLocation] = useState("현재 위치");
+const CurrentLocationBtn = ({ fontSize = "18px" }: CurrentLocationBtnProps) => {
+  const [location, setLocation] = useState("내 위치로 찾기");
 
   const success = async (position: GeolocationPosition) => {
     const latitude = position.coords.latitude;
@@ -40,17 +42,27 @@ const CurrentLocationBtn = () => {
   };
 
   return (
-    <Styled.Wrapper onClick={handleLocation}>
-      <IoLocationOutline />
+    <S.Wrapper fontSize={fontSize} onClick={handleLocation}>
+      <MdOutlineMyLocation color={COLOR.BORDER_UNFOCUSED} />
+      <S.Space></S.Space>
       {location}
-    </Styled.Wrapper>
+    </S.Wrapper>
   );
 };
 
-const Styled = {
-  Wrapper: styled.div`
-    margin-left: 5px;
+const S = {
+  Wrapper: styled.div<{ fontSize?: string }>`
     display: flex;
+    flex-direction: row;
+    justify-content: right;
+    padding: 0;
+    margin: 3px 3px;
+    color: ${COLOR.DISABLED};
+    cursor: pointer;
+    ${(props) => props.fontSize && `font-size: ${props.fontSize}`}
+  `,
+  Space: styled.div`
+    margin-left: 5px;
   `,
 };
 

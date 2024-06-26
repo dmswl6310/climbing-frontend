@@ -1,11 +1,11 @@
-import React from "react";
-import router, { useRouter } from "next/router";
-import styled from "styled-components";
-import { FaCircleCheck } from "react-icons/fa6";
 import { COLOR } from "@/styles/global-color";
+import router from "next/router";
+import { IoWarning } from "react-icons/io5";
+import { styled } from "styled-components";
 
-const JoinResult = () => {
-  const { query } = useRouter();
+const LockedPage = () => {
+  //   const { query } = useRouter();
+  //   const email = query.email as string;
 
   const handleHomeBtn = () => {
     router.push("/home");
@@ -17,22 +17,10 @@ const JoinResult = () => {
   return (
     <S.Container>
       <S.IconWrapper>
-        <FaCircleCheck size="50" color={COLOR.MAIN} />
+        <IoWarning size="50" color={COLOR.WARNING} />
       </S.IconWrapper>
-      <S.Title>
-        회원가입이 <S.CompleteText>완료</S.CompleteText> 되었습니다.
-      </S.Title>
-      <S.SubTitle>
-        {query.nickname || "tempNickname"}님의 회원가입을 축하합니다.
-      </S.SubTitle>
-      <S.SubTitle>
-        가입하신 아이디는 <S.IdText>{query.email || "tempEmail"}</S.IdText>
-        입니다.
-      </S.SubTitle>
-      {/* <S.DetailText>
-        오르리는 항상 회원님들 입장에서 보다 좋은 서비스를 제공하도록
-        노력하겠습니다. :)
-      </S.DetailText> */}
+      <S.Title>비정상적인 활동으로 정지된 계정입니다.</S.Title>
+      <S.SubTitle>자세한 내용은 고객센터에 문의바랍니다.</S.SubTitle>
       <S.ButtonContainer>
         <S.HomeButton onClick={handleHomeBtn}>홈으로</S.HomeButton>
         <S.LoginButton onClick={handleLoginBtn}>로그인하기</S.LoginButton>
@@ -56,12 +44,6 @@ const S = {
     margin-bottom: 5px;
   `,
   IconWrapper: styled.div``,
-  CompleteText: styled.span`
-    color: ${COLOR.MAIN};
-  `,
-  IdText: styled.span`
-    color: ${COLOR.MAIN};
-  `,
   ButtonContainer: styled.div`
     width: 380px;
     display: flex;
@@ -92,4 +74,4 @@ const S = {
   `,
 };
 
-export default JoinResult;
+export default LockedPage;

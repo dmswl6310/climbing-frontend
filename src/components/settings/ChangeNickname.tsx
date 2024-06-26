@@ -179,6 +179,7 @@ const S = {
     &:disabled {
       opacity: 0.3;
     }
+    cursor: pointer;
     background-color: ${COLOR.MAIN};
     border: 1px solid ${COLOR.MAIN};
     color: white;

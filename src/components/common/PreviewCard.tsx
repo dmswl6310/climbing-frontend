@@ -1,36 +1,48 @@
 import { styled } from "styled-components";
 import Image from "next/image";
 import img01 from "../../../public/thumbnail3.jpg";
-import { FcLikePlaceholder } from "react-icons/fc";
-import Link from "next/link";
+import { IoHeartOutline } from "react-icons/io5";
 import Bookmark from "./Bookmark";
 import { CardProps } from "@/constants/search/types";
+import router from "next/router";
+import { useSession } from "next-auth/react";
 
-// TODO: 로드 시 큰 이미지가 먼저 뜨는 현상 수정필요(priority로 임시수정)
 const PreviewCard = ({ width, height, cardInfo }: CardProps) => {
+  const { data: session } = useSession();
+
+  const handleCardOnClick = () => {
+    router.push(`/gyms/${cardInfo.id}`);
+  };
+
   return (
     <S.Container className="container" width={width} height={height}>
-      <Link href={`/gyms/${cardInfo.id}`} style={{ textDecoration: "none" }}>
-        <S.ImageWrapper>
+      <S.Link onClick={handleCardOnClick}>
+        <S.ImageWrapper height={height}>
           <S.Image src={img01} alt="image" priority={true} />
         </S.ImageWrapper>
         <S.InfoContainer>
           <S.MainInfoContainer>
             <S.NameContainer>
-              <div>{cardInfo.address.roadAddress}</div>
-              <div>{cardInfo.name}</div>
+              <S.Address>{cardInfo.address.roadAddress}</S.Address>
+              <S.Name>{cardInfo.name}</S.Name>
             </S.NameContainer>
-            <Bookmark token="임시token" gymId="임시gymId" />
+            <Bookmark
+              token={session?.jwt.accessToken}
+              gymId={cardInfo.id.toString()}
+              size="20px"
+            />
           </S.MainInfoContainer>
           <S.SubInfoContainer>
-            <S.Date>최근 세팅일 : {cardInfo.latestSettingDay}</S.Date>
+            <S.Date>
+              최근 세팅일 : {cardInfo.latestSettingDay ?? "미등록"}
+            </S.Date>
             <S.LikeContainer>
-              {cardInfo.likeNumber}
-              <FcLikePlaceholder />
+              {cardInfo.likeNumber ?? 0}
+              <IoHeartOutline size={20} color="#666666" />
             </S.LikeContainer>
           </S.SubInfoContainer>
         </S.InfoContainer>
-      </Link>
+      </S.Link>
     </S.Container>
   );
 };
@@ -42,29 +54,53 @@ const S = {
   }>`
     width: ${(props) => props.width || `350px`};
     height: ${(props) => props.height || `100px`};
-    margin-right: 25px;
-    margin-bottom: 25px;
+    margin: 15px;
   `,
-  ImageWrapper: styled.div`
-    height: 60%;
-    position: relative;
+  Link: styled.div`
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    text-decoration: none;
+    color: black;
+    cursor: pointer;
+  `,
+  ImageWrapper: styled.div<{
+    height?: string;
+  }>`
+    padding: 0;
+    margin: 0;
+    height: ${(props) =>
+      props.height ? `${parseInt(props.height, 10) * 0.6}px` : `170px`};
   `,
   Image: styled(Image)`
+    padding: 0;
+    margin: 0;
     width: 100%;
     height: 100%;
     object-fit: "cover";
   `,
   InfoContainer: styled.div`
-    height: 35%; // TODO: 이미지 채운 나머지를 채우고 싶은데 안됨
+    flex: 1 0 auto;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: 10px;
+    padding: 15px;
+  `,
+  Address: styled.div`
+    margin: 0;
+    padding: 0;
+  `,
+  Name: styled.h2`
+    margin-top: 5px;
+    padding: 0;
   `,
   MainInfoContainer: styled.div`
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    align-items: flex-start;
   `,
   NameContainer: styled.div`
     display: flex;
@@ -81,6 +117,8 @@ const S = {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    align-items: flex-end;
+    gap: 5px;
   `,
 };
 

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { styled } from "styled-components";
 import router from "next/router";
 import ReactIcon from "./ReactIcon";
+import { requestData } from "@/service/api";
 
 // 로그인 상태 => 북마크 클릭시, 서버 수정 요청
 // 미로그인 상태 => 북마크 클릭시, 로그인 페이지로 이동
@@ -13,16 +14,18 @@ const Bookmark = ({ token, gymId, size }: BookmarkProps) => {
   useEffect(() => {
     const fetchMarkedFromServer = async () => {
       try {
-        // const response = await fetch(`/api/bookmarks/${gymId}`, {
-        //   method: "GET",
-        //   headers: {
-        //     "Content-Type": "application/json",
-        //     Authorization: { token },
-        //   },
-        // });
-        // const data = await response.json();
-        const data = false;
-        setIsMarked(data);
+        const onSuccess = (
+          data: boolean | ((prevState: boolean) => boolean)
+        ) => {
+          setIsMarked(data);
+        };
+        requestData({
+          option: "GET",
+          url: `/api/bookmarks/${gymId}`,
+          token: `${token}`,
+          hasBody: true,
+          onSuccess,
+        });
       } catch (error) {
         console.error("북마크 GET 에러", error);
       }
@@ -30,21 +33,11 @@ const Bookmark = ({ token, gymId, size }: BookmarkProps) => {
     if (token) {
       fetchMarkedFromServer();
     }
-  }, [token]);
+  }, [gymId, token]);
 
   const handleClick = () => {
     try {
       if (token) {
-        //api(승아님) => `${MEMBER_API}${session.user.email}/like?gym=${TEST_ID},value=true`
-        //   const response = await fetch(`/api/bookmarks/update/${gymId}`, {
-        //     method: "POST",
-        //     headers: {
-        //       "Content-Type": "application/json",
-        //       Authorization: { token },
-        //     },
-        //     body: JSON.stringify({ isMarked }),
-        //   });
-        //   const data = await response.json();
         setIsMarked(!isMarked);
       } else {
         router.push("/login");
@@ -71,7 +64,8 @@ const Bookmark = ({ token, gymId, size }: BookmarkProps) => {
 
 const S = {
   BookmarkWrapper: styled.button`
-    // 버튼의 기본효과 없애기
+    margin: 0;
+    padding: 0;
     border: 0;
     background-color: transparent;
   `,

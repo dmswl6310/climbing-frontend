@@ -114,6 +114,7 @@ const S = {
     &:disabled {
       opacity: 0.3;
     }
+    cursor: pointer;
     width: 350px;
     background-color: ${COLOR.MAIN};
     border: 1px solid ${COLOR.MAIN};

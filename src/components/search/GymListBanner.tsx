@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { MouseEventHandler, useState } from "react";
 import router from "next/router";
 import { GymListBannerProps } from "@/constants/search/types";
+import { COLOR } from "@/styles/global-color";
 
 const GymListBanner = ({
   searchWord,
@@ -56,7 +57,12 @@ const GymListBanner = ({
 };
 
 const Styled = {
-  Wrapper: styled.div``,
+  Wrapper: styled.div`
+    display: flex;
+    flex-direction: column;
+    max-width: 1140px;
+    margin: 0 auto;
+  `,
   Container: styled.div`
     display: flex;
   `,
@@ -70,7 +76,7 @@ const Styled = {
     margin-right: 5px;
   `,
   Divider: styled.div`
-    color: grey;
+    color: ${COLOR.BORDER_UNFOCUSED};
   `,
 };
 

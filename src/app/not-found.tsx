@@ -1,5 +1,7 @@
 "use client";
+import { COLOR } from "@/styles/global-color";
 import { useRouter } from "next/navigation";
+import { IoWarning } from "react-icons/io5";
 import { styled } from "styled-components";
 
 const NotFound = () => {
@@ -13,11 +15,14 @@ const NotFound = () => {
   };
   return (
     <S.Container>
-      <h1>잘못된 페이지주소 입니다.</h1>
-      <h4>에러코드 : 404</h4>
+      <S.IconWrapper>
+        <IoWarning size="50" color={COLOR.WARNING} />
+      </S.IconWrapper>
+      <S.Title>잘못된 페이지주소 입니다.</S.Title>
+      <S.SubTitle>에러코드 : 404</S.SubTitle>
       <S.ButtonContainer>
         <S.HomeButton onClick={handleHomeBtn}>홈으로</S.HomeButton>
-        <S.LoginButton onClick={handleBackBtn}>이전 페이지로</S.LoginButton>
+        <S.BackButton onClick={handleBackBtn}>이전 페이지로</S.BackButton>
       </S.ButtonContainer>
     </S.Container>
   );
@@ -25,7 +30,7 @@ const NotFound = () => {
 
 const S = {
   Container: styled.div`
-    height: 700px;
+    height: 500px;
     width: 500px;
     display: flex;
     flex-direction: column;
@@ -33,18 +38,38 @@ const S = {
     margin: 0 auto;
     text-align: center;
   `,
+  Title: styled.h2``,
+  SubTitle: styled.div`
+    margin-bottom: 5px;
+  `,
+  IconWrapper: styled.div``,
   ButtonContainer: styled.div`
+    width: 380px;
     display: flex;
     flex-direction: row;
+    margin: 0 auto;
     margin-top: 30px;
   `,
   HomeButton: styled.button`
+    cursor: pointer;
+    background-color: white;
+    border: 1px solid ${COLOR.DISABLED};
     flex-grow: 1;
-    margin: 0 10px;
+    border-radius: 5px;
+    padding: 10px;
+    font-weight: bold;
   `,
-  LoginButton: styled.button`
+  BackButton: styled.button`
+    cursor: pointer;
+    background-color: ${COLOR.DISABLED};
+    border: 1px solid ${COLOR.DISABLED};
+    color: white;
+    font-weight: bold;
     flex-grow: 3;
-    margin: 0 10px;
+    margin-left: 30px;
+    padding: 10px;
+    font-weight: bold;
+    border-radius: 5px;
   `,
 };
 

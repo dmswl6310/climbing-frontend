@@ -62,7 +62,7 @@ const S = {
     display: flex;
   `,
   Divider: styled.hr`
-    margin-top: 40px;
+    margin-top: 30px;
     width: 370px;
     border: none;
     border-top: 1px solid lightgray;

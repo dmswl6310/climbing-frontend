@@ -5,6 +5,7 @@ import PreviewCard from "./PreviewCard";
 import { usePathname } from "next/dist/client/components/navigation";
 import { LazyLoadingItemsProps } from "@/constants/search/types";
 import { SimpleGymData } from "@/constants/gyms/types";
+import { styled } from "styled-components";
 
 const LazyLoadingItems = ({
   searchWord = "",
@@ -53,7 +54,7 @@ const LazyLoadingItems = ({
       <PreviewCard
         key={index}
         width="350px"
-        height="300px"
+        height="350px"
         cardInfo={gymInfo}
       />
     );
@@ -61,28 +62,28 @@ const LazyLoadingItems = ({
 
   return (
     <InfiniteScroll
-      style={{ display: "flex", flexWrap: "wrap" }}
+      style={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}
       dataLength={items.length}
       next={getMoreData}
       hasMore={hasMore}
       scrollableTarget="scrollableDiv"
       loader={<h4>Loading ...</h4>}
-      endMessage={
-        <p style={{ textAlign: "center" }}>
-          <b>마지막</b>
-        </p>
-      }
+      // endMessage={
+      //   <p style={{ textAlign: "center" }}>
+      //     <b>마지막</b>
+      //   </p>
+      // }
     >
-      {PreviewCards}
+      {pathName.includes("search") ? PreviewCards : PreviewCards.slice(0, 6)}
     </InfiniteScroll>
   );
 };
 
 const S = {
-  // InfiniteWrapper: styled.div`
-  //   display: flex;
-  //   flex-wrap: wrap;
-  // `,
+  InfiniteWrapper: styled.div`
+    display: flex;
+    justify-content: center;
+  `,
 };
 
 export default LazyLoadingItems;

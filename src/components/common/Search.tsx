@@ -1,40 +1,32 @@
 "use client";
-
 import { styled } from "styled-components";
 import { useEffect, useRef, useState } from "react";
-import DropDown, { DropItem } from "./DropDown";
 import router from "next/router";
+import { COLOR } from "@/styles/global-color";
+import DropDown from "./DropDown";
+import { SearchProps } from "@/constants/search/types";
+import CurrentLocationBtn from "../search/CurrentLocationBtn";
 
-interface SearchProps {
-  dataList: Array<DropItem>;
-  width?: string;
-  fontSize?: string;
-  placeholder?: string;
-  postfixIcon?: JSX.Element; // 검색창에 표시되는 아이콘
-  onSubmit?: (event: any) => any; // 엔터 클릭시 발생되는 이벤트
-  useLocation?: boolean; // 현재 위치로 검색
-  searchWord?: string;
-  border?: string;
-}
-
-export const Search = ({
+const Search = ({
   dataList,
   width,
-  fontSize,
+  height,
+  fontSize = "18px",
   placeholder = "",
   postfixIcon,
   onSubmit,
   useLocation = false,
   searchWord,
   border,
+  dropDownCount = 10,
 }: SearchProps) => {
   const searchRef = useRef<HTMLInputElement>(null);
   const [index, setIndex] = useState(-1);
   const [isInputFocus, setInputFocus] = useState(false);
   const [filterStr, setFilterStr] = useState("");
-  const filteredList = dataList.filter((dataItem) =>
-    dataItem.info.match(filterStr)
-  );
+  const filteredList = dataList
+    .filter((dataItem) => dataItem.cityDistrict.match(filterStr))
+    .slice(0, dropDownCount);
 
   const handleClick = (event: { target: { innerText: any } }) => {
     if (onSubmit) {
@@ -63,12 +55,14 @@ export const Search = ({
 
   return (
     <Styled.Wrapper width={width} ref={searchRef}>
+      {useLocation && <CurrentLocationBtn fontSize="17px" />}
       <Styled.Form
         className={isInputFocus ? "container" : ""}
         onSubmit={onSubmit}
         autoComplete="off"
         $border={border}
         $inputFocus={isInputFocus}
+        $height={height}
       >
         {/* form에 action 요소 추가하여 전송할 주소 설정가능 */}
         <Styled.Input
@@ -89,14 +83,14 @@ export const Search = ({
               if (index > -1) {
                 if (index != 0) {
                   (e.target as HTMLInputElement).value =
-                    filteredList[index - 1].info;
+                    filteredList[index - 1].cityDistrict;
                 }
                 setIndex(index - 1);
               }
             } else if (e.key == "ArrowDown") {
               if (index < filteredList.length - 1) {
                 (e.target as HTMLInputElement).value =
-                  filteredList[index + 1].info;
+                  filteredList[index + 1].cityDistrict;
                 setIndex(index + 1);
               }
             } else if (e.key == "Escape") {
@@ -119,8 +113,6 @@ export const Search = ({
           setHighlightIndex={setIndex}
           fontSize={fontSize}
           handleClick={handleClick as (arg: unknown) => unknown}
-          // onMouseOver={handleMouseOver}
-          useLocation={useLocation}
         />
       )}
     </Styled.Wrapper>
@@ -131,17 +123,25 @@ const Styled = {
   Wrapper: styled.div<{
     width?: string;
   }>`
+    border-radius: 5px;
     background-color: white;
     position: relative;
     ${(props) => props.width && `width: ${props.width};`}
   `,
-  Form: styled.form<{ $border?: string; $inputFocus?: boolean }>`
+  Form: styled.form<{
+    $border?: string;
+    $inputFocus?: boolean;
+    $height?: string;
+  }>`
+    align-items: center;
     display: flex;
     justify-content: space-between;
+    ${(props) => props.$height && `height: ${props.$height};`}
     border: ${(props) =>
-      (!props.$inputFocus && props.$border) || `1px solid black;`};
+      (!props.$inputFocus && props.$border) ||
+      `2px solid ${COLOR.LIGHT_MAIN};`};
     border-radius: 5px;
-    padding: 5px;
+    padding: 0 10px;
     margin-bottom: 5px;
   `,
   Input: styled.input<{
@@ -149,7 +149,7 @@ const Styled = {
   }>`
     border: none;
     outline: none; // input 포커스시의 볼더 없애기
-    width: 80%;
+    width: 95%;
     ${(props) => props.fontSize && `font-size: ${props.fontSize};`}
   `,
 };

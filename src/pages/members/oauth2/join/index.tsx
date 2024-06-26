@@ -68,52 +68,64 @@ const AdditionalJoin = () => {
 
   return (
     <S.Container>
+      <S.Title>간편 회원가입</S.Title>
       <S.SubTitle>서비스 가입이 거의 완료 되었습니다.</S.SubTitle>
-      <S.Title>
-        사용하실 <S.NickText>닉네임</S.NickText>을 입력해주세요.
-      </S.Title>
+      <S.SubTitle>
+        사용하실 <S.HighlightText>닉네임</S.HighlightText>을 입력해주세요.
+      </S.SubTitle>
       <S.InputWrapper>
         <InputWithTitle
           name="nickname"
           title=""
           onChange={handleNicknameChange}
           message={nicknameMessage}
+          placeholder="닉네임"
         />
       </S.InputWrapper>
-      <S.SubmitButton disabled={!isNicknameValid} onClick={handleSubmit}>
-        {" "}
-        가입하기
-      </S.SubmitButton>
+      <S.ButtonWrapper>
+        <S.SubmitButton disabled={!isNicknameValid} onClick={handleSubmit}>
+          가입하기
+        </S.SubmitButton>
+      </S.ButtonWrapper>
     </S.Container>
   );
 };
 
 const S = {
   Container: styled.div`
-    height: 700px;
-    width: 500px;
+    height: 500px;
+    width: 400px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     margin: 0 auto;
     text-align: center;
   `,
-  SubTitle: styled.h4`
-    margin: 0;
+  SubTitle: styled.div`
+    margin-bottom: 5px;
   `,
-  Title: styled.h3`
-    margin: 5px 0 40px 0;
-  `,
+  Title: styled.h2``,
   InputWrapper: styled.div`
-    width: 300px;
-    margin: 0 auto;
-    justify-content: center;
+    width: 350px;
+    margin: 30px auto;
+    margin-bottom: 5px;
   `,
-  NickText: styled.span`
+  HighlightText: styled.span`
     color: ${COLOR.MAIN};
   `,
+  ButtonWrapper: styled.div``,
   SubmitButton: styled.button`
-    margin-top: 30px;
+    &:disabled {
+      opacity: 0.3;
+    }
+    cursor: pointer;
+    width: 350px;
+    background-color: ${COLOR.MAIN};
+    border: 1px solid ${COLOR.MAIN};
+    color: white;
+    border-radius: 5px;
+    padding: 10px;
+    font-weight: bold;
   `,
 };
 
