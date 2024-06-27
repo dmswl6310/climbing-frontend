@@ -3,37 +3,21 @@ import PreviewCard from "../common/PreviewCard";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { requestData } from "@/service/api";
-import { GymData, SimpleGymData } from "@/constants/gyms/types";
+import { SimpleGymData } from "@/constants/gyms/types";
 
 const MyBookmark = () => {
   const { data: session, status } = useSession();
   const [items, setItems] = useState<SimpleGymData[]>();
 
   useEffect(() => {
-    // const fetchBookmarksFromServer = async () => {
-    //   try {
-    // const response = await fetch(`/api/bookmarks/`, {
-    //   method: "GET",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //     Authorization: { token },
-    //   },
-    // });
-    // const data = await response.json();
-    //     const data = sampleGyms;
-    //     setItems(data);
-    //   } catch (error) {
-    //     console.error("내 북마크 GET 에러", error);
-    //   }
-    // };
     if (session) {
       requestData({
         option: "GET",
-        url: "/api/bookmarks",
-        // token:{session.user.accessToken}
+        url: "/members/bookmark",
+        token: session.jwt.accessToken,
         onSuccess: (data) => setItems(data),
+        hasBody: true,
       });
-      // fetchBookmarksFromServer();
     }
   }, [session]);
 

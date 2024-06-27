@@ -10,7 +10,7 @@ const GymListBanner = ({
   sortingType = "",
 }: GymListBannerProps) => {
   const [selectedButton, setSelectedButton] = useState(sortingType);
-  const sortingTypes = ["인기순", "최신순", "거리순"];
+  const sortingTypes = ["인기순", "최근 세팅일순", "거리순", "이름순"];
 
   const handleButtonClick: MouseEventHandler<HTMLButtonElement> = (event) => {
     const buttonText = event.currentTarget.textContent!;
@@ -43,7 +43,7 @@ const GymListBanner = ({
         >
           {type}
         </Styled.SortButton>
-        {index !== 2 ? <Styled.Divider>|</Styled.Divider> : null}
+        {index !== 3 ? <Styled.Divider>|</Styled.Divider> : null}
       </Styled.Container>
     );
   });

@@ -5,7 +5,7 @@ import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
 export default NextAuth({
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.JWT_SECRET,
   providers: [
     //자체 로그인
     CredentialsProvider({
@@ -95,8 +95,6 @@ export default NextAuth({
   callbacks: {
     // 로그인 시 return한 값이 user로 들어옴
     async jwt({ token, user }) {
-      const expireDate = 3000;
-
       // 로그인 시
       if (user) {
         return {
@@ -105,17 +103,17 @@ export default NextAuth({
           jwt: user.jwt,
         };
       } else {
-        // const textEncoder = new TextEncoder();
-        // const secret = textEncoder.encode(process.env.JWT_SECRET);
-        // const { payload } = await jwtVerify(token.jwt.accessToken, secret);
-        // const expireDate = payload.exp! * 1000;
+        const textEncoder = new TextEncoder();
+        const secret = textEncoder.encode(process.env.JWT_SECRET);
+        const { payload } = await jwtVerify(token.jwt.accessToken, secret);
+        const expireDate = payload.exp! * 1000;
 
         if (Date.now() < expireDate) {
           // 액세스 토큰 만료 전
-          // console.log("토큰 만료 전");
+          console.log("토큰 만료 전");
           return token;
         } else {
-          // console.log("토큰 만료 후");
+          console.log("토큰 만료 후");
           // 만료 후 리프레시 토큰으로 액세스 토큰 업데이트 요청
           if (!token.jwt.refreshToken) throw new Error("Missing refresh token");
           // 리프레시 토큰도 만료되었을 시, 데이터삭제 및 로그아웃
@@ -125,7 +123,6 @@ export default NextAuth({
           return token;
         }
       }
-      // return updateAccessToken(token.jwt.refreshToken);
     },
 
     // jwt에서 return한 값이 token으로 들어옴

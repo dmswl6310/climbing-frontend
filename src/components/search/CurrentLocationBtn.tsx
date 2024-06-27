@@ -3,6 +3,7 @@ import { useState } from "react";
 import { CurrentLocationBtnProps } from "@/constants/search/types";
 import { MdOutlineMyLocation } from "react-icons/md";
 import { COLOR } from "@/styles/global-color";
+import router from "next/router";
 
 const GEOToAddress = async (longitude: number, latitude: number) => {
   const response = await (
@@ -16,34 +17,55 @@ const GEOToAddress = async (longitude: number, latitude: number) => {
     )
   ).json();
 
-  return response["documents"][1]["address_name"]; // ~~2동 까지 나옴
+  const filteredAddress =
+    response["documents"][0]["region_1depth_name"] +
+    " " +
+    response["documents"][0]["region_2depth_name"];
+  return filteredAddress;
 };
 
 const CurrentLocationBtn = ({ fontSize = "18px" }: CurrentLocationBtnProps) => {
-  const [location, setLocation] = useState("내 위치로 찾기");
+  const [location, setLocation] = useState("내 위치 찾기");
 
-  const success = async (position: GeolocationPosition) => {
-    const latitude = position.coords.latitude;
-    const longitude = position.coords.longitude;
-    const location = await GEOToAddress(longitude, latitude);
-    setLocation(location);
-  };
+  const handleLocation = (e: any) => {
+    e.preventDefault();
 
-  const error = () => {
+    // 위치 성공적으로 가져올 시
+    const success = async (position: GeolocationPosition) => {
+      const latitude = position.coords.latitude;
+      const longitude = position.coords.longitude;
+      const location = await GEOToAddress(longitude, latitude);
+
+      const inputTag = e.target.parentElement.querySelector(
+        'input[name="search"]'
+      );
+
+      setLocation(location);
+      inputTag.value = location;
+      inputTag.focus();
+    };
+
     // 현재 위치 못가져옴
-  };
+    const error = () => {};
 
-  const handleLocation = () => {
+    // if (location === "") {
     if (!navigator.geolocation) {
       // 브라우저가 위치 정보를 지원하지 않음;
     } else {
       navigator.geolocation.getCurrentPosition(success, error);
     }
+    // } else {
+    //   // 검색내용 포함시켜 라우팅
+    //   router.push({
+    //     pathname: "/search",
+    //     query: { q: location },
+    //   });
+    // }
   };
 
   return (
     <S.Wrapper fontSize={fontSize} onClick={handleLocation}>
-      <MdOutlineMyLocation color={COLOR.BORDER_UNFOCUSED} />
+      <MdOutlineMyLocation />
       <S.Space></S.Space>
       {location}
     </S.Wrapper>
@@ -57,7 +79,7 @@ const S = {
     justify-content: right;
     padding: 0;
     margin: 3px 3px;
-    color: ${COLOR.DISABLED};
+    color: black;
     cursor: pointer;
     ${(props) => props.fontSize && `font-size: ${props.fontSize}`}
   `,

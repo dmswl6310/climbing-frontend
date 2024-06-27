@@ -77,6 +77,7 @@ const Search = ({
           onFocus={(e) => {
             setIndex(-1);
             setInputFocus(true);
+            setFilterStr(e.target.value);
           }}
           onKeyUp={(e: React.KeyboardEvent<HTMLInputElement>) => {
             if (e.key == "ArrowUp") {

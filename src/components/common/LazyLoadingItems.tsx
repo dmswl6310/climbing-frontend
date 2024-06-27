@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { requestData } from "@/service/api";
 import PreviewCard from "./PreviewCard";
@@ -13,10 +13,21 @@ const LazyLoadingItems = ({
 }: LazyLoadingItemsProps) => {
   const pathName = usePathname() as string;
   const [items, setItems] = useState<SimpleGymData[]>([]);
+  const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState<boolean>(true);
 
   const getMoreData = () => {
-    if (pathName.includes("search") && items.length <= 20) {
+    if (pathName.includes("search")) {
+      const onSuccess = (data: { data: SimpleGymData[] }) => {
+        setItems(items.concat(data.data));
+        setPage(page + 1);
+      };
+
+      requestData({
+        option: "GET",
+        url: `/gyms/search?p=${page}`,
+        onSuccess,
+      });
       setItems(items.concat(items));
     } else {
       setHasMore(false);
@@ -31,12 +42,21 @@ const LazyLoadingItems = ({
       if (sortingType) {
         queryUrl += `&s={${searchWord}}`;
       }
+      const onSuccess = (data: { data: SimpleGymData[] }) => {
+        setItems(data.data);
+        setPage(page + 1);
+      };
 
       requestData({
         option: "GET",
-        url: `/search${queryUrl}`,
-        // onSuccess: (data) => setItems(data.data),
+        url: `/gyms/search?p=${page}`,
+        onSuccess,
       });
+      // requestData({
+      //   option: "GET",
+      //   url: `/search${queryUrl}`,
+      // onSuccess: (data) => setItems(data.data),
+      // });
     } else {
       // home page의 일부 부르기
       requestData({

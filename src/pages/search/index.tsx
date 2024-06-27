@@ -38,7 +38,7 @@ const SearchPage: NextPageWithLayout = () => {
           postfixIcon={<IoSearch size="23" color={COLOR.MAIN} />}
           placeholder="주소 또는 암벽장을 입력하면 실내암벽장을 찾아드려요."
           onSubmit={handleSubmit}
-          useLocation={true}
+          useLocation={false}
           border={"3px solid " + COLOR.LIGHT_MAIN}
           searchWord={searchWord}
         />

@@ -12,7 +12,6 @@ const SidebarDetails = ({
   setShowSidebar,
   account,
 }: SidebarDetailProps) => {
-  console.log(showSidebar);
   return (
     <S.SidebarWrapper
       className={`container sliding ${showSidebar ? "sideOpen" : "sideClose"}`}
