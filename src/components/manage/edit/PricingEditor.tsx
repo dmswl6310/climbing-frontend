@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { IoTrash } from "react-icons/io5";
 import PricingField from "./PricingField";
+import { COLOR } from "@/styles/global-color";
 import { DEVICE_SIZE } from "@/constants/styles";
 import type { PricingEditorProps } from "@/constants/manage/types";
 
@@ -63,7 +64,7 @@ const S = {
       gap: 0;
       hr {
         border-top: none;
-        border-bottom: 1px solid #d0d0d0;
+        border-bottom: 1px solid ${COLOR.DISABLED};
         margin: 2rem 0.75rem;
       }
       button {

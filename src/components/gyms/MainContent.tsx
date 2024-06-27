@@ -7,6 +7,7 @@ import { FaLocationDot } from "react-icons/fa6";
 import Bookmark from "../common/Bookmark";
 import { requestData } from "@/service/api";
 import { SERVER_ADDRESS } from "@/constants/constants";
+import { COLOR } from "@/styles/global-color";
 import type { GymData } from "@/constants/gyms/types";
 
 const MainContent = ({ gymData }: { gymData: GymData }) => {
@@ -86,34 +87,34 @@ const MainContent = ({ gymData }: { gymData: GymData }) => {
         <div className="header">
           <span className="header__text">{gymData.name}</span>&nbsp;
           <div className="icons">
-              {session ? (
-                <>
-                  {/* <StyledIcon $clickable={true} onClick={handleLike}>
+            {session ? (
+              <>
+                {/* <S.Icon $clickable={true} onClick={handleLike}>
                     {isLiked ? <IoHeart size="1.3rem" /> : <IoHeartOutline size="1.3rem" />}
                     {currentLikes}
-                  </StyledIcon> */}
-                  <StyledIcon $clickable={true}>
-                    <Bookmark
-                      token={session.jwt.accessToken}
-                      gymId={gymData.id as string}
-                      size="1.3rem"
-                    />
-                  </StyledIcon>
-                </>
-              ) : (
-                <StyledIcon $clickable={false}>
-                  <IoHeartOutline size="1.3rem" />
-                  {currentLikes}
-                </StyledIcon>
-              )}
-              {gymData.homepage && (
-                <StyledIcon $clickable={true}>
-                  <StyledLink href={gymData.homepage} target="_blank">
-                    <IoShareSocialOutline size="1.3rem" />
-                  </StyledLink>
-                </StyledIcon>
-              )}
-            </div>
+                  </S.Icon> */}
+                <S.Icon $clickable={true}>
+                  <Bookmark
+                    token={session.jwt.accessToken}
+                    gymId={gymData.id as string}
+                    size="1.3rem"
+                  />
+                </S.Icon>
+              </>
+            ) : (
+              <S.Icon $clickable={false}>
+                <IoHeartOutline size="1.3rem" />
+                {currentLikes}
+              </S.Icon>
+            )}
+            {gymData.homepage && (
+              <S.Icon $clickable={true}>
+                <S.Link href={gymData.homepage} target="_blank">
+                  <IoShareSocialOutline size="1.3rem" />
+                </S.Link>
+              </S.Icon>
+            )}
+          </div>
         </div>
       </div>
       {gymData.description && <div className="description">{gymData.description}</div>}
@@ -121,18 +122,19 @@ const MainContent = ({ gymData }: { gymData: GymData }) => {
   );
 };
 
-const StyledLink = styled(Link)`
-  text-decoration: none;
-  color: inherit;
-  line-height: 0.5;
-  height: inherit;
-`;
-
-const StyledIcon = styled.div<{ $clickable: boolean }>`
-  display: flex;
-  align-items: center;
-  color: #666666;
-  cursor: ${({ $clickable }) => ($clickable ? "pointer" : "default")};
-`;
+const S = {
+  Link: styled(Link)`
+    text-decoration: none;
+    color: inherit;
+    line-height: 0.5;
+    height: inherit;
+  `,
+  Icon: styled.div<{ $clickable: boolean }>`
+    display: flex;
+    align-items: center;
+    color: ${COLOR.BACKGROUND_DARK};
+    cursor: ${({ $clickable }) => ($clickable ? "pointer" : "default")};
+  `,
+};
 
 export default MainContent;

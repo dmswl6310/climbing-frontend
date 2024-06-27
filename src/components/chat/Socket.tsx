@@ -1,6 +1,5 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
-import { Client, type StompSubscription, type Message } from "@stomp/stompjs";
 import styled from "styled-components";
 import { BarLoader } from "react-spinners";
 import ChatForm from "./ChatForm";
@@ -13,14 +12,9 @@ import {
   getFormattedChatHistory,
 } from "@/ChatHistoryContext";
 import { requestData } from "@/service/api";
-
-interface SocketProps {
-  gymName: string;
-  client: Client | null;
-  roomId: string | null;
-  isRoomFetchError: boolean;
-  isSocketError: boolean;
-}
+import { COLOR } from "@/styles/global-color";
+import type { StompSubscription, Message } from "@stomp/stompjs";
+import type { SocketProps } from "@/constants/chat/types";
 
 const Socket = ({ gymName, client, roomId, isRoomFetchError, isSocketError }: SocketProps) => {
   const { data: session } = useSession();
@@ -35,44 +29,35 @@ const Socket = ({ gymName, client, roomId, isRoomFetchError, isSocketError }: So
   }, [session]);
 
   useEffect(() => {
-    console.log(session)
-    console.log(isLoading)
-    console.log(client)
-    console.log(roomId)
-    if (!session || !isLoading || !client || !roomId) return;
+    if (!session || !client || !roomId) return;
 
     const onServerMessage = (response: Message) => {
-      const messageBody = JSON.parse(response.body);
-      const { message, sender, createdAt } = messageBody;
-      const newMessage = {
-        userType: sender === session.user.nickname ? "customer" : "manager",
-        message,
-        createdAt,
-      };
+      const { message, sender, createdAt } = JSON.parse(response.body);
+      const userType = sender === session.user.nickname ? "customer" : "manager";
+      const newMessage = { userType, message, createdAt };
       const newHistory: ChatHistoryProps = { ...currentHistory.current };
-      newHistory[roomId as keyof typeof newHistory] = [
-        ...(currentHistory.current?.[roomId as keyof typeof currentHistory.current] || []),
-        newMessage,
-      ];
+
+      if (currentHistory.current) {
+        newHistory[roomId] = [...currentHistory.current[roomId], newMessage];
+      } else {
+        newHistory[roomId] = [newMessage];
+      }
       currentHistory.current = { ...currentHistory.current, ...newHistory };
       updateHistory((prev) => ({ ...prev, ...newHistory }));
     };
 
-    const fetchHistory = async () =>
-      console.log("fetching chat history")
+    const fetchHistory = async () => {
+      console.log("fetching chat history");
+      const token = session.jwt.accessToken;
+      const nickname = session.user.nickname;
       requestData({
         option: "GET",
         url: `/chat/find/message/${roomId}`,
-        token: session.jwt.accessToken,
+        token,
         onSuccess: (data) => {
-          console.log(data)
+          console.log(data);
           const loadedHistory: ChatHistoryProps = {};
-          loadedHistory[roomId as keyof ChatHistoryProps] = getFormattedChatHistory(
-            data,
-            session.user.nickname,
-            "manager",
-            "customer",
-          );
+          loadedHistory[roomId] = getFormattedChatHistory(data, nickname, "manager", "customer");
           updateHistory((prev) => ({ ...prev, ...loadedHistory }));
           currentHistory.current = { ...loadedHistory };
         },
@@ -80,12 +65,13 @@ const Socket = ({ gymName, client, roomId, isRoomFetchError, isSocketError }: So
           console.log("에러 발생");
         },
       });
+    };
 
     subscriptionRef.current = client.subscribe(`/queue/chat/room/${roomId}`, onServerMessage);
-    setIsLoading(false);
     // 이전 채팅 기록을 fetch하고 context에 저장
     if (!currentHistory.current || !currentHistory.current[roomId]) fetchHistory();
 
+    setIsLoading(false);
     return () => subscriptionRef.current?.unsubscribe();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -151,8 +137,8 @@ const S = {
     right: 0;
     border-radius: 16px;
     padding: 20px;
-    border: 1px solid #cacaca;
-    box-shadow: 0 3px 7px #cacaca;
+    border: 1px solid ${COLOR.DISABLED};
+    box-shadow: 0 3px 7px ${COLOR.DISABLED};
     background: white;
     width: 370px;
     height: 500px;
@@ -168,9 +154,9 @@ const S = {
     font-size: 1.2rem;
     font-weight: 700;
     padding-bottom: 8px;
-    -webkit-box-shadow: 0 3px 7px -7px #cacaca;
-    -moz-box-shadow: 0 3px 7px -7px #cacaca;
-    box-shadow: 0 3px 7px -7px #cacaca;
+    -webkit-box-shadow: 0 3px 7px -7px ${COLOR.DISABLED};
+    -moz-box-shadow: 0 3px 7px -7px ${COLOR.DISABLED};
+    box-shadow: 0 3px 7px -7px ${COLOR.DISABLED};
   `,
   Loader: styled.div`
     display: grid;

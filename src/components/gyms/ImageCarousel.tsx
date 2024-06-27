@@ -19,14 +19,14 @@ export const checkImageValidity = (images: string[]) => {
 
 const ImageCarousel = ({ defaultImage, imageList }: ImageCarouselProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  if ((!defaultImage && !imageList) || (!defaultImage && imageList.length < 1)) return null;
-  const images = defaultImage && defaultImage !== "" ? [defaultImage, ...imageList] : imageList;
+  if (!defaultImage && (!imageList || imageList.length < 1)) return null;
+  const images = imageList ? [defaultImage, ...imageList] : [defaultImage];
   const validImages: string[] = [];
   images.forEach((img) => {
+    if (!img) return;
     const url = img.toLowerCase();
     if (IMG_URL_REGEX.test(url)) validImages.push(img);
   });
-
   if (validImages.length < 1) return null;
   return (
     <S.Wrapper>

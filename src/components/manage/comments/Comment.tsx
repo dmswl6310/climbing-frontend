@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { MdAccessTime, MdPerson } from "react-icons/md";
+import { COLOR } from "@/styles/global-color";
 import type { UserComment } from "@/constants/gyms/types";
 
 const Comment = ({ user, createdAt, text }: UserComment) => {
@@ -35,7 +36,7 @@ const S = {
     padding: 12px;
     border-radius: 8px;
     background: white;
-    border: 1px solid #d0d0d0;
+    border: 1px solid ${COLOR.DISABLED};
   `,
 };
 

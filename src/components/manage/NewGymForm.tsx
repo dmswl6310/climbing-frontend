@@ -2,6 +2,7 @@ import { useState } from "react";
 import styled from "styled-components";
 import AddressField from "./AddressField";
 import { PHONE_REGEX } from "@/constants/manage/constants";
+import { COLOR } from "@/styles/global-color";
 import type { BaseGymData, GymDataObject } from "@/constants/gyms/types";
 import type { NewGymFormProps } from "@/constants/manage/types";
 
@@ -125,17 +126,19 @@ const S = {
     display: flex;
     align-items: flex-start;
     gap: 6px;
-    background: #fafafa;
+    background: ${COLOR.BACKGROUND_LIGHT};
     border-radius: 8px;
     padding: 12px 18px;
     width: ${({ $width }) => $width || "200px"};
-    border: ${({ $focused }) => ($focused ? "1px solid #d0d0d0" : "1px solid #d0d0d0")};
-    box-shadow: ${({ $focused }) => ($focused ? "0 0 4px gray" : null)};
+    border: ${({ $focused }) =>
+      $focused ? `1px solid ${COLOR.DISABLED}` : `1px solid ${COLOR.DISABLED}`};
+    box-shadow: ${({ $focused }) => ($focused ? `0 0 4px ${COLOR.DISABLED}` : null)};
     input {
       border: none;
       background: transparent;
       width: 100%;
       padding: 0;
+      color: ${COLOR.BACKGROUND_DARK};
     }
     input:focus {
       outline: none;

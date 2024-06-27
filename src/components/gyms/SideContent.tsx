@@ -4,7 +4,7 @@ import GradeBar from "./GradeBar";
 import NoData from "./NoData";
 import OpenHoursTable from "./OpenHoursTable";
 import PricingTable from "./PricingTable";
-import Tag from "../common/Tag";
+import TagList from "./TagList";
 import { DEVICE_SIZE } from "@/constants/styles";
 import type { GymData } from "@/constants/gyms/types";
 
@@ -13,23 +13,15 @@ const SideContent = ({ gymData }: { gymData: GymData }) => {
     <Wrapper>
       <div className="container">
         <h4>관련 태그</h4>
-        {!gymData.tags || gymData.tags.length < 1 ? (
-          <NoData />
-        ) : (
-          <TagList>
-            {gymData.tags.map((tag: string, i: number) => (
-              <Tag key={i} prefix="#" text={tag} />
-            ))}
-          </TagList>
-        )}
+        <TagList tags={gymData.tags} />
       </div>
       <div className="container">
         <h4>이용금액</h4>
-        <PricingTable pricing={gymData.pricing || null} />
+        <PricingTable pricing={gymData.pricing} />
       </div>
       <div className="container">
         <h4>영업시간</h4>
-        <OpenHoursTable openHours={gymData.openHours || null} />
+        <OpenHoursTable openHours={gymData.openHours} />
       </div>
       <div className="container">
         <h4>시설 정보</h4>
@@ -37,7 +29,7 @@ const SideContent = ({ gymData }: { gymData: GymData }) => {
       </div>
       <div className="container">
         <h4>난이도</h4>
-        <GradeBar grades={gymData.grades || null} />
+        <GradeBar grades={gymData.grades} />
       </div>
       <div className="container">
         <ContactInfo contact={gymData.contact} snsList={gymData.sns} />
@@ -65,12 +57,6 @@ const Wrapper = styled.div`
     margin-top: 40px;
     width: inherit;
   }
-`;
-
-const TagList = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
 `;
 
 export default SideContent;

@@ -9,6 +9,14 @@ import { DEVICE_SIZE } from "@/constants/styles";
 import { COLOR } from "@/styles/global-color";
 import type { CommentsProps, UserComment } from "@/constants/gyms/types";
 
+const getCurrentDate = () => {
+  const currentDate = new Date();
+  const year = currentDate.getFullYear().toString().slice(2);
+  const month = (currentDate.getMonth() + 1).toString().padStart(2, "0");
+  const date = currentDate.getDate().toString().padStart(2, "0");
+  return `${year}.${month}.${date}`;
+};
+
 const Comments = ({ id, comments, session }: CommentsProps) => {
   const [currentComments, setCurrentComments] = useState<UserComment[]>(comments || []);
 
@@ -16,7 +24,7 @@ const Comments = ({ id, comments, session }: CommentsProps) => {
     if (!session || !session.user) return "login";
 
     const newComment = {
-      user: session.user.nickname ?? "익명",
+      user: session.user.nickname,
       createdAt: getCurrentDate(),
       text: input,
     };
@@ -46,14 +54,6 @@ const Comments = ({ id, comments, session }: CommentsProps) => {
   };
 
   const handleDeleteComment = async () => {};
-
-  const getCurrentDate = () => {
-    const currentDate = new Date();
-    const year = currentDate.getFullYear().toString().slice(2);
-    const month = (currentDate.getMonth() + 1).toString().padStart(2, "0");
-    const date = currentDate.getDate().toString().padStart(2, "0");
-    return `${year}.${month}.${date}`;
-  };
 
   return (
     <S.Wrapper>

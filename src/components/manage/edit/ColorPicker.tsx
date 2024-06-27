@@ -1,6 +1,7 @@
 import { BaseSyntheticEvent } from "react";
 import styled from "styled-components";
 import { GRADE_COLORS_HORIZONTAL, GRADE_COLORS_VERTICAL } from "@/constants/manage/constants";
+import { COLOR } from "@/styles/global-color";
 import { DEVICE_SIZE } from "@/constants/styles";
 import type { ColorPickerProps } from "@/constants/manage/types";
 
@@ -47,7 +48,7 @@ const S = {
     background: #f1f0f0;
     border-radius: 8px;
     padding: 20px;
-    box-shadow: 0 0 10px #d0d0d0;
+    box-shadow: 0 0 10px ${COLOR.DISABLED};
     @media ${DEVICE_SIZE.laptop} {
       flex-direction: column;
       width: calc(27px * 3 + 6px * 2);

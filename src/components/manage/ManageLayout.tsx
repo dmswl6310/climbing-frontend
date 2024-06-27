@@ -130,12 +130,12 @@ const ManageLayout = ({ children }: React.PropsWithChildren<{}>) => {
 const S = {
   Wrapper: styled.div`
     position: fixed;
-    top: 82px;
+    top: 53px;
     bottom: 0;
     left: 0;
     right: 0;
     display: flex;
-    border-top: 1px solid #d0d0d0;
+    border-top: 1px solid ${COLOR.DISABLED};
     a {
       text-decoration: none;
     }
@@ -167,7 +167,7 @@ const S = {
       padding: 0.5rem 0;
       gap: 0;
       width: 100%;
-      border-bottom: 1px solid #d0d0d0;
+      border-bottom: 1px solid ${COLOR.DISABLED};
     }
   `,
   Links: styled.div`
@@ -183,23 +183,19 @@ const S = {
     }
   `,
   MobileSelect: styled.div`
-    background: #fafafa;
+    background: ${COLOR.BACKGROUND_LIGHT};
     padding: 0.75rem;
   `,
   Header: styled.div<{ $visiting: boolean }>`
     display: flex;
     align-items: center;
     text-align: center;
-    border-radius: 50px;
     margin: auto;
     width: 200px;
     gap: 6px;
     padding: 0.3rem 0.75rem;
     color: ${({ $visiting }) => ($visiting ? COLOR.MAIN : "black")};
     transition: 100ms;
-    &:hover {
-      background-color: ${({ $visiting }) => !$visiting && "#f3f3f3"};
-    }
     @media ${DEVICE_SIZE.laptop} {
       flex-direction: column;
       width: fit-content;
@@ -211,9 +207,9 @@ const S = {
     display: flex;
     flex-direction: column;
     gap: 36px;
-    background: #fafafa;
+    background: ${COLOR.BACKGROUND_LIGHT};
     padding: 36px 63px;
-    border-left: 1px solid #d0d0d0;
+    border-left: 1px solid ${COLOR.DISABLED};
     overflow: auto;
     scrollbar-gutter: stable;
     & input:focus,

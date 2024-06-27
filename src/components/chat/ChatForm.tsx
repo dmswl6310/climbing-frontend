@@ -35,7 +35,7 @@ const Wrapper = styled.form`
   height: 50px;
   gap: 6px;
   & > input {
-    border: 1px solid #cacaca;
+    border: 1px solid ${COLOR.DISABLED};
     border-radius: 6px;
     padding: 0 0.8rem;
     flex-grow: 1;

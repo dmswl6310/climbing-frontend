@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { ACCOMMODATIONS_LIST } from "@/constants/manage/constants";
+import { COLOR } from "@/styles/global-color";
 import { DEVICE_SIZE } from "@/constants/styles";
 import type { AccommodationsEditorProps } from "@/constants/manage/types";
 
@@ -62,10 +63,10 @@ const S = {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: #fafafa;
-    color: #666666;
+    background: ${COLOR.BACKGROUND_LIGHT};
+    color: ${COLOR.BACKGROUND_DARK};
     border-radius: 8px;
-    border: 1px solid #d0d0d0;
+    border: 1px solid ${COLOR.DISABLED};
     padding: 12px 18px;
     height: 56px;
     gap: 8px;
@@ -89,7 +90,7 @@ const S = {
       padding: 0px;
       flex-shrink: 1;
       pointer-events: none;
-      accent-color: #666666;
+      accent-color: ${COLOR.BACKGROUND_DARK};
     }
     span {
       flex: 1 0 0;

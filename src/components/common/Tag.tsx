@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { COLOR } from "@/styles/global-color";
 import type { TagProps } from "@/constants/gyms/types";
 
 const Tag = ({ prefix, text }: TagProps) => {
@@ -15,8 +16,7 @@ const S = {
     display: inline-block;
     line-height: 1.5rem;
     border-radius: 0.5rem;
-    background-color: #dcdcdc;
-    color: #666;
+    background-color: ${COLOR.DISABLED};
     padding: 4px 8px;
     user-select: none;
   `,

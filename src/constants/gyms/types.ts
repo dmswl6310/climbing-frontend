@@ -80,7 +80,7 @@ export type UserComment = { user: string; createdAt: string; text: string };
 // 컴포넌트 props 타입 정의
 export interface CommentsProps {
   id: string;
-  comments?: UserComment[];
+  comments: UserComment[] | null;
   session: Session | null;
 }
 
@@ -98,8 +98,8 @@ export interface GradeBarProps {
 }
 
 export interface ImageCarouselProps {
-  defaultImage: string;
-  imageList: string[];
+  defaultImage: string | null;
+  imageList: string[] | null;
 }
 
 export interface MapProps {
@@ -113,6 +113,10 @@ export interface OpenHoursTableProps {
 
 export interface PricingTableProps {
   pricing: Array<Pricing> | null;
+}
+
+export interface TagListProps {
+  tags: string[] | null;
 }
 
 export interface TagProps {

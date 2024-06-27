@@ -9,14 +9,15 @@ import ErrorFallback from "@/components/common/ErrorFallback";
 import LoadContainer from "@/components/manage/LoadContainer";
 import { requestData } from "@/service/api";
 import { NavContext, type NavStateProps } from "@/NavContext";
+import { COLOR } from "@/styles/global-color";
 import { DEVICE_SIZE } from "@/constants/styles";
+import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import type { NextPageWithLayout } from "@/pages/_app";
 import type { Chatroom, ChatroomRef } from "@/constants/manage/types";
 
-const ChatPage: NextPageWithLayout = () => {
+const ChatPage: NextPageWithLayout = ({ id }: InferGetServerSidePropsType<GetServerSideProps>) => {
   const { data: session } = useSession();
   const router = useRouter();
-  const { id } = router.query;
   const [chatrooms, setChatrooms] = useState<Chatroom[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [openWindows, setOpenWindows] = useState<ChatroomRef[]>([]);
@@ -93,8 +94,9 @@ const ChatPage: NextPageWithLayout = () => {
   );
 };
 
-export const getServerSideProps = async () => {
-  return { props: {} };
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const id = context.query.id;
+  return { props: { id } };
 };
 
 const S = {
@@ -109,8 +111,8 @@ const S = {
     }
   `,
   Row: styled.div`
-    border: 1px solid #d0d0d0;
-    background: #fafafa;
+    border: 1px solid ${COLOR.DISABLED};
+    background: ${COLOR.BACKGROUND_LIGHT};
     border-radius: 12px;
     padding: 16px;
     display: flex;

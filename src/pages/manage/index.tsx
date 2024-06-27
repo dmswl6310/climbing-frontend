@@ -48,7 +48,7 @@ const ManageHome = () => {
 const S = {
   Wrapper: styled.div`
     background: white;
-    border: 1px solid #d0d0d0;
+    border: 1px solid ${COLOR.DISABLED};
     padding: 32px 40px;
     @media ${DEVICE_SIZE.laptop} {
       padding: 1.3rem 1rem;

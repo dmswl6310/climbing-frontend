@@ -1,6 +1,7 @@
 import { useState } from "react";
 import styled from "styled-components";
 import ColorPicker from "./ColorPicker";
+import { COLOR } from "@/styles/global-color";
 import type { GradeBlockProps } from "@/constants/manage/types";
 
 const GradeBlock = ({ index, size, color, handleColorChange }: GradeBlockProps) => {
@@ -41,7 +42,7 @@ const S = {
   `,
   Block: styled.div<{ $color: string }>`
     box-sizing: border-box;
-    border: 1px solid #d0d0d0;
+    border: 1px solid ${COLOR.DISABLED};
     width: inherit;
     height: 45px;
     background: ${({ $color }) => $color};

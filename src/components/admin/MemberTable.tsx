@@ -2,6 +2,7 @@ import { type MouseEvent, useRef } from "react";
 import styled from "styled-components";
 import { HiCog } from "react-icons/hi";
 import ReactIcon from "../common/ReactIcon";
+import { COLOR } from "@/styles/global-color";
 
 export type Member = {
   nickname: string;
@@ -96,7 +97,7 @@ const HoverText = styled.div`
   position: fixed;
   z-index: 10;
   border-radius: 4px;
-  background: #666666;
+  background: ${COLOR.BACKGROUND_DARK};
   max-width: 30ch;
   color: white;
 `;

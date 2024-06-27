@@ -13,7 +13,7 @@ const EllipsisButton = ({ options }: EllipsisButtonProps) => {
     <>
       <S.Background $visible={isOpen} onClick={closeMenu} />
       <S.Wrapper>
-        <S.Ellipsis size="1.75rem" color="#666666" onClick={toggleMenu} />
+        <S.Ellipsis size="1.75rem" color={COLOR.BACKGROUND_DARK} onClick={toggleMenu} />
         <S.OptionsContainer $visible={isOpen}>
           {options.map(({ text, action }) => (
             <S.Option key={text} onClick={action}>
@@ -69,7 +69,7 @@ const S = {
     text-align: center;
     &:active,
     &:focus {
-      background: #f3f3f3;
+      background: ${COLOR.DISABLED};
     }
     border-bottom: 1px solid ${COLOR.DISABLED};
     &:last-child {

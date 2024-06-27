@@ -78,7 +78,7 @@ const S = {
     resize: none;
     padding: 12px;
     border-radius: 8px;
-    border: 1px solid #fafafa;
+    border: 1px solid ${COLOR.BACKGROUND_LIGHT};
     box-shadow: 0 0 15px rgba(29, 101, 122, 0.15);
     & :focus {
       border: 1px solid blue;

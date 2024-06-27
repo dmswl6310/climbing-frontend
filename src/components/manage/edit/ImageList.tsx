@@ -1,6 +1,7 @@
 import Image from "next/image";
 import styled from "styled-components";
 import { RiDeleteBin6Fill } from "react-icons/ri";
+import { COLOR } from "@/styles/global-color";
 import type { ImageListProps } from "@/constants/manage/types";
 
 const ImageList = ({ images, handleS3Delete }: ImageListProps) => {
@@ -29,7 +30,7 @@ const S = {
   Image: styled.div`
     box-sizing: border-box;
     position: relative;
-    border: 1px solid #d0d0d0;
+    border: 1px solid ${COLOR.DISABLED};
     width: 140px;
     height: 80px;
     flex-shrink: 0;

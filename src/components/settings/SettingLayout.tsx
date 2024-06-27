@@ -84,7 +84,7 @@ const S = {
     flex-direction: column;
     flex: 1 0 0;
     gap: 10px;
-    background: #fafafa;
+    background: ${COLOR.BACKGROUND_LIGHT};
     padding: 36px;
   `,
 };

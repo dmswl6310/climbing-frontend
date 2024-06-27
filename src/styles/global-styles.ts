@@ -81,7 +81,7 @@ ${normalize}
 
   .editor-wrapper {
     background: white;
-    border: 1px solid #d0d0d0;
+    border: 1px solid ${COLOR.DISABLED};
   }
 
   .editor-header {

@@ -6,15 +6,57 @@ import { MdOutlineClose, MdOutlineSupportAgent } from "react-icons/md";
 import Socket from "./Socket";
 import { SERVER_ADDRESS, SOCKET_ADDRESS } from "@/constants/constants";
 import { COLOR } from "@/styles/global-color";
+import type { ChatModalProps, FetchedChatroom } from "@/constants/chat/types";
 
-interface ChatModalProps {
-  gymId: string;
-  gymName: string;
-}
+const fetchChatroom = async (
+  gymId: string,
+  nickname: string,
+  token: string,
+): Promise<FetchedChatroom> => {
+  console.log("fetching chatroom");
+  try {
+    const controller = new AbortController();
+    const signal = controller.signal;
+    const timeout = setTimeout(() => controller.abort(), 3000);
+    const response = await fetch(`${SERVER_ADDRESS}/chat/room-check/${nickname}/${gymId}`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      },
+      signal,
+    });
+    if (!response.ok) throw new Error("roomId를 불러올 수 없습니다.");
+    clearTimeout(timeout);
+    const data = await response.json();
+    console.log(data);
+    return data;
+  } catch (e) {
+    console.log(e);
+  }
+  return { exists: false, roomId: null };
+};
 
-type FetchedChatroom = {
-  exists: boolean;
-  roomId: string | null;
+const createRoom = async (gymId: string, nickname: string, token: string) => {
+  console.log("creating room");
+  try {
+    const controller = new AbortController();
+    const signal = controller.signal;
+    const timeout = setTimeout(() => controller.abort(), 3000);
+    const response = await fetch(`${SERVER_ADDRESS}/chat/room/${nickname}/${gymId}`, {
+      method: "POST",
+      headers: { Authorization: "Bearer " + token },
+      signal,
+    });
+    if (response.redirected) throw new Error("로그인이 필요한 서비스입니다.");
+    clearTimeout(timeout);
+    const { id } = await response.json();
+    console.log(id);
+    return id;
+  } catch (e) {
+    console.log(e);
+    // 에러 로깅
+  }
+  return null;
 };
 
 const ChatModal = ({ gymId, gymName }: ChatModalProps) => {
@@ -26,58 +68,21 @@ const ChatModal = ({ gymId, gymName }: ChatModalProps) => {
   const [isSocketError, setIsSocketError] = useState(false);
 
   useEffect(() => {
-    if (!session || !gymId || client) return;
+    if (!session || client) return;
 
     const clientInstance = new Client({
       brokerURL: `${SOCKET_ADDRESS}/ws/chat`,
       connectHeaders: { Authorization: "Bearer " + session.jwt.accessToken },
     });
 
-    const fetchChatroom = async (nickname: string): Promise<FetchedChatroom> => {
-      console.log("fetching chatroom");
-      try {
-        const response = await fetch(`${SERVER_ADDRESS}/chat/room-check/${nickname}/${gymId}`, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + session.jwt.accessToken,
-          },
-        });
-        if (!response.ok) throw new Error("roomId를 불러올 수 없습니다.");
-        const data = await response.json();
-        console.log(data);
-        return data;
-      } catch (e) {
-        console.log(e);
-      }
-      return { exists: false, roomId: null };
-    };
-
-    const createRoom = async (nickname: string) => {
-      console.log("creating room");
-      try {
-        const response = await fetch(`${SERVER_ADDRESS}/chat/room/${nickname}/${gymId}`, {
-          method: "POST",
-          headers: { Authorization: "Bearer " + session.jwt.accessToken },
-        });
-        console.log(response);
-        if (response.redirected) throw new Error("로그인이 필요한 서비스입니다.");
-        const { id } = await response.json();
-        console.log(id);
-        return id;
-      } catch (e) {
-        console.log(e);
-        // 에러 로깅
-      }
-      return null;
-    };
-
     const enterRoom = async () => {
       let roomId;
+      const token = session.jwt.accessToken;
       const nickname = session.user.nickname;
-      const chatroomData = await fetchChatroom(nickname);
+      const chatroomData = await fetchChatroom(gymId, nickname, token);
 
       if (chatroomData.exists) roomId = chatroomData.roomId;
-      else roomId = await createRoom(nickname);
+      else roomId = await createRoom(gymId, nickname, token);
       if (!roomId) return setIsRoomFetchError(true);
 
       setRoomId(roomId);
@@ -96,7 +101,7 @@ const ChatModal = ({ gymId, gymName }: ChatModalProps) => {
       setIsSocketError(true);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session, gymId]);
+  }, [session]);
 
   const toggleModal = () => setIsOpen(!isOpen);
 
@@ -136,7 +141,7 @@ const S = {
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    background: ${({ $isOpen }) => ($isOpen ? "#666666" : COLOR.MAIN)};
+    background: ${({ $isOpen }) => ($isOpen ? COLOR.BACKGROUND_DARK : COLOR.MAIN)};
     color: white;
     display: flex;
     justify-content: center;

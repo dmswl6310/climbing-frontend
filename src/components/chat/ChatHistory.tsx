@@ -1,7 +1,8 @@
 import { useEffect } from "react";
 import styled from "styled-components";
 import { BiSolidHelpCircle } from "react-icons/bi";
-import { getFormattedDate, getFormattedTime } from "@/ChatHistoryContext";
+import MessageBatch from "./MessageBatch";
+import { getFormattedDate } from "@/ChatHistoryContext";
 import { COLOR } from "@/styles/global-color";
 
 export type MessageFormat = {
@@ -43,9 +44,9 @@ const ChatHistory = ({ history, speaker }: ChatHistoryProps) => {
   const sortedMessages: SortedMessageList = history ? sortMessages(history) : [];
 
   return (
-    <Wrapper>
+    <S.Wrapper>
       {sortedMessages.length < 1 ? (
-        <M.Placeholder>
+        <S.Placeholder>
           {speaker === "customer" ? (
             <>
               <BiSolidHelpCircle size="2rem" />
@@ -54,106 +55,53 @@ const ChatHistory = ({ history, speaker }: ChatHistoryProps) => {
           ) : (
             <p>문의 내용이 없습니다.</p>
           )}
-        </M.Placeholder>
+        </S.Placeholder>
       ) : (
         sortedMessages.map((batch, i) => (
           <div className="batch" key={i}>
             <div className="divider">{batch.date}</div>
-            {batch.messages.map(({ userType, message, createdAt }, i) => (
-              <M.Wrapper key={i}>
-                <M.Message
-                  $speaker={userType === speaker}
-                  className={batch.messages[i + 1]?.userType !== userType ? "lastMessage" : ""}
-                >
-                  {userType !== speaker ||
-                  (batch.messages[i + 1]?.userType === userType &&
-                    batch.messages[i + 1] &&
-                    getFormattedTime(batch.messages[i + 1].createdAt) ===
-                      getFormattedTime(createdAt)) ? null : (
-                    <span>{getFormattedTime(createdAt)}</span>
-                  )}
-                  <div>{message}</div>
-                  {userType === speaker ||
-                  (batch.messages[i + 1]?.userType === userType &&
-                    batch.messages[i + 1] &&
-                    getFormattedTime(batch.messages[i + 1].createdAt) ===
-                      getFormattedTime(createdAt)) ? null : (
-                    <span>{getFormattedTime(createdAt)}</span>
-                  )}
-                </M.Message>
-              </M.Wrapper>
-            ))}
+            <MessageBatch messages={batch.messages} speaker={speaker} />
           </div>
         ))
       )}
       <div className="tracker"></div>
-    </Wrapper>
+    </S.Wrapper>
   );
 };
 
-const Wrapper = styled.div`
-  border-radius: 6px;
-  padding-right: 4px;
-  padding-left: 12px;
-  flex: 1 0 0;
-  margin-bottom: 12px;
-  overflow-y: auto;
-  scrollbar-gutter: stable;
-  word-break: break-all;
-  overflow-x: hidden;
-  &::-webkit-scrollbar {
-    width: 8px;
-  }
-  &::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  &::-webkit-scrollbar-thumb {
-    background: #e5e5e5;
-    border-radius: 10px;
-  }
-  &::-webkit-scrollbar-thumb:hover {
-    background: ${COLOR.DISABLED};
-  }
-  & .batch {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-  & .divider {
-    text-align: center;
-    font-weight: 700;
-    margin: 12px 0;
-  }
-`;
-
-const M = {
+const S = {
   Wrapper: styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  `,
-  Name: styled.div`
-    font-weight: 700;
-  `,
-  Message: styled.div<{ $speaker: boolean }>`
-    display: flex;
-    align-items: flex-end;
-    gap: 4px;
-    max-width: 85%;
-    align-self: ${({ $speaker }) => ($speaker ? "flex-end" : "flex-start")};
-    &.lastMessage {
-      margin-bottom: 18px;
+    border-radius: 6px;
+    padding-right: 4px;
+    padding-left: 12px;
+    flex: 1 0 0;
+    margin-bottom: 12px;
+    overflow-y: auto;
+    scrollbar-gutter: stable;
+    word-break: break-all;
+    overflow-x: hidden;
+    &::-webkit-scrollbar {
+      width: 8px;
     }
-    & span {
-      color: #9a9a9a;
-      font-size: 0.8rem;
-      flex-shrink: 0;
+    &::-webkit-scrollbar-track {
+      background: transparent;
     }
-    & > div {
-      border-radius: 6px;
-      border: 1px solid #cacaca;
-      padding: 8px;
-      background: ${({ $speaker }) => ($speaker ? null : "#cacaca")};
+    &::-webkit-scrollbar-thumb {
+      background: #e5e5e5;
+      border-radius: 10px;
+    }
+    &::-webkit-scrollbar-thumb:hover {
+      background: ${COLOR.DISABLED};
+    }
+    & .batch {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    & .divider {
+      text-align: center;
+      font-weight: 700;
+      margin: 12px 0;
     }
   `,
   Placeholder: styled.div`

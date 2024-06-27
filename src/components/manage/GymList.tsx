@@ -22,7 +22,7 @@ const GymList = ({ name, id }: GymListProps) => {
   return (
     <Wrapper>
       <Icon>
-        <FaBuilding size="1.3rem" />
+        <FaBuilding size="1.3rem" color="white" />
       </Icon>
       <div className="gym-name" title={name}>
         {name}
@@ -44,7 +44,8 @@ const GymList = ({ name, id }: GymListProps) => {
 const Wrapper = styled.div`
   display: flex;
   gap: 1rem;
-  background: #f3f3f3;
+  background: ${COLOR.BACKGROUND_LIGHT};
+  border: 1px solid ${COLOR.DISABLED};
   border-radius: 0.7rem;
   padding: 1rem;
   margin: 0.7rem 0;
@@ -66,11 +67,12 @@ const Wrapper = styled.div`
 const Btn = styled.div`
   padding: 0.7rem 1.5rem;
   border-radius: 0.7rem;
+  border: 1px solid ${COLOR.DISABLED};
   background: white;
-  color: #666;
+  color: ${COLOR.BACKGROUND_DARK};
   white-space: nowrap;
   &:hover {
-    color: #bababa;
+    color: ${COLOR.DISABLED};
   }
   cursor: pointer;
   @media ${DEVICE_SIZE.tablet} {
@@ -83,7 +85,7 @@ const Btn = styled.div`
 `;
 
 const Icon = styled.div`
-  background: white;
+  background: ${COLOR.BACKGROUND_DARK};
   border-radius: 50%;
   display: grid;
   place-content: center center;

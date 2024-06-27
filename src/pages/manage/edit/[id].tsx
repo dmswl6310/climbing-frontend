@@ -206,10 +206,6 @@ const EditPage = () => {
   );
 };
 
-export const getServerSideProps = async () => {
-  return { props: {} };
-};
-
 const Button = styled.div`
   align-self: flex-end;
   & button:disabled {

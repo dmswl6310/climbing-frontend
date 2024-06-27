@@ -7,6 +7,7 @@ import ImageUploader from "./ImageUploader";
 import useS3, { FOLDER_NAME, THUMBNAIL_PREFIX } from "../../../hooks/useS3";
 import { checkImageValidity } from "@/components/gyms/ImageCarousel";
 import { IMG_URL_REGEX } from "@/constants/manage/constants";
+import { COLOR } from "@/styles/global-color";
 import { DEVICE_SIZE } from "@/constants/styles";
 import type { ImageEditorProps } from "@/constants/manage/types";
 
@@ -142,7 +143,7 @@ const S = {
   `,
   Image: styled.div`
     position: relative;
-    border: 1px solid #d0d0d0;
+    border: 1px solid ${COLOR.DISABLED};
     width: 462px;
     height: 215px;
     img {

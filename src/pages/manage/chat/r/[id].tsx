@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactElement } from "react";
+import { useEffect, useState, type ReactElement } from "react";
 import { useSession } from "next-auth/react";
 import { Client, Message, type IFrame } from "@stomp/stompjs";
 import styled from "styled-components";
@@ -11,6 +11,7 @@ import LoginPrompt from "@/components/common/LoginPrompt";
 import { requestData } from "@/service/api";
 import { getFormattedChatHistory } from "@/ChatHistoryContext";
 import { SOCKET_ADDRESS } from "@/constants/constants";
+import { COLOR } from "@/styles/global-color";
 import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import type { NextPageWithLayout } from "@/pages/_app";
 import type { Chatroom } from "@/constants/manage/types";
@@ -27,27 +28,24 @@ const ChatPopup: NextPageWithLayout = ({
     if (!session) return;
     const messageBody = JSON.parse(response.body);
     const { message, sender, createdAt } = messageBody;
-
-    const newMessage = {
-      userType: sender === session.user.nickname ? "manager" : "customer",
-      message,
-      createdAt,
-    };
+    const userType = sender === session.user.nickname ? "manager" : "customer";
+    const newMessage = { userType, message, createdAt };
     setMessages((prev) => [...(prev ?? []), newMessage]);
   };
 
   useEffect(() => {
     if (!session || client) return;
 
+    const token = session.jwt.accessToken;
     const clientInstance = new Client({
       brokerURL: `${SOCKET_ADDRESS}/ws/chat`,
-      connectHeaders: { Authorization: "Bearer " + session.jwt.accessToken },
+      connectHeaders: { Authorization: "Bearer " + token },
     });
 
     requestData({
       option: "GET",
       url: `/chat/room/${roomId}`,
-      token: session.jwt.accessToken,
+      token,
       onSuccess: (roomData: Chatroom) => setRoomName(roomData.roomName),
     });
 
@@ -55,7 +53,7 @@ const ChatPopup: NextPageWithLayout = ({
       requestData({
         option: "GET",
         url: `/chat/find/message/${roomId}`,
-        token: session.jwt.accessToken,
+        token,
         onSuccess: (data) => {
           const loadedHistory = getFormattedChatHistory(
             data,
@@ -65,9 +63,7 @@ const ChatPopup: NextPageWithLayout = ({
           );
           setMessages(loadedHistory);
         },
-        onError: () => {
-          console.log("에러 발생");
-        },
+        onError: () => console.log("채팅 기록을 불러올 수 없습니다."),
       });
 
     clientInstance.activate();
@@ -129,13 +125,13 @@ const ChatPopup: NextPageWithLayout = ({
 
 const S = {
   Wrapper: styled.div`
-    height: 100vh;
+    height: 100dvh;
   `,
   Header: styled.div`
     display: grid;
     place-content: center start;
     padding: 12px 8px;
-    box-shadow: 0 1px 5px #d0d0d0;
+    box-shadow: 0 1px 5px ${COLOR.DISABLED};
     font-weight: 700;
   `,
   Container: styled.div`

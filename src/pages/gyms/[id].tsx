@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import styled from "styled-components";
 import { BarLoader } from "react-spinners";
@@ -16,22 +15,22 @@ import { IMAGE_SIZE } from "@/constants/gyms/constants";
 import { NAVERMAP_API } from "@/constants/constants";
 import { DEVICE_SIZE } from "@/constants/styles";
 import type { GymData } from "@/constants/gyms/types";
+import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
 
-const GymInfo = () => {
+const GymInfo = ({ id }: InferGetServerSidePropsType<GetServerSideProps>) => {
   const { data: session } = useSession();
-  const router = useRouter();
   const [gymData, setGymData] = useState<null | GymData>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
   const { isLoading: isLoadingMap } = useApi(NAVERMAP_API);
 
   useEffect(() => {
-    if (!isLoading || !router.query.id) return;
+    if (!isLoading) return;
     requestData({
       option: "GET",
-      url: `/gyms/${router.query.id}`,
+      url: `/gyms/${id}`,
       onSuccess: (data) => {
-        const gymData = { ...data, id: router.query.id };
+        const gymData = { ...data, id };
         setGymData(gymData);
       },
       onError: (e) => {
@@ -40,7 +39,7 @@ const GymInfo = () => {
       },
     });
     setIsLoading(false);
-  }, [isLoading, router]);
+  }, [isLoading, id]);
 
   return (
     <S.Page>
@@ -51,11 +50,7 @@ const GymInfo = () => {
       ) : (
         <>
           <S.Wrapper>
-            <ImageCarousel
-              key={crypto.randomUUID()}
-              defaultImage={gymData.defaultImage ?? ""}
-              imageList={gymData.images ?? []}
-            />
+            <ImageCarousel defaultImage={gymData.defaultImage} imageList={gymData.images} />
             <S.InfoContainer>
               <S.Main>
                 <MainContent gymData={gymData} />
@@ -66,17 +61,22 @@ const GymInfo = () => {
               <SideContent gymData={gymData} />
             </S.InfoContainer>
             <Comments
-              key={crypto.randomUUID()}
-              id={gymData.id ?? ""}
-              comments={gymData.comments ?? []}
+              key={gymData.id}
+              id={gymData.id}
+              comments={gymData.comments}
               session={session}
             />
           </S.Wrapper>
-          <ChatModal key={crypto.randomUUID()} gymId={gymData.id ?? ""} gymName={gymData.name} />
+          <ChatModal key={gymData.id} gymId={gymData.id} gymName={gymData.name} />
         </>
       )}
     </S.Page>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const id = context.query.id;
+  return { props: { id } };
 };
 
 const S = {

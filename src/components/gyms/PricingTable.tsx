@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import NoData from "./NoData";
+import { COLOR } from "@/styles/global-color";
 import type { Pricing, PricingTableProps } from "@/constants/gyms/types";
-import { DEVICE_SIZE } from "@/constants/styles";
 
 const PricingTable = ({ pricing }: PricingTableProps) => {
   return (
@@ -48,7 +48,7 @@ const S = {
       position: relative;
       top: 2px;
       border-top: none;
-      border-bottom: 1px dashed #d0d0d0;
+      border-bottom: 1px dashed ${COLOR.DISABLED};
     }
   `,
   Divider: styled.div`
