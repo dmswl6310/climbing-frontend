@@ -4,6 +4,7 @@ import { MouseEventHandler, useState } from "react";
 import router from "next/router";
 import { GymListBannerProps } from "@/constants/search/types";
 import { COLOR } from "@/styles/global-color";
+import { DEVICE_SIZE } from "@/constants/styles";
 
 const GymListBanner = ({
   searchWord,
@@ -70,10 +71,17 @@ const Styled = {
     display: flex;
     justify-content: flex-end;
     margin-bottom: 20px;
+    @media ${DEVICE_SIZE.mobileSmall} {
+      justify-content: center;
+      margin-bottom: 10px;
+    }
   `,
   SortButton: styled.button`
     margin-left: 5px;
     margin-right: 5px;
+    @media ${DEVICE_SIZE.mobileSmall} {
+      font-size: 1rem;
+    }
   `,
   Divider: styled.div`
     color: ${COLOR.BORDER_UNFOCUSED};

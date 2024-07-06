@@ -2,8 +2,7 @@ import styled from "styled-components";
 import { useState } from "react";
 import { CurrentLocationBtnProps } from "@/constants/search/types";
 import { MdOutlineMyLocation } from "react-icons/md";
-import { COLOR } from "@/styles/global-color";
-import router from "next/router";
+import { DEVICE_SIZE } from "@/constants/styles";
 
 const GEOToAddress = async (longitude: number, latitude: number) => {
   const response = await (
@@ -82,6 +81,9 @@ const S = {
     color: black;
     cursor: pointer;
     ${(props) => props.fontSize && `font-size: ${props.fontSize}`}
+    @media ${DEVICE_SIZE.mobileSmall} {
+      font-size: 1rem;
+    }
   `,
   Space: styled.div`
     margin-left: 5px;

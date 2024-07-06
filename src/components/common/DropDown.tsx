@@ -2,6 +2,7 @@ import { styled } from "styled-components";
 import reactStringReplace from "react-string-replace";
 import { COLOR } from "@/styles/global-color";
 import { DropDownProps, DropItem } from "@/constants/search/types";
+import { DEVICE_SIZE } from "@/constants/styles";
 
 const DropDown = ({
   dropItems,
@@ -77,6 +78,9 @@ const S = {
     list-style: none;
     ${(props) => props.fontSize && `font-size: ${props.fontSize}`};
     ${(props) => props.$highlight && `background-color: ${COLOR.LIGHT_MAIN}`};
+    @media ${DEVICE_SIZE.mobileLarge} {
+      font-size: 1rem;
+    }
   `,
   Space: styled.div`
     margin-left: 10px;

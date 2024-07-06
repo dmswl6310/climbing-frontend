@@ -6,6 +6,7 @@ import Bookmark from "./Bookmark";
 import { CardProps } from "@/constants/search/types";
 import router from "next/router";
 import { useSession } from "next-auth/react";
+import { DEVICE_SIZE } from "@/constants/styles";
 
 const PreviewCard = ({ width, height, cardInfo }: CardProps) => {
   const { data: session } = useSession();
@@ -95,6 +96,9 @@ const S = {
   Name: styled.h2`
     margin-top: 5px;
     padding: 0;
+    @media ${DEVICE_SIZE.mobileSmall} {
+      font-size: 1.3rem;
+    }
   `,
   MainInfoContainer: styled.div`
     display: flex;
