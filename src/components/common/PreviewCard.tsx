@@ -9,7 +9,7 @@ import { useSession } from "next-auth/react";
 import { DEVICE_SIZE } from "@/constants/styles";
 
 const PreviewCard = ({ width, height, cardInfo }: CardProps) => {
-  const { data: session } = useSession();
+  const { data: session, update } = useSession();
 
   const handleCardOnClick = () => {
     router.push(`/gyms/${cardInfo.id}`);
@@ -28,6 +28,7 @@ const PreviewCard = ({ width, height, cardInfo }: CardProps) => {
               <S.Name>{cardInfo.name}</S.Name>
             </S.NameContainer>
             <Bookmark
+              update={update}
               token={session?.jwt.accessToken}
               gymId={cardInfo.id.toString()}
               size="20px"

@@ -16,8 +16,14 @@ import { COLOR } from "@/styles/global-color";
 import type { StompSubscription, Message } from "@stomp/stompjs";
 import type { SocketProps } from "@/constants/chat/types";
 
-const Socket = ({ gymName, client, roomId, isRoomFetchError, isSocketError }: SocketProps) => {
-  const { data: session } = useSession();
+const Socket = ({
+  gymName,
+  client,
+  roomId,
+  isRoomFetchError,
+  isSocketError,
+}: SocketProps) => {
+  const { data: session, update } = useSession();
   const [isLoading, setIsLoading] = useState(true);
   const subscriptionRef = useRef<null | StompSubscription>(null);
   const { history, updateHistory } = useContext(ChatHistoryContext);
@@ -33,7 +39,8 @@ const Socket = ({ gymName, client, roomId, isRoomFetchError, isSocketError }: So
 
     const onServerMessage = (response: Message) => {
       const { message, sender, createdAt } = JSON.parse(response.body);
-      const userType = sender === session.user.nickname ? "customer" : "manager";
+      const userType =
+        sender === session.user.nickname ? "customer" : "manager";
       const newMessage = { userType, message, createdAt };
       const newHistory: ChatHistoryProps = { ...currentHistory.current };
 
@@ -54,10 +61,16 @@ const Socket = ({ gymName, client, roomId, isRoomFetchError, isSocketError }: So
         option: "GET",
         url: `/chat/find/message/${roomId}`,
         token,
+        update,
         onSuccess: (data) => {
           console.log(data);
           const loadedHistory: ChatHistoryProps = {};
-          loadedHistory[roomId] = getFormattedChatHistory(data, nickname, "manager", "customer");
+          loadedHistory[roomId] = getFormattedChatHistory(
+            data,
+            nickname,
+            "manager",
+            "customer"
+          );
           updateHistory((prev) => ({ ...prev, ...loadedHistory }));
           currentHistory.current = { ...loadedHistory };
         },
@@ -67,9 +80,13 @@ const Socket = ({ gymName, client, roomId, isRoomFetchError, isSocketError }: So
       });
     };
 
-    subscriptionRef.current = client.subscribe(`/queue/chat/room/${roomId}`, onServerMessage);
+    subscriptionRef.current = client.subscribe(
+      `/queue/chat/room/${roomId}`,
+      onServerMessage
+    );
     // 이전 채팅 기록을 fetch하고 context에 저장
-    if (!currentHistory.current || !currentHistory.current[roomId]) fetchHistory();
+    if (!currentHistory.current || !currentHistory.current[roomId])
+      fetchHistory();
 
     setIsLoading(false);
     return () => subscriptionRef.current?.unsubscribe();
@@ -116,8 +133,14 @@ const Socket = ({ gymName, client, roomId, isRoomFetchError, isSocketError }: So
               </S.Loader>
             ) : session ? (
               <>
-                <ChatHistory speaker="customer" history={currentHistory.current?.[roomId ?? ""]} />
-                <ChatForm placeholder="문의를 남겨주세요 :)" handleSend={handleSend} />
+                <ChatHistory
+                  speaker="customer"
+                  history={currentHistory.current?.[roomId ?? ""]}
+                />
+                <ChatForm
+                  placeholder="문의를 남겨주세요 :)"
+                  handleSend={handleSend}
+                />
               </>
             ) : (
               <LoginPrompt />

@@ -15,7 +15,7 @@ import { COLOR } from "@/styles/global-color";
 const ChangeNickname = () => {
   // 현재 정보업데이트시 비밀번호 미사용
 
-  const { data: session, status } = useSession();
+  const { data: session, update } = useSession();
   //   const [isPasswordValid, setIsPasswordValid] = useState(false);
   // const [passwordMessage, setPasswordMessage] = useState("");
 
@@ -40,6 +40,7 @@ const ChangeNickname = () => {
       token: `${session?.jwt.accessToken}`,
       hasBody: true,
       onSuccess,
+      update,
     });
   }, [session]);
 
@@ -119,6 +120,7 @@ const ChangeNickname = () => {
       data: { nickname: nickname },
       hasBody: false,
       onSuccess,
+      update,
     });
   };
 

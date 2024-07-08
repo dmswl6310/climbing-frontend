@@ -9,7 +9,7 @@ import { COLOR } from "@/styles/global-color";
 import type { BaseGymData } from "@/constants/gyms/types";
 
 const GymRegistration = () => {
-  const { data: session } = useSession();
+  const { data: session, update } = useSession();
   const [isLoading, setIsLoading] = useState(false);
   const [isRegistered, setIsRegistered] = useState(false);
   const [newGymId, setNewGymId] = useState();
@@ -22,6 +22,7 @@ const GymRegistration = () => {
       option: "POST",
       url: "/gyms",
       token,
+      update,
       data: formData,
       onSuccess: (response) => {
         setIsRegistered(true);
@@ -46,7 +47,11 @@ const GymRegistration = () => {
         <Link href={`/manage`} replace>
           <S.Button>홈으로 돌아가기</S.Button>
         </Link>
-        <Link href={`/gyms/${newGymId}`} rel="noopener noreferrer" target="_blank">
+        <Link
+          href={`/gyms/${newGymId}`}
+          rel="noopener noreferrer"
+          target="_blank"
+        >
           <S.Button>내 암장 페이지 보기</S.Button>
         </Link>
       </S.Container>

@@ -17,18 +17,26 @@ import { SERVER_ADDRESS } from "@/constants/constants";
 import { UNKNOWN_ERROR } from "@/constants/manage/constants";
 import type { GymData, GymDataObject } from "@/constants/gyms/types";
 
-const AccommodationsEditor = lazy(() => import("@/components/manage/edit/AccommodationsEditor"));
+const AccommodationsEditor = lazy(
+  () => import("@/components/manage/edit/AccommodationsEditor")
+);
 const GradeEditor = lazy(() => import("@/components/manage/edit/GradeEditor"));
-const OpenHoursEditor = lazy(() => import("@/components/manage/edit/OpenHoursEditor"));
-const PricingEditor = lazy(() => import("@/components/manage/edit/PricingEditor"));
-const SettingDayEditor = lazy(() => import("@/components/manage/edit/SettingDayEditor"));
+const OpenHoursEditor = lazy(
+  () => import("@/components/manage/edit/OpenHoursEditor")
+);
+const PricingEditor = lazy(
+  () => import("@/components/manage/edit/PricingEditor")
+);
+const SettingDayEditor = lazy(
+  () => import("@/components/manage/edit/SettingDayEditor")
+);
 
 const isEdited = (oldData: any, newData: any) => {
   return JSON.stringify(oldData) !== JSON.stringify(newData);
 };
 
 const EditPage = () => {
-  const { data: session } = useSession();
+  const { data: session, update } = useSession();
   const router = useRouter();
   const { id, p } = router.query;
   const [currentData, setCurrentData] = useState<GymData | null>(null);
@@ -37,7 +45,9 @@ const EditPage = () => {
   const [isError, setIsError] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const tracker = useRef<null | string>(null);
-  const { selectedGymId, setSelectedGymId } = useContext(NavContext) as NavStateProps;
+  const { selectedGymId, setSelectedGymId } = useContext(
+    NavContext
+  ) as NavStateProps;
 
   useEffect(() => {
     if (!isLoading) return;
@@ -131,6 +141,7 @@ const EditPage = () => {
       option: "PUT",
       url: `/gyms/${id}`,
       token,
+      update,
       data: currentData,
       hasBody: false,
       onSuccess: () => {
@@ -162,16 +173,32 @@ const EditPage = () => {
           </LoadContainer>
         ) : p === "2" ? (
           <>
-            <PricingEditor pricingList={currentData?.pricing} setNewData={setNewData} />
-            <OpenHoursEditor openHoursList={currentData?.openHours} setNewData={setNewData} />
+            <PricingEditor
+              pricingList={currentData?.pricing}
+              setNewData={setNewData}
+            />
+            <OpenHoursEditor
+              openHoursList={currentData?.openHours}
+              setNewData={setNewData}
+            />
             <AccommodationsEditor
               accommodationsList={currentData?.accommodations}
               setNewData={setNewData}
             />
-            <GradeEditor gradesList={currentData?.grades} setNewData={setNewData} />
-            <SettingDayEditor date={currentData?.latestSettingDay} setNewData={setNewData} />
+            <GradeEditor
+              gradesList={currentData?.grades}
+              setNewData={setNewData}
+            />
+            <SettingDayEditor
+              date={currentData?.latestSettingDay}
+              setNewData={setNewData}
+            />
             <Button>
-              <button className="btn-primary" onClick={handleSave} disabled={isUpdating}>
+              <button
+                className="btn-primary"
+                onClick={handleSave}
+                disabled={isUpdating}
+              >
                 {isUpdating ? "저장중..." : "저장하기"}
               </button>
             </Button>
@@ -193,9 +220,16 @@ const EditPage = () => {
               homepage={currentData?.homepage}
               setNewData={setNewData}
             />
-            <DescriptionEditor description={currentData?.description} setNewData={setNewData} />
+            <DescriptionEditor
+              description={currentData?.description}
+              setNewData={setNewData}
+            />
             <Button>
-              <button className="btn-primary" onClick={handleSave} disabled={isUpdating}>
+              <button
+                className="btn-primary"
+                onClick={handleSave}
+                disabled={isUpdating}
+              >
                 {isUpdating ? "저장중..." : "저장하기"}
               </button>
             </Button>

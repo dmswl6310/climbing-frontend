@@ -1,6 +1,4 @@
-import { requestData } from "@/service/api";
-import getUpdatedToken from "@/service/api/updateToken";
-import { jwtVerify } from "jose";
+import getExpireDate from "@/service/api/getExpireDate";
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
@@ -29,6 +27,7 @@ export default NextAuth({
             jwt: {
               accessToken: "tempAccess(normal)",
               refreshToken: "tempRefresh(normal)",
+              expireDate: 0,
             },
           };
 
@@ -43,6 +42,7 @@ export default NextAuth({
           const jwt = {
             accessToken: credentials.accessToken,
             refreshToken: credentials.refreshToken,
+            expireDate: await getExpireDate(credentials.accessToken),
           };
 
           return {
@@ -59,6 +59,7 @@ export default NextAuth({
             jwt: {
               accessToken: "tempAccess(oauth)",
               refreshToken: "tempRefresh(oauth)",
+              expireDate: 0,
             },
           };
           if (
@@ -72,6 +73,7 @@ export default NextAuth({
           const jwt = {
             accessToken: credentials.accessToken,
             refreshToken: credentials.refreshToken,
+            expireDate: await getExpireDate(credentials.accessToken),
           };
 
           return {
@@ -88,13 +90,13 @@ export default NextAuth({
   // jwt 설정
   session: {
     strategy: "jwt",
-    maxAge: 3 * 24 * 60 * 60, // 로그인 유지 기간 (=3일)
+    // maxAge: 3 * 24 * 60 * 60, // 로그인 유지 기간 (=3일)
   },
 
   //  jwt나 세션 쓸때
   callbacks: {
     // 로그인 시 return한 값이 user로 들어옴
-    async jwt({ token, user }) {
+    async jwt({ token, trigger, user, session }) {
       // 로그인 시
       if (user) {
         return {
@@ -103,25 +105,11 @@ export default NextAuth({
           jwt: user.jwt,
         };
       } else {
-        const textEncoder = new TextEncoder();
-        const secret = textEncoder.encode(process.env.JWT_SECRET);
-        const { payload } = await jwtVerify(token.jwt.accessToken, secret);
-        const expireDate = payload.exp! * 1000;
-
-        if (Date.now() < expireDate) {
-          // 액세스 토큰 만료 전
-          console.log("토큰 만료 전");
-          return token;
-        } else {
-          console.log("토큰 만료 후");
-          // 만료 후 리프레시 토큰으로 액세스 토큰 업데이트 요청
-          if (!token.jwt.refreshToken) throw new Error("Missing refresh token");
-          // 리프레시 토큰도 만료되었을 시, 데이터삭제 및 로그아웃
-
-          // const hello = await getUpdatedToken(token.jwt.refreshToken);
-          // console.log(hello);
-          return token;
+        if (trigger == "update" && session) {
+          console.log("토큰 업데이트");
+          token.jwt = { ...token.jwt, ...session };
         }
+        return token;
       }
     },
 

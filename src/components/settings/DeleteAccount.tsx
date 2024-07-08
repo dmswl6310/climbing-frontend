@@ -9,7 +9,7 @@ import { FaCircleCheck } from "react-icons/fa6";
 import handleSignOut from "@/service/api/logout";
 
 const DeleteAccount = () => {
-  const { data: session, status } = useSession();
+  const { data: session, status,update } = useSession();
 
   const [isChecked, setIsChecked] = useState(false);
   const [passwordMessage, setPasswordMessage] = useState("");
@@ -49,6 +49,7 @@ const DeleteAccount = () => {
       onSuccess,
       onError,
       hasBody: false,
+      update,
     });
   };
   if (status !== "authenticated") {

@@ -1,3 +1,5 @@
+import { Session } from "next-auth";
+
 const requestOptions = {
   GET: "GET",
   POST: "POST",
@@ -6,6 +8,12 @@ const requestOptions = {
 } as const;
 
 type Option = (typeof requestOptions)[keyof typeof requestOptions];
+
+export type UpdateTokenInfo = {
+  accessToken?: string;
+  refreshToken?: string;
+  expireDate?: number;
+};
 
 // 데이터 타입 정의
 export interface RequestProps {
@@ -16,6 +24,7 @@ export interface RequestProps {
   onSuccess?: (data: any) => void | any;
   onError?: (error: Error) => void;
   hasBody?: boolean; // response의 body 여부
+  update?: (data?: any) => Promise<Session | null>;
 }
 
 export interface GetProps {
@@ -24,6 +33,7 @@ export interface GetProps {
   onSuccess?: (data: any) => void | any;
   onError?: (error: Error) => void;
   hasBody?: boolean;
+  update?: (data?: any) => Promise<Session | null>;
 }
 
 export interface PostProps {
@@ -34,4 +44,5 @@ export interface PostProps {
   onSuccess?: (data: any) => void | any;
   onError?: (error: Error) => void;
   hasBody?: boolean;
+  update?: (data?: any) => Promise<Session | null>;
 }

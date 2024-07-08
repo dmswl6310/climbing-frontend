@@ -8,7 +8,7 @@ import { requestData } from "@/service/api";
 
 // 로그인 상태 => 북마크 클릭시, 서버 수정 요청
 // 미로그인 상태 => 북마크 클릭시, 로그인 페이지로 이동
-const Bookmark = ({ token, gymId, size }: BookmarkProps) => {
+const Bookmark = ({ token, update, gymId, size }: BookmarkProps) => {
   const [isMarked, setIsMarked] = useState<boolean>(false);
 
   useEffect(() => {
@@ -23,6 +23,7 @@ const Bookmark = ({ token, gymId, size }: BookmarkProps) => {
           option: "GET",
           url: `/gyms/${gymId}/check/bookmark`,
           token: `${token}`,
+          update: update,
           hasBody: true,
           onSuccess,
         });
@@ -47,6 +48,7 @@ const Bookmark = ({ token, gymId, size }: BookmarkProps) => {
         option: "POST",
         url: `/gyms/${gymId}/bookmark`,
         token: `${token}`,
+        update,
         hasBody: true,
         onSuccess,
       });

@@ -1,5 +1,11 @@
 import { SERVER_ADDRESS } from "@/constants/constants";
-import { RequestProps, GetProps, PostProps } from "@/constants/service/type";
+import {
+  RequestProps,
+  GetProps,
+  PostProps,
+  UpdateTokenInfo,
+} from "@/constants/service/type";
+import getExpireDate from "./getExpireDate";
 
 //20초 후 abort
 const timeLimit = 20000;
@@ -12,12 +18,20 @@ export const requestData = async ({
   onSuccess, // 성공 후 처리
   onError,
   hasBody, // json화하지않고 통째로 response받을때 false로 하면됨
+  update,
 }: RequestProps) => {
   const absoluteUrl = SERVER_ADDRESS + url;
 
   switch (option) {
     case "GET":
-      return getData({ absoluteUrl, token, onSuccess, onError, hasBody });
+      return getData({
+        absoluteUrl,
+        token,
+        onSuccess,
+        onError,
+        hasBody,
+        update,
+      });
 
     case "POST":
     case "PUT":
@@ -30,6 +44,7 @@ export const requestData = async ({
         onSuccess,
         onError,
         hasBody,
+        update,
       });
 
     default:
@@ -43,6 +58,7 @@ const getData = ({
   onSuccess,
   onError,
   hasBody = true,
+  update,
 }: GetProps) => {
   const controller = new AbortController();
   const signal = controller.signal;
@@ -66,10 +82,30 @@ const getData = ({
     headers: headers,
     signal,
   })
-    .then((response) => {
+    .then(async (response) => {
       if (!response.ok) {
         // 404, 500...등의 에러
         throw new Error(`${response.status}`);
+      }
+      if (update) {
+        const updatedjwt: UpdateTokenInfo = {};
+        const responseHeaders = response.headers;
+        const responseAccessToken = responseHeaders.get("Authorization");
+        const responseRefreshToken = responseHeaders.get(
+          "Authorization-refresh"
+        );
+        if (responseAccessToken) {
+          console.log("accessToken 만료");
+          updatedjwt.accessToken = responseAccessToken;
+          updatedjwt.expireDate = await getExpireDate(responseAccessToken);
+        }
+        if (responseRefreshToken) {
+          console.log("refreshToken 만료");
+          updatedjwt.refreshToken = responseRefreshToken;
+        }
+        if (responseAccessToken || responseRefreshToken) {
+          update(updatedjwt);
+        }
       }
       if (hasBody) return response.json();
       return response;
@@ -100,6 +136,7 @@ const postData = ({
   onSuccess,
   onError,
   hasBody = true,
+  update,
 }: PostProps) => {
   const controller = new AbortController();
   const signal = controller.signal;
@@ -124,11 +161,33 @@ const postData = ({
     body: JSON.stringify(data),
     signal,
   })
-    .then((response) => {
+    .then(async (response) => {
       if (!response.ok) {
         // 404, 500...등의 에러
         throw new Error(`${response.status}`);
       }
+      if (update) {
+        const updatedjwt: UpdateTokenInfo = {};
+        const responseHeaders = response.headers;
+        const responseAccessToken = responseHeaders.get("Authorization");
+        const responseRefreshToken = responseHeaders.get(
+          "Authorization-refresh"
+        );
+
+        if (responseAccessToken) {
+          console.log("accessToken 만료");
+          updatedjwt.accessToken = responseAccessToken;
+          updatedjwt.expireDate = await getExpireDate(responseAccessToken);
+        }
+        if (responseRefreshToken) {
+          console.log("refreshToken 만료");
+          updatedjwt.refreshToken = responseRefreshToken;
+        }
+        if (responseAccessToken || responseRefreshToken) {
+          update(updatedjwt);
+        }
+      }
+
       if (hasBody) return response.json();
       return response;
     })

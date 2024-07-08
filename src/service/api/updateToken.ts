@@ -1,11 +1,13 @@
 import { SERVER_ADDRESS } from "@/constants/constants";
 
-const getUpdatedToken = async (refreshToken: string) => {
-  const updateToken = await fetch(`${SERVER_ADDRESS}/token/update`, {
+// 매 api 호출시 토큰이 업데이트 되는 형식으로 바귐 => 아래코드 현재안씀
+const getUpdatedToken = async (refreshToken: string, accessToken: string) => {
+  const updateToken = await fetch(`${SERVER_ADDRESS}/members/token/update`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Authorization-refresh": refreshToken,
+      "Authorization-refresh": `Bearer ${refreshToken}`,
+      Authorization: `Bearer ${accessToken}`,
     },
   })
     .then((res) => {
@@ -14,16 +16,14 @@ const getUpdatedToken = async (refreshToken: string) => {
       }
       return res;
     })
-    .then((response) => {
+    .then(async (response) => {
       const responseHeaders = response.headers;
-      console.log(responseHeaders);
       const responseAccessToken = responseHeaders.get("Authorization");
-      const responseRefreshToken = responseHeaders.get("Authorization-refresh");
-      if (!(responseHeaders && responseAccessToken && responseRefreshToken)) {
-        throw Error("missing header or token");
-      }
 
-      return responseAccessToken;
+      // if (!(responseHeaders && responseAccessToken)) {
+      //   throw Error("missing header or token");
+      // }
+      return responseAccessToken || "tempAccessToken";
     });
 
   return updateToken;

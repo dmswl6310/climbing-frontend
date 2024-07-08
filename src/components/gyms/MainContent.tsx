@@ -12,8 +12,10 @@ import type { GymData } from "@/constants/gyms/types";
 
 const MainContent = ({ gymData }: { gymData: GymData }) => {
   const [isLiked, setIsLiked] = useState(false);
-  const [currentLikes, setCurrentLikes] = useState<number>(gymData.likeNumber || 0);
-  const { data: session } = useSession();
+  const [currentLikes, setCurrentLikes] = useState<number>(
+    gymData.likeNumber || 0
+  );
+  const { data: session, update } = useSession();
 
   // useEffect(() => {
   //   if (!session || !session.user) return;
@@ -31,7 +33,7 @@ const MainContent = ({ gymData }: { gymData: GymData }) => {
       try {
         // 좋아요 해제: 멤버 데이터에 반영
         const memberRes = await fetch(
-          `${SERVER_ADDRESS}/members/${session.user.email}/like?gym=${gymData.id},value=false`,
+          `${SERVER_ADDRESS}/members/${session.user.email}/like?gym=${gymData.id},value=false`
         );
         if (!memberRes.ok) throw new Error("DB에 반영 실패");
 
@@ -55,7 +57,7 @@ const MainContent = ({ gymData }: { gymData: GymData }) => {
       try {
         // 좋아요 추가: 멤버 데이터에 반영
         const memberRes = await fetch(
-          `${SERVER_ADDRESS}/members/${session.user.email}/like?gym=${gymData.id},value=true`,
+          `${SERVER_ADDRESS}/members/${session.user.email}/like?gym=${gymData.id},value=true`
         );
         if (!memberRes.ok) throw new Error("DB에 반영 실패");
 
@@ -82,7 +84,8 @@ const MainContent = ({ gymData }: { gymData: GymData }) => {
     <>
       <div>
         <div className="address">
-          <FaLocationDot /> {gymData.address.roadAddress} {gymData.address.unitAddress}
+          <FaLocationDot /> {gymData.address.roadAddress}{" "}
+          {gymData.address.unitAddress}
         </div>
         <div className="header">
           <span className="header__text">{gymData.name}</span>&nbsp;
@@ -95,6 +98,7 @@ const MainContent = ({ gymData }: { gymData: GymData }) => {
                   </S.Icon> */}
                 <S.Icon $clickable={true}>
                   <Bookmark
+                    update={update}
                     token={session.jwt.accessToken}
                     gymId={gymData.id as string}
                     size="1.3rem"
@@ -117,7 +121,9 @@ const MainContent = ({ gymData }: { gymData: GymData }) => {
           </div>
         </div>
       </div>
-      {gymData.description && <div className="description">{gymData.description}</div>}
+      {gymData.description && (
+        <div className="description">{gymData.description}</div>
+      )}
     </>
   );
 };

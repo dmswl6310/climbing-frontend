@@ -19,9 +19,11 @@ import type { Chatroom } from "@/constants/manage/types";
 const ChatPopup: NextPageWithLayout = ({
   roomId,
 }: InferGetServerSidePropsType<GetServerSideProps>) => {
-  const { data: session, status } = useSession();
+  const { data: session, status, update } = useSession();
   const [roomName, setRoomName] = useState<null | string>(null);
-  const [messages, setMessages] = useState<MessageFormat[] | undefined>(undefined);
+  const [messages, setMessages] = useState<MessageFormat[] | undefined>(
+    undefined
+  );
   const [client, setClient] = useState<Client | null>(null);
 
   const onServerMessage = (response: Message) => {
@@ -47,6 +49,7 @@ const ChatPopup: NextPageWithLayout = ({
       url: `/chat/room/${roomId}`,
       token,
       onSuccess: (roomData: Chatroom) => setRoomName(roomData.roomName),
+      update,
     });
 
     const fetchHistory = async () =>
@@ -54,12 +57,13 @@ const ChatPopup: NextPageWithLayout = ({
         option: "GET",
         url: `/chat/find/message/${roomId}`,
         token,
+        update,
         onSuccess: (data) => {
           const loadedHistory = getFormattedChatHistory(
             data,
             session.user.nickname,
             "customer",
-            "manager",
+            "manager"
           );
           setMessages(loadedHistory);
         },

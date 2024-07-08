@@ -15,8 +15,10 @@ import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import type { NextPageWithLayout } from "@/pages/_app";
 import type { Chatroom, ChatroomRef } from "@/constants/manage/types";
 
-const ChatPage: NextPageWithLayout = ({ id }: InferGetServerSidePropsType<GetServerSideProps>) => {
-  const { data: session } = useSession();
+const ChatPage: NextPageWithLayout = ({
+  id,
+}: InferGetServerSidePropsType<GetServerSideProps>) => {
+  const { data: session, update } = useSession();
   const router = useRouter();
   const [chatrooms, setChatrooms] = useState<Chatroom[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -32,6 +34,7 @@ const ChatPage: NextPageWithLayout = ({ id }: InferGetServerSidePropsType<GetSer
       token: session.jwt.accessToken,
       onSuccess: (data) => setChatrooms(data),
       onError: (e) => console.log(e),
+      update,
     });
     setIsLoading(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -56,8 +59,15 @@ const ChatPage: NextPageWithLayout = ({ id }: InferGetServerSidePropsType<GetSer
   };
 
   const openNewWindow = (url: string) => {
-    const newWindow = window.open(url, "_blank", "popup=true,left=50,top=50,width=370,height=600");
-    setOpenWindows((prev) => [...prev, { url, windowRef: newWindow as Window }]);
+    const newWindow = window.open(
+      url,
+      "_blank",
+      "popup=true,left=50,top=50,width=370,height=600"
+    );
+    setOpenWindows((prev) => [
+      ...prev,
+      { url, windowRef: newWindow as Window },
+    ]);
     return;
   };
 

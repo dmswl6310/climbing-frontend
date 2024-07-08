@@ -8,7 +8,7 @@ import handleSignOut from "@/service/api/logout";
 import { COLOR } from "@/styles/global-color";
 
 const ChangePassword = () => {
-  const { status, data: session } = useSession();
+  const { status, data: session, update } = useSession();
 
   const [isCurrentValid, setIsCurrentValid] = useState(false);
   const [CurrentMessage, setCurrentMessage] = useState("");
@@ -88,6 +88,7 @@ const ChangePassword = () => {
       token: session!.jwt.accessToken,
       onSuccess,
       hasBody: false,
+      update,
     });
   };
 

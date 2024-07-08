@@ -6,7 +6,7 @@ import { requestData } from "@/service/api";
 import { SimpleGymData } from "@/constants/gyms/types";
 
 const MyBookmark = () => {
-  const { data: session, status } = useSession();
+  const { data: session, status, update } = useSession();
   const [items, setItems] = useState<SimpleGymData[]>();
 
   useEffect(() => {
@@ -17,6 +17,7 @@ const MyBookmark = () => {
         token: session.jwt.accessToken,
         onSuccess: (data) => setItems(data),
         hasBody: true,
+        update,
       });
     }
   }, [session]);
