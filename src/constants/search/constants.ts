@@ -1,3 +1,34 @@
+export const sortingTypes = ["이름순", "인기순", "세팅일순", "거리순"];
+export const sortingTypeToQuery = (type: string) => {
+  switch (type) {
+    case "이름순":
+      return "NAME";
+    case "인기순":
+      return "POPU";
+    case "세팅일순":
+      return "LATE";
+    case "거리순":
+      return "DIST";
+    default:
+      return "NAME";
+  }
+};
+
+export const queryToSortingType = (query: string) => {
+  switch (query) {
+    case "NAME":
+      return "이름순";
+    case "POPU":
+      return "인기순";
+    case "LATE":
+      return "세팅일순";
+    case "DIST":
+      return "거리순";
+    default:
+      return "이름순";
+  }
+};
+
 export const DISTRCIT_CITY_DATA = [
   {
     id: "1",

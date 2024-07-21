@@ -29,30 +29,47 @@ const CurrentLocationBtn = ({ fontSize = "18px" }: CurrentLocationBtnProps) => {
   const handleLocation = (e: any) => {
     e.preventDefault();
 
+    // http 대안
+    try {
+      fetch(`http://ip-api.com/json/?fields=lon,lat`)
+        .then((res) => res.json())
+        .then(async (data) => await GEOToAddress(data.lon, data.lat))
+        .then((location) => {
+          const inputTag = e.target.parentElement.querySelector(
+            'input[name="search"]'
+          );
+          setLocation(location);
+          inputTag.value = location;
+          inputTag.focus();
+        });
+    } catch (error) {
+      console.error("Error fetching geo data:", error);
+    }
+
     // 위치 성공적으로 가져올 시
-    const success = async (position: GeolocationPosition) => {
-      const latitude = position.coords.latitude;
-      const longitude = position.coords.longitude;
-      const location = await GEOToAddress(longitude, latitude);
+    // const success = async (position: GeolocationPosition) => {
+    //   const latitude = position.coords.latitude;
+    //   const longitude = position.coords.longitude;
+    //   console.log(longitude, latitude);
+    //   const location = await GEOToAddress(longitude, latitude);
 
-      const inputTag = e.target.parentElement.querySelector(
-        'input[name="search"]'
-      );
+    //   const inputTag = e.target.parentElement.querySelector(
+    //     'input[name="search"]'
+    //   );
 
-      setLocation(location);
-      inputTag.value = location;
-      inputTag.focus();
-    };
+    //   setLocation(location);
+    //   inputTag.value = location;
+    //   inputTag.focus();
+    // };
+    // const error = () => {};
 
     // 현재 위치 못가져옴
-    const error = () => {};
+    // if (!navigator.geolocation) {
+    //   // 브라우저가 위치 정보를 지원하지 않음;
+    // } else {
+    //   navigator.geolocation.getCurrentPosition(success, error);
+    // }
 
-    // if (location === "") {
-    if (!navigator.geolocation) {
-      // 브라우저가 위치 정보를 지원하지 않음;
-    } else {
-      navigator.geolocation.getCurrentPosition(success, error);
-    }
     // } else {
     //   // 검색내용 포함시켜 라우팅
     //   router.push({

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { ReactElement, useEffect } from "react";
+import { ReactElement } from "react";
 import Layout from "@/components/Layout";
 import { NextPageWithLayout } from "../_app";
 import SearchLayout from "@/components/search/SearchLayout";
@@ -13,8 +13,8 @@ const HomePage: NextPageWithLayout = () => {
 
   return (
     <Styled.Wrapper>
-      <SearchBanner />
-      <GymListBanner />
+      <SearchBanner/>
+      <GymListBanner isSearchPage={false} />
       <Styled.ButtonWrapper>
         <Styled.MoreButton
           className="container"

@@ -1,8 +1,7 @@
-import { SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { requestData } from "@/service/api";
 import PreviewCard from "./PreviewCard";
-import { usePathname } from "next/dist/client/components/navigation";
 import { LazyLoadingItemsProps } from "@/constants/search/types";
 import { SimpleGymData } from "@/constants/gyms/types";
 import { styled } from "styled-components";
@@ -10,64 +9,67 @@ import { styled } from "styled-components";
 const LazyLoadingItems = ({
   searchWord = "",
   sortingType,
+  isSearchPage = true,
 }: LazyLoadingItemsProps) => {
-  const pathName = usePathname() as string;
   const [items, setItems] = useState<SimpleGymData[]>([]);
-  const [page, setPage] = useState(0);
+  const [currPage, setCurrPage] = useState<number>(1);
   const [hasMore, setHasMore] = useState<boolean>(true);
-
-  const getMoreData = () => {
-    if (pathName.includes("search")) {
-      const onSuccess = (data: { data: SimpleGymData[] }) => {
-        setItems(items.concat(data.data));
-        setPage(page + 1);
-      };
-
-      requestData({
-        option: "GET",
-        url: `/gyms/search?p=${page}`,
-        onSuccess,
-      });
-      setItems(items.concat(items));
-    } else {
-      setHasMore(false);
-    }
-  };
+  const queryUrl = sortingType
+    ? `q=${searchWord}&s=${sortingType}`
+    : `q=${searchWord}`;
 
   useEffect(() => {
-    // TODO: 쿼리 기준 필요 (둘중 하나만 보내도 될지)
+    const initItems = async () => {
+      if (isSearchPage) {
+        const onSuccess = (gymsData: SimpleGymData[]) => {
+          if (gymsData.length == 0) {
+            setHasMore(false);
+          } else {
+            setItems(gymsData);
+          }
+        };
 
-    if (pathName?.includes("search")) {
-      let queryUrl = `?q={${searchWord}}`;
-      if (sortingType) {
-        queryUrl += `&s={${searchWord}}`;
+        await requestData({
+          option: "GET",
+          url: `/gyms/search?${queryUrl}&p=0`,
+          hasBody: true,
+          onSuccess,
+        });
+      } else {
+        const onSuccess = (gymsData: SimpleGymData[]) => {
+          setItems(gymsData);
+          setHasMore(false);
+        };
+        await requestData({
+          option: "GET",
+          url: `/gyms`,
+          hasBody: true,
+          onSuccess,
+        });
       }
-      const onSuccess = (data: { data: SimpleGymData[] }) => {
-        setItems(data.data);
-        setPage(page + 1);
+    };
+    initItems();
+  }, [isSearchPage, searchWord, sortingType]);
+
+  const getMoreData = async () => {
+    if (isSearchPage) {
+      const onSuccess = (gymsData: SimpleGymData[]) => {
+        if (gymsData.length == 0) {
+          setHasMore(false);
+        } else {
+          setItems(items.concat(gymsData));
+          setCurrPage(currPage + 1);
+        }
       };
 
-      requestData({
+      await requestData({
         option: "GET",
-        url: `/gyms/search?p=${page}`,
+        url: `/gyms/search?${queryUrl}&p=${currPage}`,
+        hasBody: true,
         onSuccess,
       });
-      // requestData({
-      //   option: "GET",
-      //   url: `/search${queryUrl}`,
-      // onSuccess: (data) => setItems(data.data),
-      // });
-    } else {
-      // home page의 일부 부르기
-      requestData({
-        option: "GET",
-        url: `/gyms`,
-        onSuccess: (data) => setItems(data),
-      });
     }
-
-    setHasMore(true);
-  }, [pathName, searchWord, sortingType]);
+  };
 
   const PreviewCards = items.map((gymInfo, index) => {
     return (
@@ -94,7 +96,7 @@ const LazyLoadingItems = ({
       //   </p>
       // }
     >
-      {pathName.includes("search") ? PreviewCards : PreviewCards.slice(0, 6)}
+      {isSearchPage ? PreviewCards : PreviewCards.slice(0, 6)}
     </InfiniteScroll>
   );
 };

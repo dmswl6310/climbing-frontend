@@ -32,13 +32,19 @@ const SearchBanner = ({ searchWord }: SearchBannerProps) => {
           dataList={DISTRCIT_CITY_DATA}
           width="450px"
           height="40px"
-          postfixIcon={<IoSearch size="23" color={COLOR.MAIN} />}
+          postfixIcon={
+            <IoSearch
+              size="23"
+              color={COLOR.MAIN}
+            />
+          }
           placeholder="주소 또는 암벽장을 입력하세요."
           onSubmit={handleSubmit}
           useLocation={true}
           border={"3px solid " + COLOR.LIGHT_MAIN}
           searchWord={searchWord}
           dropDownCount={5}
+          isSearchPage={false}
         />
       </Styled.SearchContainer>
       <Styled.ImageWrapper>

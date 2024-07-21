@@ -38,11 +38,13 @@ export interface CurrentLocationBtnProps {
 export interface GymListBannerProps {
   searchWord?: string;
   sortingType?: string;
+  isSearchPage?: boolean;
 }
 
 export interface LazyLoadingItemsProps {
   searchWord?: string;
   sortingType?: string;
+  isSearchPage?:boolean;
 }
 
 export interface SearchBannerProps {
@@ -61,6 +63,7 @@ export interface SearchProps {
   searchWord?: string;
   border?: string;
   dropDownCount?: number;
+  isSearchPage?: boolean;
 }
 
 export interface CardProps {

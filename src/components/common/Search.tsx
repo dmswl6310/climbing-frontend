@@ -20,6 +20,7 @@ const Search = ({
   searchWord,
   border,
   dropDownCount = 10,
+  isSearchPage = true,
 }: SearchProps) => {
   const searchRef = useRef<HTMLInputElement>(null);
   const [index, setIndex] = useState(-1);
@@ -29,13 +30,22 @@ const Search = ({
     .filter((dataItem) => dataItem.cityDistrict.match(filterStr))
     .slice(0, dropDownCount);
 
-  const handleClick = (event: { target: { innerText: any } }) => {
+  const handleClick = (event: {
+    preventDefault(): unknown;
+    target: { innerText: any };
+  }) => {
+    event.preventDefault();
+
     if (onSubmit) {
       // 검색내용 포함시켜 라우팅
-      router.push({
-        pathname: "/search",
-        query: { q: event.target.innerText },
-      });
+      router
+        .push({
+          pathname: "/search",
+          query: { q: event.target.innerText },
+        })
+        .then(() => {
+          if (isSearchPage) router.reload();
+        });
     }
   };
 
@@ -108,7 +118,7 @@ const Search = ({
             }
           }}
         />
-        {postfixIcon}
+        <Styled.IconWrapper>{postfixIcon}</Styled.IconWrapper>
       </Styled.Form>
       {isInputFocus && filteredList.length != 0 && (
         <DropDown
@@ -167,6 +177,15 @@ const Styled = {
     @media ${DEVICE_SIZE.mobileLarge} {
       font-size: 1rem;
     }
+  `,
+  IconWrapper: styled.button`
+    margin: 0;
+    padding: 0;
+    display: flex;
+    border: none;
+    outline: none;
+    background-color: inherit;
+    cursor: pointer;
   `,
 };
 

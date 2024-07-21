@@ -6,9 +6,9 @@ import Layout from "@/components/Layout";
 import SearchLayout from "@/components/search/SearchLayout";
 import { NextPageWithLayout } from "../_app";
 import GymListBanner from "@/components/search/GymListBanner";
-import { useRouter } from "next/router";
 import { COLOR } from "@/styles/global-color";
 import { DISTRCIT_CITY_DATA } from "@/constants/search/constants";
+import { useRouter } from "next/router";
 
 const SearchPage: NextPageWithLayout = () => {
   const router = useRouter();
@@ -20,12 +20,13 @@ const SearchPage: NextPageWithLayout = () => {
     target: { [x: string]: { value: any } };
   }) => {
     event.preventDefault();
-
     // 검색내용 포함시켜 라우팅
-    router.push({
-      pathname: "/search",
-      query: { q: event.target["search"].value },
-    });
+    router
+      .push({
+        pathname: "/search",
+        query: { q: event.target["search"].value },
+      })
+      .then(() => router.reload());
   };
 
   return (
