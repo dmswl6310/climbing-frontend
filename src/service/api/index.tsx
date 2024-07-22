@@ -2,6 +2,7 @@ import { SERVER_ADDRESS } from "@/constants/constants";
 import { RequestProps, GetProps, PostProps } from "@/constants/service/type";
 import { Session } from "next-auth";
 import getUpdatedToken from "./updateToken";
+import router from "next/router";
 
 //20초 후 abort
 const timeLimit = 20000;
@@ -59,6 +60,10 @@ const getData = ({
   const controller = new AbortController();
   const signal = controller.signal;
   const headers = makeHeader(session);
+  if (headers == -1) {
+    alert("토큰 만료로 재로그인이 필요합니다.");
+    return router.push("/login");
+  }
 
   // 특정시간 이상 지날시에러 처리
   const timeout = setTimeout(() => {
@@ -125,6 +130,10 @@ const postData = ({
   const controller = new AbortController();
   const signal = controller.signal;
   const headers = makeHeader(session);
+  if (headers == -1) {
+    alert("토큰 만료로 재로그인이 필요합니다.");
+    return router.push("/login");
+  }
 
   // 특정시간 이상 지날시에러 처리
   const timeout = setTimeout(() => {
@@ -185,8 +194,7 @@ const makeHeader = (session: Session | null | undefined) => {
 
   if (session) {
     // 리프레시 만료
-    if (dateNow > session.jwt.refreshExpireDate!)
-      throw new Error("refreshToken 만료");
+    if (dateNow > session.jwt.refreshExpireDate!) return -1;
     // 엑세스 만료
     if (dateNow > session.jwt.accessExpireDate!)
       return {
