@@ -16,10 +16,10 @@ const Test = () => {
   };
 
   const keyDown = (event: { key: string; preventDefault: () => void }) => {
-    if (event.key === "t") {
-      event.preventDefault();
-      testFunc();
-    }
+    // if (event.key === "t") {
+    //   event.preventDefault();
+    //   testFunc();
+    // }
   };
 
   useEffect(() => {

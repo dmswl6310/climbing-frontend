@@ -32,15 +32,15 @@ const SidebarDetails = ({
         </S.ProfileContainer>
         <S.CategoryContainer>
           <S.ItemWrapper>
-            <S.Link href={"/"}>1:1 문의</S.Link>
-          </S.ItemWrapper>
-          <hr />
-          <S.ItemWrapper>
-            <S.Link href={"/"}>FAQ</S.Link>
+            <S.Link href={"/manage"}>관리자 페이지</S.Link>
           </S.ItemWrapper>
           <hr />
           <S.ItemWrapper>
             <S.Link href={"/"}>공지사항</S.Link>
+          </S.ItemWrapper>
+          <hr />
+          <S.ItemWrapper>
+            <S.Link href={"/settings"}>설정</S.Link>
           </S.ItemWrapper>
         </S.CategoryContainer>
         <S.ButtonBox onClick={handleSignOut}>로그아웃</S.ButtonBox>

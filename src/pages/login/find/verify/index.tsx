@@ -4,6 +4,7 @@ import { COLOR } from "@/styles/global-color";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { styled } from "styled-components";
+import sha256 from "crypto-js/sha256";
 
 const VerifyPassword = () => {
   const router = useRouter();
@@ -40,7 +41,9 @@ const VerifyPassword = () => {
 
     requestData({
       option: "GET",
-      url: `/members/temp-password-check/${email}/${passwordValue}`,
+      url: `/members/temp-password-check/${email}/${sha256(
+        passwordValue
+      ).toString()}`,
       onSuccess,
       hasBody: true,
     });

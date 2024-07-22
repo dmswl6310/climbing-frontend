@@ -17,11 +17,10 @@ const GymRegistration = () => {
   const handleSubmit = async (formData: BaseGymData) => {
     if (!session) return;
     setIsLoading(true);
-    const token = session.jwt.accessToken;
     requestData({
       option: "POST",
       url: "/gyms",
-      token,
+      session,
       update,
       data: formData,
       onSuccess: (response) => {

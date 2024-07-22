@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 
 // 공용 컴포넌트
 export interface BookmarkProps {
-  token?: string;
+  session?: Session | null;
   update?: (data?: any) => Promise<Session | null>;
   gymId: string;
   size?: string;

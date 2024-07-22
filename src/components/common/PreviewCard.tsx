@@ -29,7 +29,7 @@ const PreviewCard = ({ width, height, cardInfo }: CardProps) => {
             </S.NameContainer>
             <Bookmark
               update={update}
-              token={session?.jwt.accessToken}
+              session={session}
               gymId={cardInfo.id.toString()}
               size="20px"
             />

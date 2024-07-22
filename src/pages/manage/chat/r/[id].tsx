@@ -47,7 +47,7 @@ const ChatPopup: NextPageWithLayout = ({
     requestData({
       option: "GET",
       url: `/chat/room/${roomId}`,
-      token,
+      session,
       onSuccess: (roomData: Chatroom) => setRoomName(roomData.roomName),
       update,
     });
@@ -56,7 +56,7 @@ const ChatPopup: NextPageWithLayout = ({
       requestData({
         option: "GET",
         url: `/chat/find/message/${roomId}`,
-        token,
+        session,
         update,
         onSuccess: (data) => {
           const loadedHistory = getFormattedChatHistory(

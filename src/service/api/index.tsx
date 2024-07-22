@@ -1,11 +1,7 @@
 import { SERVER_ADDRESS } from "@/constants/constants";
-import {
-  RequestProps,
-  GetProps,
-  PostProps,
-  UpdateTokenInfo,
-} from "@/constants/service/type";
-import getExpireDate from "./getExpireDate";
+import { RequestProps, GetProps, PostProps } from "@/constants/service/type";
+import { Session } from "next-auth";
+import getUpdatedToken from "./updateToken";
 
 //20초 후 abort
 const timeLimit = 20000;
@@ -13,7 +9,7 @@ const timeLimit = 20000;
 export const requestData = async ({
   option,
   url,
-  token,
+  session,
   data,
   onSuccess, // 성공 후 처리
   onError,
@@ -26,7 +22,7 @@ export const requestData = async ({
     case "GET":
       return getData({
         absoluteUrl,
-        token,
+        session,
         onSuccess,
         onError,
         hasBody,
@@ -40,7 +36,7 @@ export const requestData = async ({
         option,
         absoluteUrl,
         data,
-        token,
+        session,
         onSuccess,
         onError,
         hasBody,
@@ -54,7 +50,7 @@ export const requestData = async ({
 
 const getData = ({
   absoluteUrl,
-  token,
+  session,
   onSuccess,
   onError,
   hasBody = true,
@@ -62,14 +58,7 @@ const getData = ({
 }: GetProps) => {
   const controller = new AbortController();
   const signal = controller.signal;
-  const contentType = { "Content-Type": "application/json" };
-  let headers;
-
-  if (token) {
-    headers = { ...contentType, Authorization: `Bearer ${token}` };
-  } else {
-    headers = { ...contentType };
-  }
+  const headers = makeHeader(session);
 
   // 특정시간 이상 지날시에러 처리
   const timeout = setTimeout(() => {
@@ -88,21 +77,16 @@ const getData = ({
         throw new Error(`${response.status}`);
       }
       if (update) {
-        const updatedjwt: UpdateTokenInfo = {};
         const responseHeaders = response.headers;
         const responseAccessToken = responseHeaders.get("Authorization");
         const responseRefreshToken = responseHeaders.get(
           "Authorization-refresh"
         );
-        if (responseAccessToken) {
-          console.log("accessToken 만료");
-          updatedjwt.accessToken = responseAccessToken;
-          updatedjwt.expireDate = await getExpireDate(responseAccessToken);
-        }
-        if (responseRefreshToken) {
-          console.log("refreshToken 만료");
-          updatedjwt.refreshToken = responseRefreshToken;
-        }
+
+        const updatedjwt = await getUpdatedToken(
+          responseAccessToken,
+          responseRefreshToken
+        );
         if (responseAccessToken || responseRefreshToken) {
           update(updatedjwt);
         }
@@ -132,7 +116,7 @@ const postData = ({
   option,
   absoluteUrl,
   data,
-  token,
+  session,
   onSuccess,
   onError,
   hasBody = true,
@@ -140,14 +124,7 @@ const postData = ({
 }: PostProps) => {
   const controller = new AbortController();
   const signal = controller.signal;
-  const contentType = { "Content-Type": "application/json" };
-  let headers;
-
-  if (token) {
-    headers = { ...contentType, Authorization: `Bearer ${token}` };
-  } else {
-    headers = { ...contentType };
-  }
+  const headers = makeHeader(session);
 
   // 특정시간 이상 지날시에러 처리
   const timeout = setTimeout(() => {
@@ -167,22 +144,16 @@ const postData = ({
         throw new Error(`${response.status}`);
       }
       if (update) {
-        const updatedjwt: UpdateTokenInfo = {};
         const responseHeaders = response.headers;
         const responseAccessToken = responseHeaders.get("Authorization");
         const responseRefreshToken = responseHeaders.get(
           "Authorization-refresh"
         );
 
-        if (responseAccessToken) {
-          console.log("accessToken 만료");
-          updatedjwt.accessToken = responseAccessToken;
-          updatedjwt.expireDate = await getExpireDate(responseAccessToken);
-        }
-        if (responseRefreshToken) {
-          console.log("refreshToken 만료");
-          updatedjwt.refreshToken = responseRefreshToken;
-        }
+        const updatedjwt = await getUpdatedToken(
+          responseAccessToken,
+          responseRefreshToken
+        );
         if (responseAccessToken || responseRefreshToken) {
           update(updatedjwt);
         }
@@ -206,4 +177,28 @@ const postData = ({
       console.log(error.stack + "\n");
       if (onError) onError(error);
     });
+};
+
+const makeHeader = (session: Session | null | undefined) => {
+  const contentType = { "Content-Type": "application/json" };
+  const dateNow = Date.now();
+
+  if (session) {
+    // 리프레시 만료
+    if (dateNow > session.jwt.refreshExpireDate!)
+      throw new Error("refreshToken 만료");
+    // 엑세스 만료
+    if (dateNow > session.jwt.accessExpireDate!)
+      return {
+        ...contentType,
+        "Authorization-refresh": `Bearer ${session.jwt.refreshToken}`,
+      };
+    // 만료된 토큰 없음
+    return {
+      ...contentType,
+      Authorization: `Bearer ${session.jwt.accessToken}`,
+    };
+  } else {
+    return { ...contentType };
+  }
 };

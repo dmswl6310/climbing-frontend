@@ -8,7 +8,7 @@ import { requestData } from "@/service/api";
 
 // 로그인 상태 => 북마크 클릭시, 서버 수정 요청
 // 미로그인 상태 => 북마크 클릭시, 로그인 페이지로 이동
-const Bookmark = ({ token, update, gymId, size }: BookmarkProps) => {
+const Bookmark = ({ session, update, gymId, size }: BookmarkProps) => {
   const [isMarked, setIsMarked] = useState<boolean>(false);
 
   useEffect(() => {
@@ -22,7 +22,7 @@ const Bookmark = ({ token, update, gymId, size }: BookmarkProps) => {
         requestData({
           option: "GET",
           url: `/gyms/${gymId}/check/bookmark`,
-          token: `${token}`,
+          session: session,
           update: update,
           hasBody: true,
           onSuccess,
@@ -31,15 +31,15 @@ const Bookmark = ({ token, update, gymId, size }: BookmarkProps) => {
         console.error("북마크 GET 에러", error);
       }
     };
-    if (token) {
+    if (session) {
       fetchMarkedFromServer();
     }
-  }, [gymId, token]);
+  }, [gymId, session]);
 
   const handleClick = (e: { stopPropagation: () => void }) => {
     e.stopPropagation();
 
-    if (token) {
+    if (session) {
       const onSuccess = (data: { status: boolean }) => {
         setIsMarked(data.status);
       };
@@ -47,7 +47,7 @@ const Bookmark = ({ token, update, gymId, size }: BookmarkProps) => {
       requestData({
         option: "POST",
         url: `/gyms/${gymId}/bookmark`,
-        token: `${token}`,
+        session: session,
         update,
         hasBody: true,
         onSuccess,

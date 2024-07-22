@@ -12,14 +12,15 @@ type Option = (typeof requestOptions)[keyof typeof requestOptions];
 export type UpdateTokenInfo = {
   accessToken?: string;
   refreshToken?: string;
-  expireDate?: number;
+  accessExpireDate?: number;
+  refreshExpireDate?: number;
 };
 
 // 데이터 타입 정의
 export interface RequestProps {
   option: Option;
   url: string;
-  token?: string;
+  session?: Session | null;
   data?: any;
   onSuccess?: (data: any) => void | any;
   onError?: (error: Error) => void;
@@ -29,7 +30,7 @@ export interface RequestProps {
 
 export interface GetProps {
   absoluteUrl: string;
-  token?: string;
+  session?: Session | null;
   onSuccess?: (data: any) => void | any;
   onError?: (error: Error) => void;
   hasBody?: boolean;
@@ -40,7 +41,7 @@ export interface PostProps {
   option: Option;
   absoluteUrl: string;
   data: any;
-  token?: string;
+  session?: Session | null;
   onSuccess?: (data: any) => void | any;
   onError?: (error: Error) => void;
   hasBody?: boolean;

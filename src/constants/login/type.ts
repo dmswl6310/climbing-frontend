@@ -12,14 +12,16 @@ declare module "next-auth" {
     jwt: {
       accessToken: string;
       refreshToken: string;
-      expireDate?: number;
+      accessExpireDate?: number;
+      refreshExpireDate?: number;
     };
   }
   interface User extends DefaultUser {
     jwt: {
       accessToken: string;
       refreshToken: string;
-      expireDate?: number;
+      accessExpireDate?: number;
+      refreshExpireDate?: number;
     };
   }
 }
@@ -29,7 +31,8 @@ declare module "next-auth/jwt" {
     jwt: {
       accessToken: string;
       refreshToken: string;
-      expireDate?: number;
+      accessExpireDate?: number;
+      refreshExpireDate?: number;
     };
   }
 }

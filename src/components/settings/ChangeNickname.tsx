@@ -37,7 +37,7 @@ const ChangeNickname = () => {
     requestData({
       option: "GET",
       url: "/members/myInfo",
-      token: `${session?.jwt.accessToken}`,
+      session,
       hasBody: true,
       onSuccess,
       update,
@@ -116,7 +116,7 @@ const ChangeNickname = () => {
     return requestData({
       option: "PUT",
       url: "/members/update",
-      token: session!.jwt.accessToken,
+      session,
       data: { nickname: nickname },
       hasBody: false,
       onSuccess,

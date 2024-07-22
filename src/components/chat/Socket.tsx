@@ -55,12 +55,11 @@ const Socket = ({
 
     const fetchHistory = async () => {
       console.log("fetching chat history");
-      const token = session.jwt.accessToken;
       const nickname = session.user.nickname;
       requestData({
         option: "GET",
         url: `/chat/find/message/${roomId}`,
-        token,
+        session,
         update,
         onSuccess: (data) => {
           console.log(data);

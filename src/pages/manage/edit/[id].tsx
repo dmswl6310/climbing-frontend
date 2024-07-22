@@ -135,12 +135,11 @@ const EditPage = () => {
   const handleSave = async () => {
     if (tracker.current !== "edited" || !session) return;
     setIsUpdating(true);
-    const token = session.jwt.accessToken;
 
     requestData({
       option: "PUT",
       url: `/gyms/${id}`,
-      token,
+      session,
       update,
       data: currentData,
       hasBody: false,

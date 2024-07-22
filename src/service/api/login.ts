@@ -1,8 +1,12 @@
 import { SERVER_ADDRESS } from "@/constants/constants";
+import sha256 from "crypto-js/sha256";
 
 const getLoginInfos = async (email: string, password: string) => {
-  const sendInfo = { email: email, password: password };
-
+  const sendInfo = {
+    email: email,
+    password: sha256(password).toString(),
+  };
+  console.log(sendInfo);
   const userInfo = await fetch(`${SERVER_ADDRESS}/members/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },

@@ -99,7 +99,7 @@ const MainContent = ({ gymData }: { gymData: GymData }) => {
                 <S.Icon $clickable={true}>
                   <Bookmark
                     update={update}
-                    token={session.jwt.accessToken}
+                    session={session}
                     gymId={gymData.id as string}
                     size="1.3rem"
                   />

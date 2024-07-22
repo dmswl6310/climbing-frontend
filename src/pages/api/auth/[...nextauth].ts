@@ -27,7 +27,8 @@ export default NextAuth({
             jwt: {
               accessToken: "tempAccess(normal)",
               refreshToken: "tempRefresh(normal)",
-              expireDate: 0,
+              accessExpireDate: 0,
+              refreshExpireDate: 0,
             },
           };
 
@@ -42,7 +43,8 @@ export default NextAuth({
           const jwt = {
             accessToken: credentials.accessToken,
             refreshToken: credentials.refreshToken,
-            expireDate: await getExpireDate(credentials.accessToken),
+            accessExpireDate: await getExpireDate(credentials.accessToken),
+            refreshExpireDate: await getExpireDate(credentials.refreshToken),
           };
 
           return {
@@ -59,7 +61,8 @@ export default NextAuth({
             jwt: {
               accessToken: "tempAccess(oauth)",
               refreshToken: "tempRefresh(oauth)",
-              expireDate: 0,
+              accessExpireDate: 0,
+              refreshExpireDate: 0,
             },
           };
           if (
@@ -73,7 +76,8 @@ export default NextAuth({
           const jwt = {
             accessToken: credentials.accessToken,
             refreshToken: credentials.refreshToken,
-            expireDate: await getExpireDate(credentials.accessToken),
+            accessExpireDate: await getExpireDate(credentials.accessToken),
+            refreshExpireDate: await getExpireDate(credentials.refreshToken),
           };
 
           return {

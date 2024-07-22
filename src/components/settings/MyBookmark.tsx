@@ -14,7 +14,7 @@ const MyBookmark = () => {
       requestData({
         option: "GET",
         url: "/members/bookmark",
-        token: session.jwt.accessToken,
+        session,
         onSuccess: (data) => setItems(data),
         hasBody: true,
         update,

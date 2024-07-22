@@ -31,7 +31,7 @@ const ChatPage: NextPageWithLayout = ({
     requestData({
       option: "GET",
       url: `/chat/room/gym/${id}`,
-      token: session.jwt.accessToken,
+      session,
       onSuccess: (data) => setChatrooms(data),
       onError: (e) => console.log(e),
       update,

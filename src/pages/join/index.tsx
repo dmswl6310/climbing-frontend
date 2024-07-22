@@ -12,6 +12,7 @@ import {
 } from "@/constants/login/constants";
 import { EmailCheckResponse, socialTypeToKorean } from "@/constants/login/type";
 import { COLOR } from "@/styles/global-color";
+import sha256 from "crypto-js/sha256";
 
 const Join = () => {
   const [isEmailValid, setIsEmailValid] = useState(false);
@@ -168,7 +169,7 @@ const Join = () => {
 
     const credentials = {
       email: email,
-      password: password,
+      password: sha256(password).toString(),
       nickname: nickname,
     };
 
